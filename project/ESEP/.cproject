@@ -3,16 +3,14 @@
 
 <cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="org.eclipse.cdt.core.default.config.1929132792">
-			<storageModule buildSystemId="org.eclipse.cdt.core.defaultConfigDataProvider" id="org.eclipse.cdt.core.default.config.1929132792" moduleId="org.eclipse.cdt.core.settings" name="Configuration">
+		<cconfiguration id="org.eclipse.cdt.core.default.config.1450762989">
+			<storageModule buildSystemId="org.eclipse.cdt.core.defaultConfigDataProvider" id="org.eclipse.cdt.core.default.config.1450762989" moduleId="org.eclipse.cdt.core.settings" name="Configuration">
 				<externalSettings/>
 				<extensions>
 					<extension id="com.qnx.tools.ide.qde.core.QDEBynaryParser" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
-			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
-			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.pathentry">
@@ -20,11 +18,11 @@
 		<pathentry kind="out" path=""/>
 		<pathentry kind="con" path="com.qnx.tools.ide.qde.QDE_PROJECT_CONTAINER"/>
 	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 		<buildTargets>
 			<target name="build" path="" targetID="com.qnx.tools.ide.qde.core.cbuilder">
 				<buildCommand>make</buildCommand>
+				<buildArguments/>
 				<buildTarget>all</buildTarget>
 				<stopOnError>false</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
@@ -32,6 +30,7 @@
 			</target>
 			<target name="clean" path="" targetID="com.qnx.tools.ide.qde.core.cbuilder">
 				<buildCommand>make</buildCommand>
+				<buildArguments/>
 				<buildTarget>clean</buildTarget>
 				<stopOnError>false</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
@@ -39,6 +38,7 @@
 			</target>
 			<target name="rebuild" path="" targetID="com.qnx.tools.ide.qde.core.cbuilder">
 				<buildCommand>make</buildCommand>
+				<buildArguments/>
 				<buildTarget>clean all</buildTarget>
 				<stopOnError>false</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
@@ -54,18 +54,5 @@
 			</target>
 		</buildTargets>
 	</storageModule>
-	<storageModule moduleId="com.qnx.tools.ide.qde.core.QNXProjectProperties">
-		<makefile value="Makefile"/>
-		<command value="make"/>
-		<code_coverage value="false"/>
-		<profiling value="false"/>
-		<mudflapth value="false"/>
-		<instrumentedFunctionProfiling value="false"/>
-		<type value="1"/>
-		<parallel_build value="true"/>
-		<parallel_build_number value="8"/>
-		<active_configurations>
-			<configuration indexing="true" value="_x86_r"/>
-		</active_configurations>
-	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 </cproject>

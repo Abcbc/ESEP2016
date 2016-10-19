@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>tutorium_1-blink_thread</name>
+	<name>ESEP</name>
 	<comment></comment>
 	<projects>
-		<project>192.168.100.100</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -12,7 +11,7 @@
 			<arguments>
 				<dictionary>
 					<key>org.eclipse.cdt.core.errorOutputParser</key>
-					<value>com.qnx.tools.ide.qde.core.IntelCErrorParser;com.qnx.tools.ide.qde.core.QdeExtraMakeErrorParser;org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.VCErrorParser;</value>
+					<value>org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.CWDLocator;com.qnx.tools.ide.qde.core.IntelCErrorParser;com.qnx.tools.ide.qde.core.QdeExtraMakeErrorParser;com.qnx.tools.ide.qde.core.QDELinkerErrorParser;org.eclipse.cdt.core.MakeErrorParser;</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.build.command</key>
@@ -70,11 +69,4 @@
 		<nature>com.qnx.tools.ide.qde.core.qnxnature</nature>
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>EXTRA_SRCVPATH_include</name>
-			<type>2</type>
-			<location>C:/qnx660/target/qnx6/usr/include</location>
-		</link>
-	</linkedResources>
 </projectDescription>
