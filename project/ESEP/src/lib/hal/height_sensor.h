@@ -9,7 +9,7 @@
 #define HIGHT_SENSOR_H_
 typedef struct {
 
-	values[];
+	uint16_t values[];
 }
 Height_measurements;
 class Height_sensor:Hal_component{
@@ -20,9 +20,8 @@ class Height_sensor:Hal_component{
 			bool is_blank_puk(void);
 			bool is_hole_puk(void);
 
-			bool is_pattern(bool(*pattern)(int steps,int time,int value));
 
-			static Height_sensor get_instance(void);
+			static Height_sensor* get_instance(void);
 	private:
 			Height_sensor();
 			~Height_sensor();
@@ -35,7 +34,7 @@ class Height_sensor:Hal_component{
 			uint16_t BITMASK_12BIT;
 			uint16_t SLEEP_TIME;
 
-			Height_sensor instance_;
+			static Height_sensor* instance_;
 			static pthread_mutex_t init_mtx;
 };
 

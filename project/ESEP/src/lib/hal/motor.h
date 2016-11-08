@@ -28,9 +28,9 @@ class Motor:Hal_component{
 			bool is_running();
 
 			static Motor* get_instance();
+			virtual ~Motor();
 	private:
 			Motor();
-			virtual ~Motor();
 
 			uint8_t get_cur_direction();
 

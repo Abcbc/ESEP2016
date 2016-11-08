@@ -9,7 +9,6 @@ enum Color{
 };
 
 
-
 /**
  *
  */
@@ -21,8 +20,8 @@ class Signal_light:Hal_component{
 			void clear_all_lights(void);
 			void togle_light(Color c);
 
-			void blink_fast(Color c);
-			void blink_slow(Color c);
+			void blink(Color c, uint32_t hz);
+			void stop_blink(Color c);
 
 			void warning_on();
 			void warning_off();
