@@ -23,6 +23,7 @@ EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src/lib  \
 	$(PROJECT_ROOT)/src/lib/hal  \
 	$(PROJECT_ROOT)/src/lib/serial  \
+	$(PROJECT_ROOT)/src/test  \
 	$(QNX_TARGET)/usr/include
 
 #===== LIBS - a space-separated list of library items to be included in the link.
