@@ -8,7 +8,7 @@
 #ifndef HIGHT_SENSOR_H_
 #define HIGHT_SENSOR_H_
 typedef struct {
-
+	
 	uint16_t values[];
 }
 Height_measurements;

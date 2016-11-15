@@ -10,11 +10,25 @@
 #include "hal_component.h"
 #include <pthread.h>
 #include <stdint.h>
+/**
+ * 
+ */
 class Puk_switch:Hal_component{
 
-	public:
+	public:	
+			/*
+			 * Opens the Puk-Switch
+			 */
 			void open();
+			/*
+			 * Closes the Puk-Switch
+			 */
 			void close();
+			
+			/*
+			 * Returns the pointer of the instance
+			 * @return 
+			 */
 			static Puk_switch* get_instance();
 			~Puk_switch();
 	private:
