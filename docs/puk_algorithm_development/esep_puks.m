@@ -80,8 +80,8 @@ db_u = -2650;
 db_l = -2700;
 ic_u = -2620;
 ic_l = -2700;
-u = -2620;
-l = -2700;
+u = -2625;
+l = -2695;
 % Algotithmen test
 'deep_blue'
 puk_algo(u, l, deep_blue, [1, 0, 1, 0, 1, 0, 1, 0 , 1, 0, 1, 0, 1, 0,0,0]')
@@ -93,22 +93,22 @@ puk_algo(u, l, iron_core2, [1, 0, 1, 0, 1, 0, 1 , 0, 0, 0, 0, 0, 0,0,0,0]')
 puk_algo(u, l, iron_core_BR, [1, 0, 1, 0, 1, 0, 1 , 0, 0, 0, 0, 0, 0,0,0,0]')
 puk_algo(u, l, iron_core_BR2, [1, 0, 1, 0, 1, 0, 1 , 0, 0, 0, 0, 0, 0,0,0,0]')
 'Innocence'
-puk_algo(u, l, Innocence, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
-puk_algo(u, l, Innocence2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
+puk_algo(u, l, Innocence, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,1,1]')
+puk_algo(u, l, Innocence2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,1,1]')
 'Little_One'
 puk_algo(u, l, Little_One, [0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0,0,0,0]')
 puk_algo(u, l, Little_One2, [0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0,0,0,0]')
 'Sunshine'
-puk_algo(u, l, Sunshine, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
-puk_algo(u, l, Sunshine2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
+puk_algo(u, l, Sunshine, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,1,0]')
+puk_algo(u, l, Sunshine2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,1,0]')
 'red_rider'
 puk_algo(u, l, red_rider, [1, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0,0,0,0]')
 puk_algo(u, l, red_rider2, [1, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0,0,0,0]')
 'Black_Beauty'
-puk_algo(u, l, Black_Beauty, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
-puk_algo(u, l, Black_Beauty2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
+puk_algo(u, l, Black_Beauty, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,1]')
+puk_algo(u, l, Black_Beauty2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,1]')
 'Black_Beauty_W'
-puk_algo(u, l, Black_Beauty_W, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
-puk_algo(u, l, Black_Beauty_W2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,0]')
+puk_algo(u, l, Black_Beauty_W, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,1]')
+puk_algo(u, l, Black_Beauty_W2, [1, 0, 1, 0, 1, 0, 1 , 0, 1, 0, 0, 0, 0,0,0,1]')
 
 
