@@ -8,39 +8,37 @@
 #ifndef PAKET_PROTOCOL_H_
 #define PAKT_PROTOCOL_H_
 
-	#include <iostream>
-	#include <stdint.h>
+#include <iostream>
+#include <stdint.h>
 
-<<<<<<< HEAD
-	enum PAKET_TYP{DATA, EGO, ESTOP};
+/**
+ * Der Typ des Pakets
+ * DATA = Puk Data Information zur weiterreichung an eine der anderen Sortieranlagen
+ * RESET = Reset Taste wurde gedrueckt
+ * ESTOP = ESTOP Taste wurde gedrueckt
+ * ACK = Bestaetigung eines Paketes
+ */
+enum PAKET_TYP {
+	DATA, RESET, ESTOP, ACK
+};
 
-=======
-	/**
-	 * Der Typ des Pakets
-	 */
-	enum PAKET_TYP{DATA, EGO, ESTOP};
-
-	/**
-	 * Der HEader wird zuerst �bertragen.
-	 * paket_size: git die Gr��e des n�chsten Pakets an
-	 * PAKET_TYP: gibt den Typ des n�csten Pakets an
-	 */
->>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
-	typedef struct {
+/**
+ * Der Header wird zuerst uebertragen.
+ * paket_size: git die Groesse des naehsten Pakets an
+ * PAKET_TYP: gibt den Typ des naecsten Pakets an
+ */
+typedef struct {
 	size_t paket_size;
 	PAKET_TYP paket_typ;
-	} Header;
+	int sequenznummer;
+} Header;
 
-<<<<<<< HEAD
-	typedef struct {
-		uint8_t data;
-=======
-	/**
-	 * Payload
-	 */
-	typedef struct {
-		char data[256];
->>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
-	}Data;
+/**
+ * Payload
+ */
+typedef struct {
+	char data[256];
+
+} Data;
 
 #endif /* PAKET_PROTOCOL_H_ */
