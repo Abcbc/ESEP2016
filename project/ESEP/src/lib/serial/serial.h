@@ -11,6 +11,10 @@
 #include <iostream>
 #include "paket_protocol.h"
 #include <pthread.h>
+<<<<<<< HEAD
+=======
+#include <string.h>
+>>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
 
 using namespace std;
 
@@ -20,8 +24,14 @@ public:
 		/*
 		 * Precondition: serial_nr muss '1' oder '2 sein'
 		 */
+<<<<<<< HEAD
 		Serial(const int serial_nr);
 		virtual ~Serial();
+=======
+		 Serial(const int serial_nr);
+		 ~Serial();
+
+>>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
 		/*
 		 * Sendet struc
 		 */
@@ -41,9 +51,15 @@ public:
 		void receive();
 
 private:
+<<<<<<< HEAD
 		Serial(const Serial& other);
 		Serial& operator=(const Serial& other);
 
+=======
+		Serial& operator=(const Serial& other);
+
+		Serial(const Serial& other);
+>>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
 		/**
 		 * Precondition: -
 		 * Postcondition: Serial device wurde konfiguriert
@@ -53,12 +69,24 @@ private:
 		void config_thread();
 
 		// Pfad des Serial device
+<<<<<<< HEAD
 		const char* dev_;
+=======
+		char dev_[10];
+>>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
 		int fdesc_;
 		pthread_t  receive_thread;
 		bool thread_run;
 
 		static void* helper(void *ptr);
+<<<<<<< HEAD
+=======
+
+		/**
+		 * Shutdown von Pthread.
+		 */
+		int shutdown();
+>>>>>>> f63716ee56db30d4a73bfb9969a28a7b93b02719
 };
 
 

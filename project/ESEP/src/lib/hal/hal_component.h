@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <pthread.h>
 #define PORT_A 			0x300
 #define PORT_B 			0x301
 #define PORT_C 			0x302

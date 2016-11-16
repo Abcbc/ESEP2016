@@ -5,14 +5,17 @@
  *      Author: Melvyn Linke
  */
 #include "hal_component.h"
-#include <pthread.h>
 #include "lib/HWaccess.h"
-#include "HAL.h"
 #include <unistd.h>
 #include <iomanip>
 #include <stdint.h>
+#include <pthread.h>
+#include "lib/Lock.h"
+#include "lib/HAWThread.h"
+#include <cstdlib>
+#include <iostream>
 
-pthread_mutex_t Hal_component::init_mtx = PTHREAD_MUTEX_INITILIZER;
+pthread_mutex_t Hal_component::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 /*
  *
@@ -20,7 +23,7 @@ pthread_mutex_t Hal_component::init_mtx = PTHREAD_MUTEX_INITILIZER;
 Hal_component::Hal_component(){
 	static int flag=0;
 	if(flag==0){
-		lock(&init_mtx);
+		Lock lock(&init_mtx);
 		if(flag==0){
 			if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
 		            cout << "Can't get Hardware access, therefore can't do anything." << endl;
@@ -28,7 +31,6 @@ Hal_component::Hal_component(){
 			out8(CONTROL, CTR_SETTINGS);
 			flag=1;
 		}
-		unlock(&init_mtx);
 	}
 }
 

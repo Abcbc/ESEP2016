@@ -9,7 +9,7 @@
 #include "motor.h"
 #include <pthread.h>
 #include "lib/HWaccess.h"
-#include "HAL.h"
+#include "hal_component.h"
 #include <unistd.h>
 #include <iomanip>
 
@@ -67,19 +67,19 @@ void Motor::go_right(void){
 }
 
 bool Motor::is_slow(void){
-	return is_set(BASE,SLOW_BIT);
-}
-
-bool Motor::is_fast(void){
 	return !is_set(BASE,SLOW_BIT);
 }
 
+bool Motor::is_fast(void){
+	return is_set(BASE,SLOW_BIT);
+}
+
 bool Motor::is_stopped(void){
-	return is_set(BASE,STOP_BIT);
+	return !is_set(BASE,STOP_BIT);
 }
 
 bool Motor::is_running(void){
-	return !is_set(BASE,STOP_BIT);
+	return is_set(BASE,STOP_BIT);
 }
 
 uint8_t Motor::get_cur_direction(){

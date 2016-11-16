@@ -17,6 +17,18 @@ EXTRA_SUFFIXES+=cxx cpp
 #===== LDFLAGS - add the flags to the linker command line.
 LDFLAGS+=-lang-c++ -Y _gpp
 
+#===== EXTRA_SRCVPATH - a space-separated list of directories to search for source files.
+EXTRA_SRCVPATH+= \
+	$(PROJECT_ROOT)/src  \
+	$(PROJECT_ROOT)/src/lib  \
+	$(PROJECT_ROOT)/src/lib/hal  \
+	$(PROJECT_ROOT)/src/lib/serial  \
+	$(PROJECT_ROOT)/src/test  \
+	$(QNX_TARGET)/usr/include
+
+#===== LIBS - a space-separated list of library items to be included in the link.
+LIBS+=IOaccess cpt_terminal
+
 #===== CCFLAGS - add the flags to the C compiler command line. 
 CCFLAGS+=-Y _gpp
 
