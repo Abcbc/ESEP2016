@@ -14,16 +14,12 @@
 
 Serial::Serial(int serial_nr) {
 	estop_on = false;
+	sequenznummer = 0;
 	string str;
-	int* sequenznummer =  &sequenznummer_1;
 	if (serial_nr == 1) {
 		str = "/dev/ser1";
-		sequenznummer_1 = 0;
-		sequenznummer = &sequenznummer_1;
 	} else if (serial_nr == 2) {
 		str = "/dev/ser2";
-		sequenznummer_2 = 0;
-		sequenznummer = &sequenznummer_2;
 	} else {
 		exit(-1);
 	}
@@ -32,10 +28,9 @@ Serial::Serial(int serial_nr) {
 	if (this->fdesc_ == -1) {
 		exit(-1);
 	}
-	*sequenznummer = 0;
-	cout << "SQZ Serial: " << *sequenznummer << endl;
-	transmit = new Serial_Transmit(fdesc_, sequenznummer, &estop_on);
-	receive = new Serial_Receive(fdesc_, sequenznummer, &estop_on);
+	cout << "SQZ Serial: " << sequenznummer << endl;
+	transmit = new Serial_Transmit(fdesc_, &sequenznummer, &estop_on);
+	receive = new Serial_Receive(fdesc_, &sequenznummer, &estop_on);
 	receive->start(NULL);
 	this->configuration();
 }

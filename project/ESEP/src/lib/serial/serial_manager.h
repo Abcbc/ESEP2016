@@ -23,15 +23,6 @@ typedef struct {
 class Serial_Manager{
 	public:
 	/**
-	 * Precondition: -
-	 * Postcondition: Wenn sys_middle true ist dann werden
-	 * zwei Serial f�r den mittleren GEME2 konfiguriert. Dann ist
-	 * geme_2 == true. sys_middle == false default Serial und geme_2 == false;
-	 */
-	Serial_Manager(const bool sys_middle);
-	~Serial_Manager();
-
-	/**
 	 * Precondition: Data darf nicht NULL sein.
 	 * Postcondition: R�ckgabewert 0, Paket wurde gesendet. -1 Fehler.
 	 * Paket wird an GEME1 gesendet wenn Quelle GEME2 ist ansonsten an default
@@ -63,9 +54,26 @@ class Serial_Manager{
 	 */
 	bool is_GEME_2();
 
+	/*
+	 * Returns the pointer of the instance
+	 * @return
+	 */
+	static Serial_Manager* get_instance(const bool sys_middle);
+
 	private:
+	/**
+	 * Precondition: -
+	 * Postcondition: Wenn sys_middle true ist dann werden
+	 * zwei Serial fuer den mittleren GEME2 konfiguriert. Dann ist
+	 * geme_2 == true. Wenn sys_middle == false dann default Serial und geme_2 == false;
+	 */
+	Serial_Manager(const bool sys_middle);
+	virtual ~Serial_Manager();
 	Serial_Manager(const Serial_Manager& other);
 	Serial_Manager& operator=(const Serial_Manager& other);
+
+	static Serial_Manager* instance_;
+	static pthread_mutex_t init_mtx;
 
     Serial* serial1;
 	// Serial 2

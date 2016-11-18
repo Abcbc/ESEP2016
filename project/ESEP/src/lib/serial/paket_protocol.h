@@ -30,7 +30,7 @@ enum PAKET_TYP {
 typedef struct {
 	size_t paket_size;
 	PAKET_TYP paket_typ;
-	int sequenznummer;
+	uint8_t sequenznummer;
 } Header;
 
 /**

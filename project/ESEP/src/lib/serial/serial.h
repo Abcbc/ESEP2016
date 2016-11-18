@@ -49,11 +49,13 @@ private:
 
 		// Pfad des Serial device
 		char dev_[10];
+		// file discriptor number
 		int fdesc_;
 		Serial_Transmit* transmit;
 		Serial_Receive* receive;
-		int sequenznummer_1;
-		int sequenznummer_2;
+		// Sequenznummer fuer Serial Verbindung
+		uint8_t sequenznummer;
+		// Gibt an ob der ESTOP aktic ist. Sich die Sortieranlage also im Error Zustand befindet
 		bool estop_on;
 };
 

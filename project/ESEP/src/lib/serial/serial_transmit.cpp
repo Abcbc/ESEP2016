@@ -5,7 +5,7 @@
  */
 #include "serial_transmit.h"
 
-Serial_Transmit::Serial_Transmit(int fdesc_number, int* sequenznr,
+Serial_Transmit::Serial_Transmit(int fdesc_number, uint8_t* sequenznr,
 		bool* estop) {
 	estop_on = estop;
 	sqz_transmit = 0;
@@ -32,16 +32,20 @@ int Serial_Transmit::transmit(const Data *data) {
 	header.sequenznummer = sqz_transmit;
 	cout << "HEADER SQZ: " << header.sequenznummer << endl;
 	cout << "Sequenznummer Transmit: " << sqz_transmit << endl;
-	cout << "Sequenznummer Receive: " << *sequenznummer  << endl;
+	cout << "Sequenznummer Receive: " << *sequenznummer << endl;
 	int result;
+	// Zuerst wird der Header gesendet
 	do {
-	 result = write(this->fdesc_, &header, sizeof(header));
-		cout << "While Receive" << *sequenznummer  << endl;
+		result = write(this->fdesc_, &header, sizeof(header));
+		cout << "While Receive" << *sequenznummer << endl;
+	// Warte um den Empfaenger Zeit zum Empfangen zu geben und um ein ACK zu senden
 		usleep(QSEC);
+	// Sollange ACK noch nicht bestaetigt wurde wiederhole Senden
 	} while (*sequenznummer != sqz_transmit);
 	sqz_transmit = (sqz_transmit + 1) % MAX_SQZ;
+	// Send Data
 	do {
-	result =	write(this->fdesc_, data, header.paket_size);
+		result = write(this->fdesc_, data, header.paket_size);
 		usleep(QSEC);
 		cout << "test_data" << result << endl;
 	} while (*sequenznummer != sqz_transmit);

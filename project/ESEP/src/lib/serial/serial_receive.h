@@ -9,6 +9,10 @@
 
 #include <iostream>
 #include <pthread.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <termios.h>
+#include <fcntl.h>
 #include "lib/HAWThread.h"
 
 using namespace std;
@@ -16,7 +20,7 @@ using namespace thread;
 
 class Serial_Receive: public HAWThread {
 public:
-	Serial_Receive(int fdesc_number, int* sequenznr, bool* estop);
+	Serial_Receive(int fdesc_number, uint8_t* sequenznr, bool* estop);
 	virtual ~Serial_Receive();
 
 private:
@@ -25,8 +29,8 @@ private:
 	int fdesc_;
 	bool* estop_on;
 	bool thread_run;
-	int* sequenznummer;
-    static const int MAX_SQZ = 10000;
+	uint8_t* sequenznummer;
+    static const int MAX_SQZ = 256;
 	/**
 	 * Receive struc from Serial Port
 	 */

@@ -18,7 +18,7 @@ using namespace std;
 
 class Serial_Transmit {
 	public:
-	Serial_Transmit(int fdesc_number, int* sequenznr, bool* estop);
+	Serial_Transmit(int fdesc_number, uint8_t* sequenznr, bool* estop);
 	~Serial_Transmit();
 
 	/*
@@ -41,12 +41,15 @@ class Serial_Transmit {
 	 * Warte darauf das Paket bestaetigt wird.
 	 */
 	int fdesc_;
-	int* sequenznummer;
-	int sqz_transmit;
+	uint8_t* sequenznummer;
+	uint8_t sqz_transmit;
 	bool* estop_on;
+	// Mutex um Senden zu schuetzen
     pthread_mutex_t mtx_;
+    // Die Anzahl der Microsekunden die gewartet werden sollen bis zum naechsten Senden
     static const int QSEC = 200000;
-    static const int MAX_SQZ = 10000;
+    //  Die Maximale Groesse der Sequenznummer
+    static const int MAX_SQZ = 256;
 };
 
 #endif /* SERIAL_TRANSMIT_H_ */
