@@ -28,6 +28,7 @@ class Hal_component{
 	private:
 
 		static pthread_mutex_t init_mtx;
+		static pthread_mutex_t bo_mtx;
 
 };
 
