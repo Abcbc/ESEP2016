@@ -19,7 +19,7 @@ const unsigned int TYPE_SIG_EVENT = 1 << TYPE_START;
 
 //Light_barrieres
 
-const unsigned int TYPE_LIGHT_BARRIER = TYPE_SIG_EVENTS + (1 << SCR_START);
+const unsigned int TYPE_LIGHT_BARRIER = TYPE_SIG_EVENT + (1 << SCR_START);
 
 const unsigned int LIGHT_BARRIER_ENTRY_OPEN_E_ID = TYPE_LIGHT_BARRIER + 1;
 const unsigned int LIGHT_BARRIER_ENTRY_CLOSED_E_ID = TYPE_LIGHT_BARRIER + 2;
@@ -35,7 +35,7 @@ const unsigned int LIGHT_BARRIER_EXIT_CLOSED_E_ID = TYPE_LIGHT_BARRIER + 8;
 
 //Motor
 
-const unsigned int TYPE_MOTOR = TYPE_SIG_EVENTS + (2<<SCR_START);
+const unsigned int TYPE_MOTOR = TYPE_SIG_EVENT + (2<<SCR_START);
 
 const unsigned int MOTOR_START_E_ID = TYPE_MOTOR + 1;
 const unsigned int MOTOR_STOP_E_ID = TYPE_MOTOR + 2;
@@ -47,7 +47,7 @@ const unsigned int MOTOR_LEFT_E_ID = TYPE_MOTOR + 5;
 const unsigned int MOTOR_RIGHT_E_ID = TYPE_MOTOR + 6;
 
 //Puk Switch
-const unsigned int TYPE_PUK_SWITCH = TYPE_SIG_EVENTS + (3<<SCR_START);
+const unsigned int TYPE_PUK_SWITCH = TYPE_SIG_EVENT + (3<<SCR_START);
 
 const unsigned int PUK_SWITCH_OPEN_E_ID = TYPE_PUK_SWITCH + 1;
 const unsigned int PUK_SWITCH_CLOSE_E_ID = TYPE_PUK_SWITCH + 2;
@@ -64,9 +64,9 @@ const unsigned int HEIGHT_SENSOR_INDENTIFIED_METAL_PUK_E_ID = TYPE_PUK_SWITCH + 
 
 //Signal lights
 
-//Error Events
+//TODO Error Events
 
-const unsigned int ERR_ERMERGENCY_STOP_E_ID;
-const unsigned int ERR_UNKNOWN_PUK_E_ID;
+const unsigned int ERR_ERMERGENCY_STOP_E_ID = -1;
+const unsigned int ERR_UNKNOWN_PUK_E_ID = -1;
 
 #endif

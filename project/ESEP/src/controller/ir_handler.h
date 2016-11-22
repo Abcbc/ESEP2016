@@ -25,14 +25,15 @@ class Ir_handler{
 		 * This Method return an instance of IR_Handler(Singelton)
 		 * @return Return the pointer of the instance.
 		 */
-		static Ir_handler get_instance();
+
+		static Ir_handler* get_instance();
 	private:
 
-		static Ir_handler instance_;
+		static Ir_handler* instance_;
 		static pthread_mutex_t init_mtx;
-		
-		sigevent* isr_dio(void* arg,int id);
-		const int IRQ = 11;
+		Ir_handler();
+//		const struct sigevent* isr_dio(void* arg,int id);
+		const static int IRQ = 11;
 		int c_id;
 
 };
