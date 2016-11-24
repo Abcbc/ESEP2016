@@ -49,7 +49,7 @@ void ir_test::test_ir(){
 	while(1){
 		cout << "wait for IR" << endl;
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
-		cout << "Interrupt: " << pulse.value.sival_int << endl;
+		cout << "Interrupt: " << pulse.value.sival_int << " scoid: " << pulse.scoid << " code: " << pulse.code << endl;
 	}
 }
 
