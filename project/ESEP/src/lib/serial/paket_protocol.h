@@ -1,9 +1,13 @@
-/*
- * Paket_Protocol.h
- *
- *  Created on: 01.11.2016
- *      Author: abw181
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* paket_protocol.h
+* Hier sind die Pakete definiert die Verschickt und
+* empfangen werden ueber die Serielle Schnittstelle.
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
 
 #ifndef PAKET_PROTOCOL_H_
 #define PAKT_PROTOCOL_H_
@@ -27,18 +31,17 @@ enum PAKET_TYP {
  * paket_size: git die Groesse des naehsten Pakets an
  * PAKET_TYP: gibt den Typ des naecsten Pakets an
  */
-typedef struct {
+typedef struct Header {
 	size_t paket_size;
 	PAKET_TYP paket_typ;
 	uint8_t sequenznummer;
-} Header;
+} __attribute__((packed));;
 
 /**
  * Payload
  */
-typedef struct {
+typedef struct Data {
 	char data[256];
-
-} Data;
+} __attribute__((packed));;
 
 #endif /* PAKET_PROTOCOL_H_ */

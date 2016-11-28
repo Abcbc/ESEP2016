@@ -1,9 +1,12 @@
-/*
- * serial_receive.cpp
- *
- *  Created on: 11 Nov 2016
- *      Author: Julian Magierski
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* serial_receive.cpp
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
+
 #include "serial_receive.h"
 #include "paket_protocol.h"
 

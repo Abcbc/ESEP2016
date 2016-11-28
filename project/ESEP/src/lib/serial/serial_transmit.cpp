@@ -1,8 +1,12 @@
- /*
- *  Created on: 11.11.2016
- *      Author: Julian Magierski
- *      Version: 0.1
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* serial_transmit.cpp
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
+
 #include "serial_transmit.h"
 
 Serial_Transmit::Serial_Transmit(int fdesc_number, uint8_t* sequenznr,

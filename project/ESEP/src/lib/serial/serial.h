@@ -1,9 +1,13 @@
-/*
- * Serial.h
- *
- *  Created on: 28.10.2016
- *      Author: abw181
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* serial.h
+* Stellt eine Verbundung zu einem Nachbarsystem da ueber
+* Serielle Schnittstelle.
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
 
 #ifndef SERIAL_H_
 #define SERIAL_H_
@@ -18,29 +22,42 @@ using namespace std;
 
 class Serial {
 public:
-		/*
-		 * Precondition: serial_nr muss '1' oder '2 sein'
-		 */
+		/**
+		* Precondition: serial_nr muss '1' oder '2 sein'
+		* Postcondition: -
+		* @param int serial_nr Nummer der Verbindung
+		* @return Ctor
+		*/
 		Serial(const int serial_nr);
 		 ~Serial();
 
-		/*
-		 * Sendet struc
-		 */
+		/**
+		* Precondition: -
+		* Postcondition: -
+		* @param data Puk Data struct welches versendet wird
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
 		int send(const Data *data);
-		/*
-		 * Sende estop
-		 */
+		
+		/**
+		* Precondition: -
+		* Postcondition: ESTOP wurde an Nachbarsystem versendet.
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
 		int send_estop();
-		/*
-		 * Sende: Band soll laufen
-		 */
+		
+		/**
+		* Precondition: -
+		* Postcondition: RESET wurde an Nachbarsystem versendet.
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
 		int send_reset();
 
 private:
 		Serial& operator=(const Serial& other);
 		Serial(const Serial& other);
 		Serial();
+		
 		/**
 		 * Precondition: -
 		 * Postcondition: Serial device wurde konfiguriert

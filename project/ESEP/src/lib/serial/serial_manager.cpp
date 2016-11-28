@@ -1,9 +1,12 @@
-/*
- * Serial_Manager.cpp
- *
- *  Created on: 28.10.2016
- *      Author: abw181
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* serial_manager.cpp
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
+
 #include "serial_manager.h"
 
 Serial_Manager* Serial_Manager::instance_ = NULL;
