@@ -3,11 +3,27 @@
  *
  *  Created on: 19.10.2016
  *      Author: abr468
+ *  last Changed on 07.11. by abl395
  */
 #include <stdint.h>
 #include "signal_light.h"
+#include "blink_green.h"
+#include "blink_yellow.h"
+#include "blink_red.h"
+
 pthread_mutex_t Signal_light::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 Signal_light* Signal_light::instance_ = NULL;
+
+struct blink_threads{
+	Blink_green* green_thread;
+	uint32_t green_hz;
+	Blink_yellow* yellow_thread;
+	uint32_t yellow_hz;
+	Blink_red* red_thread;
+	uint32_t red_hz;
+};
+
+struct blink_threads bl_threads;
 
 Signal_light::Signal_light(){
 	BASE 	= PORT_A;
@@ -36,12 +52,52 @@ void Signal_light::clear_all_lights(void){
 	clear_light(yellow);
 	clear_light(green);
 }
-void Signal_light::blink_fast(Color c){
-
+void Signal_light::blink(Color c, uint32_t hz){
+	switch(c){
+		case green:
+			if(bl_threads.green_thread == NULL || hz != bl_threads.green_hz){
+				bl_threads.green_thread = new Blink_green(hz);
+				bl_threads.green_thread -> start(NULL);
+				bl_threads.green_hz = hz;
+			}
+			break;
+		case yellow:
+			if(bl_threads.yellow_thread == NULL || hz != bl_threads.yellow_hz){
+				bl_threads.yellow_thread = new Blink_yellow(hz);
+				bl_threads.yellow_thread -> start(NULL);
+				bl_threads.yellow_hz = hz;
+			}
+			break;
+		case red:
+			if(bl_threads.red_thread == NULL || hz != bl_threads.red_hz){
+				bl_threads.red_thread = new Blink_red(hz);
+				bl_threads.red_thread -> start(NULL);
+				bl_threads.red_hz = hz;
+			}
+			break;
+	}
 }
-
-void Signal_light::blink_slow(Color c){
-
+void Signal_light::stop_blink(Color c){
+	switch(c){
+		case green:
+			if(bl_threads.green_thread != NULL){
+				bl_threads.green_thread -> stop();
+				bl_threads.green_thread = NULL;
+			}
+			break;
+		case yellow:
+			if(bl_threads.yellow_thread != NULL){
+				bl_threads.yellow_thread -> stop();
+				bl_threads.yellow_thread = NULL;
+			}
+			break;
+		case red:
+			if(bl_threads.red_thread != NULL){
+				bl_threads.red_thread -> stop();
+				bl_threads.red_thread = NULL;
+			}
+			break;
+	}
 }
 
 void Signal_light::warning_on(){

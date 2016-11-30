@@ -1,65 +1,79 @@
-/*
- * Serial.h
- *
- *  Created on: 28.10.2016
- *      Author: abw181
- */
+/**
+* HAW SR2 Embedded System Engineering WS 2016
+* serial.h
+* Stellt eine Verbundung zu einem Nachbarsystem da ueber
+* Serielle Schnittstelle.
+* @author Julian Magierski
+* Copyright (C) 2016 Julian Magierski
+* This software is licensed with GNU license
+* see LICENSE.txt for details
+*/
 
 #ifndef SERIAL_H_
 #define SERIAL_H_
 
 #include <iostream>
-#include "paket_protocol.h"
 #include <pthread.h>
+#include <string.h>
+#include "serial_transmit.h"
+#include "serial_receive.h"
 
 using namespace std;
 
 class Serial {
 public:
-		Serial();
-		/*
-		 * Precondition: serial_nr muss '1' oder '2 sein'
-		 */
+		/**
+		* Precondition: serial_nr muss '1' oder '2 sein'
+		* Postcondition: -
+		* @param int serial_nr Nummer der Verbindung
+		* @return Ctor
+		*/
 		Serial(const int serial_nr);
-		virtual ~Serial();
-		/*
-		 * Sendet struc
-		 */
-		int send(const Data *data);
-		/*
-		 * Sende estop
-		 */
-		int send_estop();
-		/*
-		 * Sende: Band soll laufen
-		 */
-		int send_ego();
+		 ~Serial();
 
 		/**
-		 * Wartet auf struc
-		 */
-		void receive();
+		* Precondition: -
+		* Postcondition: -
+		* @param data Puk Data struct welches versendet wird
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
+		int send(const Data *data);
+		
+		/**
+		* Precondition: -
+		* Postcondition: ESTOP wurde an Nachbarsystem versendet.
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
+		int send_estop();
+		
+		/**
+		* Precondition: -
+		* Postcondition: RESET wurde an Nachbarsystem versendet.
+		* @return 0 bei Erfolg sonst Wert < 1
+		*/
+		int send_reset();
 
 private:
-		Serial(const Serial& other);
 		Serial& operator=(const Serial& other);
-
+		Serial(const Serial& other);
+		Serial();
+		
 		/**
 		 * Precondition: -
 		 * Postcondition: Serial device wurde konfiguriert
 		 */
 		void configuration();
 
-		void config_thread();
-
 		// Pfad des Serial device
-		const char* dev_;
+		char dev_[10];
+		// file discriptor number
 		int fdesc_;
-		pthread_t  receive_thread;
-		bool thread_run;
-
-		static void* helper(void *ptr);
+		Serial_Transmit* transmit;
+		Serial_Receive* receive;
+		// Sequenznummer fuer Serial Verbindung
+		uint8_t sequenznummer;
+		// Gibt an ob der ESTOP aktic ist. Sich die Sortieranlage also im Error Zustand befindet
+		bool estop_on;
 };
-
 
 #endif /* SERIAL_H_ */

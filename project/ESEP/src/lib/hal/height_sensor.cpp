@@ -5,9 +5,20 @@
  *      Author: abr468
  */
 
+#include "hal_component.h"
+#include "lib/HWaccess.h"
+#include <unistd.h>
+#include <iomanip>
+#include <stdint.h>
+#include <pthread.h>
+#include "lib/Lock.h"
+#include "lib/HAWThread.h"
+#include <cstdlib>
+#include <iostream>
+#include "height_sensor.h"
 
 pthread_mutex_t Height_sensor::init_mtx = PTHREAD_MUTEX_INITIALIZER;
-Height_sensor Height_sensor::instance_ = NULL;
+Height_sensor* Height_sensor::instance_ = NULL;
 int Height_sensor::get_height(){
 	  uint16_t height = 0;
 
@@ -41,13 +52,8 @@ bool Height_sensor::is_hole_puk(void){
 	return false;
 }
 
-bool Height_sensor::is_pattern(bool(*pattern)(){
-	int i = 0;
 
-	return false;
-}
-
-Height_sensor Height_sensor::get_instance(void){
+Height_sensor* Height_sensor::get_instance(void){
 	if(instance_ == NULL){
 			pthread_mutex_lock(&init_mtx);
 			if(instance_ == NULL){
@@ -71,5 +77,4 @@ Height_sensor::Height_sensor(){
 Height_sensor::~Height_sensor(){
 	pthread_mutex_destroy(&init_mtx);
 }
-
 
