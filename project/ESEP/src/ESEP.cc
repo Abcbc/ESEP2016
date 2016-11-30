@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
 //	hal.test_sensors();
 
 	// Test height sensor
-	Height_Sensor_Test* hs_test = new Height_Sensor_Test();
-	hs_test -> test_height();
+//	Height_Sensor_Test* hs_test = new Height_Sensor_Test();
+//	hs_test -> test_height();
 
 	// Test Interrupt
 	ir_test* test = new ir_test();
