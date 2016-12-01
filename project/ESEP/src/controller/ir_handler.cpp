@@ -15,10 +15,11 @@
 
 struct sigevent isrEvent;
 
-#define FILTER_MASK 0b1111000010010001
+#define FILTER_MASK 0b1111000010010011
 #define ON_BIT 0h10000
 
 #define ENRTY 1
+#define HEIGHT_MEASUREMENT 2
 #define PUK_SWITCH 8
 #define EXIT 128
 #define START 4096
@@ -63,6 +64,14 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 					e_id = LIGHT_BARRIER_ENTRY_OPEN_E_ID;
 				} else {
 					e_id = LIGHT_BARRIER_ENTRY_CLOSED_E_ID;
+				}
+				break;
+
+			case HEIGHT_MEASUREMENT:
+				if ((source & ENRTY) > 0) {
+					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT;
+				} else {
+					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT;
 				}
 				break;
 

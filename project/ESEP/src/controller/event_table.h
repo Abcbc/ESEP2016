@@ -87,4 +87,8 @@ const unsigned int BUTTON_E_STOP_RELEASE_E_ID = TYPE_BUTTON + 8;
 const unsigned int ERR_ERMERGENCY_STOP_E_ID = -1;
 const unsigned int ERR_UNKNOWN_PUK_E_ID = -1;
 
+// Test Events
+
+const unsigned int LIGHT_BARRIER_HEIGHT_MEASUREMENT = 0xFF11;
+
 #endif
