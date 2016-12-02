@@ -7,6 +7,7 @@
 #include "src/test/hal_test.h"
 #include "src/test/height_sensor_test.h"
 #include "src/test/ir_test.h"
+#include "src/test/timer_test.h"
 #include "src/test/testTools/distance_time.h"
 
 int main(int argc, char *argv[]) {
@@ -24,6 +25,10 @@ int main(int argc, char *argv[]) {
 //	test -> test_ir();
 
 	// get distance/time
-	Distance_Time* dt = new Distance_Time();
-	dt -> measure_distance();
+//	Distance_Time* dt = new Distance_Time();
+//	dt -> measure_distance();
+
+	// Test tick_timer
+	Timer_test* test = new Timer_test();
+	test -> test_timer();
 }
