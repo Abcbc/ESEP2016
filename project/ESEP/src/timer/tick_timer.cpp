@@ -13,7 +13,7 @@
 #include "src/lib/hal/motor.h"
 
 #define ID_DOES_NOT_EXIST -1
-#define MOTOR_FAST 24
+#define MOTOR_FAST 23
 #define MOTOR_SLOW 10
 #define TICK_SEC 0
 #define TICK_NSEC 10000000
@@ -107,7 +107,7 @@ void Tick_timer::execute(void*){
 				timer_vector[i].duration -= step;
 				if(timer_vector[i].duration <= 0){
 					// if the timer has run out the id is send in pulse-msg
-					MsgSendPulse(con_dispatcher, -1, 5, timer_vector[i].id);
+					MsgSendPulse(con_dispatcher, -1, 5, BITMASK_TIMER_RUNOUT_EVENT + timer_vector[i].id);
 					stop_timer(timer_vector[i].id);
 				}
 			}

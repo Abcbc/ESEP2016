@@ -19,7 +19,7 @@
 
 using namespace thread;
 
-const unsigned int BITMASK_DURATION = 0xFFFFFF00;
+const unsigned int BITMASK_TIMER_RUNOUT_EVENT = 0x8FF00;
 const unsigned int BITMASK_ID = 0xFF;
 
 class Tick_timer: public HAWThread {
