@@ -41,8 +41,7 @@ void Timer_test::test_timer(){
 	}
 	SIGEV_PULSE_INIT(&event, con, 1, 5, NULL);
 
-	cout << "cid: " << cid << endl;
-	Tick_timer* timer = Tick_timer::get_instance(cid);
+	Tick_timer* timer = Tick_timer::get_instance(con);
 	timer -> start(NULL);
 
 	// test single timer slow

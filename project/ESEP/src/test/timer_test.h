@@ -1,5 +1,7 @@
 /*
  * timer_test.h
+ * 
+ * Test sequenz for the Timer.
  *
  *  Created on: 02.12.2016
  *      Author: abl395
@@ -10,6 +12,9 @@
 
 class Timer_test {
 	public:
+		/*
+		* starts the Test Sequenz
+		*/
 		void test_timer(void);
 
 		~Timer_test();

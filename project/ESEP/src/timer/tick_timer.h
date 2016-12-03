@@ -1,6 +1,10 @@
 /*
  * timer.h
  *
+ * The Tick_timer counts down a value in dependence of motor speed.
+ * If a Timer runs out a pulse message is send: 
+ * If the pulse message value is the timer id.
+ *
  *  Created on: 01.12.2016
  *      Author: abl395
  */
@@ -14,6 +18,9 @@
 #include "timer/timer_event_table.h"
 
 using namespace thread;
+
+const unsigned int BITMASK_DURATION = 0xFFFFFF00;
+const unsigned int BITMASK_ID = 0xFF;
 
 class Tick_timer: public HAWThread {
 	public:
@@ -57,6 +64,12 @@ class Tick_timer: public HAWThread {
 
 		static Tick_timer* instance_;
 		static pthread_mutex_t init_mtx;
+		static pthread_mutex_t vector_access_mtx;
+		int cid;
+		int con;
+		int con_dispatcher;
+		Motor* motor;
+		
 		Tick_timer();
 		int find_timer(uint8_t id);
 
