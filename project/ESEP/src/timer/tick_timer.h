@@ -15,12 +15,14 @@
 #include <stdint.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
-#include "timer/timer_event_table.h"
 
 using namespace thread;
 
 const unsigned int BITMASK_TIMER_RUNOUT_EVENT = 0x8FF00;
 const unsigned int BITMASK_ID = 0xFF;
+const uint32_t MOTOR_FAST = 23;
+const uint32_t  MOTOR_SLOW = 10;
+const uint32_t  MOTOR_STOP = 0;
 
 class Tick_timer: public HAWThread {
 	public:
@@ -51,10 +53,17 @@ class Tick_timer: public HAWThread {
 		uint32_t get_duration(uint8_t id);
 
 		/*
+		 *  set the motor speed.
+		 *  @param speed
+		 *  Only MOTOR_STOP, MOTOR_FAST or MOTOR_SLOW are allowed.
+		 */
+		void set_speed(uint32_t speed);
+
+		/*
 		 * This Method return an instance of IR_Handler(Singelton)
 		 * @return Return the pointer of the instance.
 		 */
-		static Tick_timer* get_instance(int cid);
+		static Tick_timer* get_instance(int con);
 
 		virtual ~Tick_timer();
 	private:
@@ -67,10 +76,10 @@ class Tick_timer: public HAWThread {
 		static pthread_mutex_t vector_access_mtx;
 		int cid;
 		int con;
-		int con_dispatcher;
-		Motor* motor;
+//		static int con_dispatcher;
+		uint32_t step;
 		
-		Tick_timer();
+		Tick_timer(int con);
 		int find_timer(uint8_t id);
 
 };
