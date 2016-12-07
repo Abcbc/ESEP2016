@@ -12,23 +12,22 @@
 
 int main(int argc, char *argv[]) {
 	// Test HAL
-//	HAL_Test hal();
-//	hal.test_actuators();
-//	hal.test_sensors();
+	HAL_Test hal_test;
+	hal_test.test_actuators();
 
 	// Test height sensor
-//	Height_Sensor_Test* hs_test = new Height_Sensor_Test();
-//	hs_test -> test_height();
+//	Height_Sensor_Test hs_test;
+//	hs_test.test_height();
 
 	// Test Interrupt
-//	ir_test* test = new ir_test();
-//	test -> test_ir();
+//	IR_Test ir_test;
+//	ir_test.test_ir();
 
 	// get distance/time
-//	Distance_Time* dt = new Distance_Time();
-//	dt -> measure_distance();
+//	Distance_Time dt;
+//	dt.measure_distance();
 
 	// Test tick_timer
-	Timer_test* test = new Timer_test();
-	test -> test_timer();
+//	Timer_test timer_test;
+//	timer_test.test_timer();
 }

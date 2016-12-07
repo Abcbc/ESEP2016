@@ -143,29 +143,38 @@ void HAL_Test::test_actuators(){
 	component2 -> stop_blink(green);
 	component2 -> stop_blink(red);
 	sleep(DELAY_TIME);
+	component2 -> set_all_lights();
 	//TODO missing functions: errors
 
 	//test height_sensor
-	std::cout << "test height_sensor" << std::endl;
-	Height_sensor* component3 = Height_sensor::get_instance();
-	uint16_t height;
-	height = component3 -> get_height();
-	std::cout << "height1: " << height << std::endl;
-	sleep(DELAY_TIME);
-	height = component3 -> get_height();
-	std::cout << "height2: " << height << std::endl;
+//	std::cout << "test height_sensor" << std::endl;
+//	Height_sensor* component3 = Height_sensor::get_instance();
+//	uint16_t height;
+//	height = component3 -> get_height();
+//	std::cout << "height1: " << height << std::endl;
+//	sleep(DELAY_TIME);
+//	height = component3 -> get_height();
+//	std::cout << "height2: " << height << std::endl;
+//
+//	is_not_Null(component3, "failed test: height_sensor component is null");
+//	std::cout << "test ground level" << std::endl;
+//	height = component3 -> get_height();
+//	std::cout << "height: " << height << std::endl;
+//	is_True((height <= HEIGHT_GLT) && (height >= HEIGHT_GUT), "failed test: wrong ground height");
+//	sleep(DELAY_TIME);
+//	std::cout << "put normal_puk into height sensor" << std::endl;
+//	sleep(DELAY_TIME * 2);
+//	std::cout << "test normal_puk height" << std::endl;
+//	height = component3 -> get_height();
+//	std::cout << "height1: " << height << std::endl;
+//	is_True((height <= HEIGHT_PLT) && (height >= HEIGHT_PUT), "failed test: wrong puk height");
+//	sleep(DELAY_TIME);
+}
 
-	is_not_Null(component3, "failed test: height_sensor component is null");
-	std::cout << "test ground level" << std::endl;
-	height = component3 -> get_height();
-	std::cout << "height: " << height << std::endl;
-	is_True((height <= HEIGHT_GLT) && (height >= HEIGHT_GUT), "failed test: wrong ground height");
-	sleep(DELAY_TIME);
-	std::cout << "put normal_puk into height sensor" << std::endl;
-	sleep(DELAY_TIME * 2);
-	std::cout << "test normal_puk height" << std::endl;
-	height = component3 -> get_height();
-	std::cout << "height1: " << height << std::endl;
-	is_True((height <= HEIGHT_PLT) && (height >= HEIGHT_PUT), "failed test: wrong puk height");
-	sleep(DELAY_TIME);
+HAL_Test::HAL_Test(){
+	// Ignore
+}
+
+HAL_Test::~HAL_Test(){
+	// Ignore
 }

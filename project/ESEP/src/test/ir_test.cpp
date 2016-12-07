@@ -24,14 +24,14 @@ int isrId = 0;
 int isrChannel = 0;
 int isrConnection = 0;
 
-ir_test::ir_test() {
+IR_Test::IR_Test() {
 }
 
 
-ir_test::~ir_test() {
+IR_Test::~IR_Test() {
 }
 
-void ir_test::test_ir(){
+void IR_Test::test_ir(){
 	Ir_handler *ir = Ir_handler::get_instance();
 
 	if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){

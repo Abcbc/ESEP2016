@@ -8,15 +8,15 @@
 #ifndef IR_TEST_H_
 #define IR_TEST_H_
 
-class ir_test {
+class IR_Test {
     public:
-        ir_test(void);
-        virtual ~ir_test();
+		IR_Test(void);
+        virtual ~IR_Test();
         void test_ir(void);
 
     private:
-        ir_test(const ir_test& l);
-        ir_test& operator=(ir_test& l);
+        IR_Test(const IR_Test& l);
+        IR_Test& operator=(IR_Test& l);
 };
 
 

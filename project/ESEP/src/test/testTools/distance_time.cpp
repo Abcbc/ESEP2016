@@ -64,7 +64,7 @@ void Distance_Time::measure_distance(){
 		cout << "put puk on entry of system then press the start button" << endl;
 		do{
 			MsgReceivePulse(isrChannel_dt,&pulse,sizeof(pulse),NULL);
-		}while(pulse.value.sival_int != BUTTON_START_PRESS_E_ID);
+		}while(pulse.value.sival_int != BUTTON_START_PRESSED_E_ID);
 
 		gettimeofday(&tp, NULL);
 		uint64_t start_time_ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;

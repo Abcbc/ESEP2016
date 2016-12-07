@@ -33,7 +33,6 @@ void Tick_timer::start_timer(uint32_t duration, uint8_t id){
 	struct intern_timer new_timer = {id, duration};
 	timer_vector.push_back(new_timer);
 	pthread_mutex_unlock(&vector_access_mtx);
-	cout << "start timer: new vec length: "<<timer_vector.size()<< " id: " << (int) timer_vector[timer_vector.size() - 1].id << endl;
 }
 
 uint32_t Tick_timer::stop_timer(uint8_t id){
@@ -45,7 +44,6 @@ uint32_t Tick_timer::stop_timer(uint8_t id){
 	uint16_t duration = timer_vector[idx].duration;
 	timer_vector.erase(timer_vector.begin() + idx);
 	pthread_mutex_unlock(&vector_access_mtx);
-	cout << "stop timer: new vec length: "<<timer_vector.size()<< endl;
 	return duration;
 }
 
@@ -110,11 +108,9 @@ void Tick_timer::execute(void*){
 			for(uint32_t i = 0; i < timer_vector.size(); i++){
 				timer_vector[i].duration -= step;
 				if(timer_vector[i].duration <= 0){
-					cout << "Timer: send pulsemsg conid: " << con_dispatcher << endl;
 					// if the timer has run out the id is send in pulse-msg
-					MsgSendPulse(3, -1, 5, BITMASK_TIMER_RUNOUT_EVENT + timer_vector[i].id);
+					MsgSendPulse(3, -1, 5, (int) BITMASK_TIMER_RUNOUT_EVENT + (int) timer_vector[i].id);
 					timer_vector.erase(timer_vector.begin() + i);
-					cout << "delete timer: new vec length: "<<timer_vector.size()<< endl;
 				}
 			}
 			pthread_mutex_unlock(&vector_access_mtx);
