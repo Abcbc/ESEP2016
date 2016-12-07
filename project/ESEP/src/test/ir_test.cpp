@@ -84,41 +84,41 @@ void IR_Test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_RESET_PRESS_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_RESET_PRESSED_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_RESET_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_RESET_RELEASED_E_ID)
 
 	cout << "test: button START" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_START_PRESS_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_START_PRESSED_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_START_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_START_RELEASED_E_ID)
 
 	cout << "test: button STOP" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_STOP_PRESS_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_STOP_PRESSED_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_STOP_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_STOP_RELEASED_E_ID)
 
 	cout << "test: button E-STOP" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_E_STOP_PRESS_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_E_STOP_PRESSED_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_E_STOP_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_E_STOP_RELEASED_E_ID)
 
 
 	cout << "may try some interrupt combinations" << endl;

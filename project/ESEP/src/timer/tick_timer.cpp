@@ -6,36 +6,39 @@
  */
 
 #include <vector>
+#include <queue>
 #include <stdint.h>
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
 #include "src/timer/tick_timer.h"
 #include "src/lib/hal/motor.h"
+#include "src/controller/event_table.h"
 
 #define ID_DOES_NOT_EXIST -1
 #define TICK_SEC 0
 #define TICK_NSEC 10000000
 
 struct intern_timer{
-	uint8_t id;
+	uint32_t id;
 	int32_t duration;
 };
 
 static std::vector<intern_timer> timer_vector;
+static std::queue<uint32_t> id_queue;
 static int con_dispatcher;
 
 Tick_timer* Tick_timer::instance_ = NULL;
 pthread_mutex_t Tick_timer::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Tick_timer::vector_access_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-void Tick_timer::start_timer(uint32_t duration, uint8_t id){
+void Tick_timer::start_timer(uint32_t duration, uint32_t id){
 	pthread_mutex_lock(&vector_access_mtx);
 	struct intern_timer new_timer = {id, duration};
 	timer_vector.push_back(new_timer);
 	pthread_mutex_unlock(&vector_access_mtx);
 }
 
-uint32_t Tick_timer::stop_timer(uint8_t id){
+uint32_t Tick_timer::stop_timer(uint32_t id){
 	pthread_mutex_lock(&vector_access_mtx);
 	int idx = find_timer(id);
 	if(idx == -1){
@@ -47,7 +50,7 @@ uint32_t Tick_timer::stop_timer(uint8_t id){
 	return duration;
 }
 
-uint32_t Tick_timer::get_duration(uint8_t id){
+uint32_t Tick_timer::get_duration(uint32_t id){
 	pthread_mutex_lock(&vector_access_mtx);
 	int idx = find_timer(id);
 	if(idx == -1){
@@ -57,7 +60,7 @@ uint32_t Tick_timer::get_duration(uint8_t id){
 	return timer_vector[idx].duration;
 }
 
-int Tick_timer::find_timer(uint8_t id){
+int Tick_timer::find_timer(uint32_t id){
 	for(uint32_t i = 0; i < timer_vector.size(); i++){
 		if(timer_vector[i].id == id){
 			return i;
@@ -68,6 +71,12 @@ int Tick_timer::find_timer(uint8_t id){
 
 void Tick_timer::set_speed(uint32_t speed){
 	step = speed;
+}
+
+uint32_t Tick_timer::get_id(){
+	uint32_t id = id_queue.front();
+	id_queue.pop();
+	return id;
 }
 
 void Tick_timer::execute(void*){
@@ -109,7 +118,8 @@ void Tick_timer::execute(void*){
 				timer_vector[i].duration -= step;
 				if(timer_vector[i].duration <= 0){
 					// if the timer has run out the id is send in pulse-msg
-					MsgSendPulse(3, -1, 5, (int) BITMASK_TIMER_RUNOUT_EVENT + (int) timer_vector[i].id);
+					MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);
+					id_queue.push(timer_vector[i].id);
 					timer_vector.erase(timer_vector.begin() + i);
 				}
 			}

@@ -18,8 +18,6 @@
 
 using namespace thread;
 
-const unsigned int BITMASK_TIMER_RUNOUT_EVENT = 0x8FF00;
-const unsigned int BITMASK_ID = 0xFF;
 const uint32_t MOTOR_FAST = 23;
 const uint32_t  MOTOR_SLOW = 10;
 const uint32_t  MOTOR_STOP = 0;
@@ -34,7 +32,7 @@ class Tick_timer: public HAWThread {
 		 * @return in case of a positive number everything worked as expected.
 		 * If not you can find the error code in the Ir_handler description
 		 */
-		void start_timer(uint32_t duration, uint8_t id);
+		void start_timer(uint32_t duration, uint32_t id);
 
 		/*
 		 * Stops a timer if it exists.
@@ -42,7 +40,7 @@ class Tick_timer: public HAWThread {
 		 * @return value of intern_timer.duration
 		 * Returns -1 if id does not exist.
 		 */
-		uint32_t stop_timer(uint8_t id);
+		uint32_t stop_timer(uint32_t id);
 
 		/*
 		* Getter for intern_timer.duration.
@@ -50,14 +48,20 @@ class Tick_timer: public HAWThread {
 		* @return value of intern_timer.duration
 		* Returns -1 if id does not exist.
 		*/
-		uint32_t get_duration(uint8_t id);
+		uint32_t get_duration(uint32_t id);
 
 		/*
-		 *  set the motor speed.
-		 *  @param speed
-		 *  Only MOTOR_STOP, MOTOR_FAST or MOTOR_SLOW are allowed.
+		 * set the motor speed.
+		 * @param speed
+		 * Only MOTOR_STOP, MOTOR_FAST or MOTOR_SLOW are allowed.
 		 */
 		void set_speed(uint32_t speed);
+
+		/*
+		 * Get the ID from the last send pulsemessage.
+		 * @return ID from pulsemessage
+		 */
+		uint32_t get_id(void);
 
 		/*
 		 * This Method return an instance of IR_Handler(Singelton)
@@ -80,7 +84,7 @@ class Tick_timer: public HAWThread {
 		uint32_t step;
 		
 		Tick_timer(int con);
-		int find_timer(uint8_t id);
+		int find_timer(uint32_t id);
 
 };
 

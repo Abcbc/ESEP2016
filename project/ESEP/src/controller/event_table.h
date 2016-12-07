@@ -33,6 +33,8 @@ const unsigned int LIGHT_BARRIER_SWITCH_CLOSED_E_ID = TYPE_LIGHT_BARRIER + 6;
 const unsigned int LIGHT_BARRIER_EXIT_OPEN_E_ID = TYPE_LIGHT_BARRIER + 7;
 const unsigned int LIGHT_BARRIER_EXIT_CLOSED_E_ID = TYPE_LIGHT_BARRIER + 8;
 
+const unsigned int LIGHT_BARRIER_HEIGHT_MEASUREMENT_E_ID = TYPE_LIGHT_BARRIER + 9;
+
 //Motor
 
 const unsigned int TYPE_MOTOR = TYPE_SIG_EVENT + (2<<SCR_START);
@@ -81,6 +83,11 @@ const unsigned int BUTTON_RESET_RELEASED_E_ID = TYPE_BUTTON + 6;
 
 const unsigned int BUTTON_E_STOP_PRESSED_E_ID = TYPE_BUTTON + 7;
 const unsigned int BUTTON_E_STOP_RELEASED_E_ID = TYPE_BUTTON + 8;
+
+// Timer
+const unsigned int TYPE_TIMER = TYPE_SIG_EVENT + (4<<SCR_START);
+
+const unsigned int TIMER_RUNOUT_E_ID = TYPE_TIMER + 1;
 
 //TODO Error Events
 

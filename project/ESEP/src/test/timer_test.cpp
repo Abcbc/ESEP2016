@@ -46,19 +46,19 @@ void Timer_test::test_timer(){
 	timer -> set_speed(MOTOR_SLOW);
 	timer -> start_timer(600, 1);
 	MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
-	if((pulse.value.sival_int & 0xFF) == 1){
+	if(timer -> get_id() == 1){
 		cout << "success" << endl;
 	}else{
-		cout << "failed: " << (pulse.value.sival_int & BITMASK_ID) << endl;
+		cout << "failed" << endl;
 	}
 	// test single timer fast
 	timer -> set_speed(MOTOR_FAST);
 	timer -> start_timer(600, 2);
 	MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
-	if((pulse.value.sival_int & 0xFF) == 2){
+	if(timer -> get_id() == 2){
 		cout << "success" << endl;
 	}else{
-		cout << "failed: " << (pulse.value.sival_int & BITMASK_ID) << endl;
+		cout << "failed" << endl;
 	}
 	//test many timer fast
 	timer -> start_timer(600, 1);
@@ -66,10 +66,10 @@ void Timer_test::test_timer(){
 	timer -> start_timer(800, 3);
 	for(int i = 1; i < 4; i++){
 		MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
-		if((pulse.value.sival_int & 0xFF) == i){
+		if(timer -> get_id() == i){
 			cout << "success" << endl;
 		}else{
-			cout << "failed: " << (pulse.value.sival_int & BITMASK_ID) << endl;
+			cout << "failed" << endl;
 		}
 	}
 	// test get duration

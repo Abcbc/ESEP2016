@@ -69,9 +69,9 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 
 			case HEIGHT_MEASUREMENT:
 				if ((source & ENRTY) > 0) {
-					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT;
+					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT_E_ID;
 				} else {
-					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT;
+					e_id = LIGHT_BARRIER_HEIGHT_MEASUREMENT_E_ID;
 				}
 				break;
 
@@ -93,33 +93,33 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 				break;
 			case START: //TODO FILTER MULTIPLE ON/OFF
 				if ((source & START) > 0) {
-					e_id = BUTTON_START_PRESS_E_ID;
+					e_id = BUTTON_START_PRESSED_E_ID;
 				} else {
-					e_id = BUTTON_START_RELEASE_E_ID;
+					e_id = BUTTON_START_RELEASED_E_ID;
 				}
 
 				break;
 			case STOP:
 				if ((source & STOP) > 0) {
-					e_id = BUTTON_STOP_RELEASE_E_ID;
+					e_id = BUTTON_STOP_RELEASED_E_ID;
 				} else {
-					e_id = BUTTON_STOP_PRESS_E_ID;
+					e_id = BUTTON_STOP_PRESSED_E_ID;
 				}
 
 				break;
 			case RESET:
 				if ((source & RESET) > 0) {
-					e_id = BUTTON_RESET_PRESS_E_ID;
+					e_id = BUTTON_RESET_PRESSED_E_ID;
 				} else {
-					e_id = BUTTON_RESET_RELEASE_E_ID;
+					e_id = BUTTON_RESET_RELEASED_E_ID;
 				}
 
 				break;
 			case E_STOP:
 				if ((source & E_STOP) > 0) {
-					e_id = BUTTON_E_STOP_RELEASE_E_ID;
+					e_id = BUTTON_E_STOP_RELEASED_E_ID;
 				} else {
-					e_id = BUTTON_E_STOP_PRESS_E_ID;
+					e_id = BUTTON_E_STOP_PRESSED_E_ID;
 				}
 
 				break;
