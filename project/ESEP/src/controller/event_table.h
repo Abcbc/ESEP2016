@@ -70,25 +70,21 @@ const unsigned int HEIGHT_SENSOR_INDENTIFIED_METAL_PUK_E_ID = TYPE_HEIGHT_SENSOR
 const unsigned int TYPE_BUTTON = TYPE_SIG_EVENT + (5<<SCR_START);
 
 
-const unsigned int BUTTON_START_PRESS_E_ID = TYPE_BUTTON + 1;
-const unsigned int BUTTON_START_RELEASE_E_ID = TYPE_BUTTON + 2;
+const unsigned int BUTTON_START_PRESSED_E_ID = TYPE_BUTTON + 1;
+const unsigned int BUTTON_START_RELEASED_E_ID = TYPE_BUTTON + 2;
 
-const unsigned int BUTTON_STOP_PRESS_E_ID = TYPE_BUTTON + 3;
-const unsigned int BUTTON_STOP_RELEASE_E_ID = TYPE_BUTTON + 4;
+const unsigned int BUTTON_STOP_PRESSED_E_ID = TYPE_BUTTON + 3;
+const unsigned int BUTTON_STOP_RELEASED_E_ID = TYPE_BUTTON + 4;
 
-const unsigned int BUTTON_RESET_PRESS_E_ID = TYPE_BUTTON + 5;
-const unsigned int BUTTON_RESET_RELEASE_E_ID = TYPE_BUTTON + 6;
+const unsigned int BUTTON_RESET_PRESSED_E_ID = TYPE_BUTTON + 5;
+const unsigned int BUTTON_RESET_RELEASED_E_ID = TYPE_BUTTON + 6;
 
-const unsigned int BUTTON_E_STOP_PRESS_E_ID = TYPE_BUTTON + 7;
-const unsigned int BUTTON_E_STOP_RELEASE_E_ID = TYPE_BUTTON + 8;
+const unsigned int BUTTON_E_STOP_PRESSED_E_ID = TYPE_BUTTON + 7;
+const unsigned int BUTTON_E_STOP_RELEASED_E_ID = TYPE_BUTTON + 8;
 
 //TODO Error Events
 
 const unsigned int ERR_ERMERGENCY_STOP_E_ID = -1;
 const unsigned int ERR_UNKNOWN_PUK_E_ID = -1;
-
-// Test Events
-
-const unsigned int LIGHT_BARRIER_HEIGHT_MEASUREMENT = 0xFF11;
 
 #endif
