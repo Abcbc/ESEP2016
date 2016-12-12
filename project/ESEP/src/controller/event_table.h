@@ -4,9 +4,6 @@
 //The Number represents Byte
 const unsigned int EVENT_ID_LENGTH = 4;
 
-//
-//
-
 const unsigned int TYPE_START = 29;
 const unsigned int SCR_START = 14;
 
@@ -18,7 +15,6 @@ const unsigned int TYPE_SIG_EVENT = 1 << TYPE_START;
 //SIGNAL EVENTS
 
 //Light_barrieres
-
 const unsigned int TYPE_LIGHT_BARRIER = TYPE_SIG_EVENT + (1 << SCR_START);
 
 const unsigned int LIGHT_BARRIER_ENTRY_OPEN_E_ID = TYPE_LIGHT_BARRIER + 1;
@@ -36,7 +32,6 @@ const unsigned int LIGHT_BARRIER_EXIT_CLOSED_E_ID = TYPE_LIGHT_BARRIER + 8;
 const unsigned int LIGHT_BARRIER_HEIGHT_MEASUREMENT_E_ID = TYPE_LIGHT_BARRIER + 9;
 
 //Motor
-
 const unsigned int TYPE_MOTOR = TYPE_SIG_EVENT + (2<<SCR_START);
 
 const unsigned int MOTOR_START_E_ID = TYPE_MOTOR + 1;
@@ -54,19 +49,12 @@ const unsigned int TYPE_PUK_SWITCH = TYPE_SIG_EVENT + (3<<SCR_START);
 const unsigned int PUK_SWITCH_OPEN_E_ID = TYPE_PUK_SWITCH + 1;
 const unsigned int PUK_SWITCH_CLOSE_E_ID = TYPE_PUK_SWITCH + 2;
 
-//Height Sensor
-const unsigned int TYPE_HEIGHT_SENSOR = TYPE_SIG_EVENT + (6<<SCR_START);
-
-
-const unsigned int HEIGHT_SENSOR_MEASURE_START_E_ID = TYPE_HEIGHT_SENSOR + 1;
-const unsigned int HEIGHT_SENSOR_MEASURE_FINISHED_E_ID = TYPE_HEIGHT_SENSOR + 2;
-
-const unsigned int HEIGHT_SENSOR_INDENTIFIED_BARCODE_PUK_E_ID = TYPE_HEIGHT_SENSOR + 3;
-const unsigned int HEIGHT_SENSOR_INDENTIFIED_NORMAL_PUK_E_ID = TYPE_HEIGHT_SENSOR + 4;
-const unsigned int HEIGHT_SENSOR_INDENTIFIED_HOLE_PUK_E_ID = TYPE_HEIGHT_SENSOR + 5;
-const unsigned int HEIGHT_SENSOR_INDENTIFIED_METAL_PUK_E_ID = TYPE_HEIGHT_SENSOR + 6;
-
 //Signal lights
+
+// Timer
+const unsigned int TYPE_TIMER = TYPE_SIG_EVENT + (4<<SCR_START);
+
+const unsigned int TIMER_RUNOUT_E_ID = TYPE_TIMER + 1;
 
 // Buttons
 const unsigned int TYPE_BUTTON = TYPE_SIG_EVENT + (5<<SCR_START);
@@ -84,10 +72,23 @@ const unsigned int BUTTON_RESET_RELEASED_E_ID = TYPE_BUTTON + 6;
 const unsigned int BUTTON_E_STOP_PRESSED_E_ID = TYPE_BUTTON + 7;
 const unsigned int BUTTON_E_STOP_RELEASED_E_ID = TYPE_BUTTON + 8;
 
-// Timer
-const unsigned int TYPE_TIMER = TYPE_SIG_EVENT + (4<<SCR_START);
+//Height Sensor
+const unsigned int TYPE_HEIGHT_SENSOR = TYPE_SIG_EVENT + (6<<SCR_START);
 
-const unsigned int TIMER_RUNOUT_E_ID = TYPE_TIMER + 1;
+const unsigned int HEIGHT_SENSOR_MEASURE_START_E_ID = TYPE_HEIGHT_SENSOR + 1;
+const unsigned int HEIGHT_SENSOR_MEASURE_FINISHED_E_ID = TYPE_HEIGHT_SENSOR + 2;
+
+const unsigned int HEIGHT_SENSOR_INDENTIFIED_BARCODE_PUK_E_ID = TYPE_HEIGHT_SENSOR + 3;
+const unsigned int HEIGHT_SENSOR_INDENTIFIED_NORMAL_PUK_E_ID = TYPE_HEIGHT_SENSOR + 4;
+const unsigned int HEIGHT_SENSOR_INDENTIFIED_HOLE_PUK_E_ID = TYPE_HEIGHT_SENSOR + 5;
+const unsigned int HEIGHT_SENSOR_INDENTIFIED_METAL_PUK_E_ID = TYPE_HEIGHT_SENSOR + 6;
+
+// Speed
+const unsigned int TYPE_SPEED = TYPE_SIG_EVENT + (7<<SCR_START);
+
+const unsigned int SPEED_FAST_E_ID = TYPE_SPEED +1;
+const unsigned int SPEED_SLOW_E_ID = TYPE_SPEED +2;
+const unsigned int SPEED_STOP_E_ID = TYPE_SPEED +3;
 
 //TODO Error Events
 

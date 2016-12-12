@@ -9,7 +9,7 @@
 #include "src/test/ir_test.h"
 #include "src/test/timer_test.h"
 #include "src/test/testTools/distance_time.h"
-#include "src/controller/motor_controler/testHistory.h"
+#include "src/test/motor_control_test.h"
 
 int main(int argc, char *argv[]) {
 	// Test HAL
@@ -33,6 +33,12 @@ int main(int argc, char *argv[]) {
 //	timer_test.test_timer();
 
 	// Test HSM history
-	testHistory fsm_test;
-	fsm_test.test_fsm_history();
+//	cout << "Hello"<< endl;
+//	testHistory fsm_test;
+//	fsm_test.test_fsm_history();
+
+
+	// Test MotorControl
+	Motor_Control_Test mct;
+	mct.test();
 }
