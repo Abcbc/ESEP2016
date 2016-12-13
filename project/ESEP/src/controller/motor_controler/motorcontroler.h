@@ -30,6 +30,8 @@ private:
 		}
 		virtual void motor_stop(motorcontroler* m) {
 		}
+		virtual void motor_idle(motorcontroler* m) {
+		}
 		virtual void start_error(motorcontroler* m) {
 		}
 		virtual void time_measure_out(motorcontroler* m) {
@@ -61,6 +63,7 @@ private:
 	struct Idle: public MotorControl {
 		virtual void entry(motorcontroler* m) {
 			cout << "Idle" << endl;
+			m->motor->stop();
 			m->setHistory(error, this);
 		}
 		virtual void motor_normal(motorcontroler* m) {
@@ -84,6 +87,9 @@ private:
 	struct Speeds: public MotorControl {
 		virtual void motor_stop(motorcontroler* m) {
 			new (this) Stop;
+		}
+		virtual void motor_idle(motorcontroler* m) {
+			new (this) Idle;
 		}
 	};
 
@@ -153,6 +159,11 @@ public:
 	}
 	void motor_stop() {
 		statePtr->motor_stop(this);
+		statePtr->entry(this);
+	}
+
+	void motor_idle() {
+		statePtr->motor_idle(this);
 		statePtr->entry(this);
 	}
 	void time_measure_out() {

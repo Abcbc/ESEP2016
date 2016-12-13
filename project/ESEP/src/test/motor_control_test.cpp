@@ -18,23 +18,44 @@ Motor_Control_Test::~Motor_Control_Test() {
 }
 
 void Motor_Control_Test::test() {
-	cout << "Motor Controler Test:" << endl;
+	cout << "MotorControl Test1:" << endl;
 	motorcontroler mc;
 	mc.motor_normal();
-	sleep(3);
+	sleep(1);
 	mc.motor_slow();
-	sleep(3);
-	mc.motor_stop();
-	sleep(3);
-	mc.motor_start();
-	sleep(3);
+	sleep(1);
 	mc.time_measure_out();
-	sleep(3);
-	mc.stop_error();
-	sleep(3);
-	mc.motor_start();
-	sleep(5);
-	mc.start_error();
-	sleep(3);
+	sleep(1);
 	mc.motor_stop();
+	sleep(1);
+	mc.motor_start();
+	sleep(1);
+	mc.motor_idle();
+
+
+	cout << endl << "MotorControl Test2:" << endl;
+
+	mc.motor_normal();
+	sleep(1);
+	mc.motor_slow();
+	sleep(1);
+	mc.motor_stop();
+	sleep(1);
+	mc.motor_start();
+	sleep(1);
+	mc.time_measure_out();
+	sleep(1);
+	mc.motor_idle();
+
+
+	cout<< endl << "MotorControl Test3:" << endl;
+
+	mc.motor_normal();
+	sleep(1);
+	mc.stop_error();
+	sleep(1);
+	mc.start_error();
+	sleep(1);
+	mc.motor_idle();
+
 }
