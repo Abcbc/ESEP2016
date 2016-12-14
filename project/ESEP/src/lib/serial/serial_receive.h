@@ -51,7 +51,7 @@ private:
 	 * @param ack_sqz SQN
 	 * @return 0 Erfolg oder Wert kleiner 0 Fehler
 	 */
-	int transmit_ack(uint8_t ack_sqz);
+	int transmit_ack(int ack_sqz);
 	
 	/**
 	 * Puk Data soll an Puk_Ctrl uebergeben werden.

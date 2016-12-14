@@ -63,7 +63,7 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 				if ((source & ENRTY) > 0) {
 					e_id = LIGHT_BARRIER_ENTRY_OPEN_E_ID;
 				} else {
-					e_id = LIGHT_BARRIER_ENTRY_CLOSED_E_ID;
+					e_id = LIGHT_BARRIER_ENTRY_CLOSE_E_ID;
 				}
 				break;
 
@@ -87,7 +87,7 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 				if ((source & EXIT) > 0) {
 					e_id = LIGHT_BARRIER_EXIT_OPEN_E_ID;
 				} else {
-					e_id = LIGHT_BARRIER_EXIT_CLOSED_E_ID;
+					e_id = LIGHT_BARRIER_EXIT_CLOSE_E_ID;
 				}
 
 				break;

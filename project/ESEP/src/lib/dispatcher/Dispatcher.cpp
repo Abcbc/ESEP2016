@@ -30,14 +30,14 @@ private:
 		// Add Method pointer to Call Method Array
 
 		//LIGHT BARRIERS
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_OPENED_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_OPEN));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_CLOSED_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_CLOSE));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_HEIGHT_OPENED_E_ID, &Event_methods::LIGHT_BARRIER_HEIGHT_OPEN));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_HEIGHT_CLOSED_E_ID, &Event_methods::LIGHT_BARRIER_HEIGHT_CLOSE));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_SWITCH_OPENED_E_ID, &Event_methods::LIGHT_BARRIER_SWITCH_OPEN));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_SWITCH_CLOSED_E_ID, &Event_methods::LIGHT_BARRIER_SWITCH_CLOSE));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_OPENED_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_OPEN));
-		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_CLOSED_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_CLOSE));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_OPEN));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_CLOSE));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_HEIGHT_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_HEIGHT_OPEN));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_HEIGHT_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_HEIGHT_CLOSE));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_SWITCH_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_SWITCH_OPEN));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_SWITCH_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_SWITCH_CLOSE));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_OPEN));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_CLOSE));
 
 
 

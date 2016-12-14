@@ -54,7 +54,7 @@ void IR_Test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_ENTRY_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_ENTRY_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
@@ -64,7 +64,7 @@ void IR_Test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_SWITCH_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_SWITCH_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
@@ -74,7 +74,7 @@ void IR_Test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_EXIT_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_EXIT_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
