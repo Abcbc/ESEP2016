@@ -103,7 +103,7 @@ public:
 	}
 	void error_switch_ok() {
 		statePtr->error_switch_ok(this);
-		statePtr->entry(this);
+		//statePtr->entry(this);
 	}
 
 };
