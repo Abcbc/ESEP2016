@@ -34,6 +34,6 @@ int main(int argc, char *argv[]) {
 //	timer_test.test_timer();
 
 
-//	Puk_control pc;
-	Puk_fsm* pf = new Puk_fsm(0);
+	Puk_control pc(1);
+	Puk_fsm* pf = new Puk_fsm(&pc);
 }

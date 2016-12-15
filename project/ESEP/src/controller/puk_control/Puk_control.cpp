@@ -9,11 +9,14 @@
 
 Puk_control::Puk_control() {
 	// TODO Auto-generated constructor stub
-
 }
 
 Puk_control::~Puk_control() {
 	// TODO Auto-generated destructor stub
+}
+
+void Puk_control::register_for_event(Puk_fsm *p, int event_id){
+
 }
 
 bool Puk_control::sequenz_group(){

@@ -89,6 +89,7 @@ const unsigned int TYPE_TIMER = TYPE_SIG_EVENT + (4<<SCR_START);
 
 const unsigned int TIMER_RUNOUT_E_ID = TYPE_TIMER + 1;
 const unsigned int TIMER_ENTRY_E_ID = -1;
+const unsigned int TIMER_ENTRY_OUT_E_ID = -1;
 const unsigned int TIMER_GROUP_E_ID = TYPE_TIMER + 2;
 const unsigned int TIMER_GROUP_OUT_E_ID = TYPE_TIMER + 3;
 const unsigned int TIMER_MEASURE_E_ID = TYPE_TIMER + 4;
@@ -120,6 +121,8 @@ const unsigned int ERR_LOST_PUK_OK_E_ID = -1;
 const unsigned int ERR_UNDEFINED_PUK_E_ID = -1;
 const unsigned int ERR_SLIDE_FULL_E_ID = -1;
 const unsigned int ERR_SLIDE_FULL_OK_E_ID = -1;
-
+const unsigned int IDENTIFIED_REGISTER_E_ID = -1;
+const unsigned int SLIDE_NOT_FULL_E_ID = -1;
+const unsigned int SLIDE_FULL_E_ID = -1;
 
 #endif

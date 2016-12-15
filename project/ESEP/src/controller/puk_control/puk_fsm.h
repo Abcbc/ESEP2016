@@ -10,20 +10,23 @@
 
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
+#include "Puk_fsm_data.h"
 #include "src/controller/event_table.h"
-#include "src/controller/puk_control/puk_control.h"
+#include "src/controller/puk_control/Puk_control.h"
 
 #define CON_ID 3
 #define PRIO -1
 #define CODE 5
 
+class Puk_fsm;
 struct Data {
-	Data(int d, Puk_control* pc) :
-			data1(d),  pc(pc){
+    Data(int d, Puk_control* pc, Puk_fsm* pf) :
+            pukType(d),  puk_control(pc), puk_fsm(pf){
 
-	}
-	int data1;
-	Puk_control* pc;
+    }
+    int pukType;
+    Puk_control* puk_control;
+    Puk_fsm* puk_fsm;
 };
 
 class Puk_fsm {
@@ -57,7 +60,7 @@ private:
 
 	struct Waiting_for_go: public State {
 		Waiting_for_go(){ // Entry
-			// TODO: register for lightbarrier closed
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 		}
 		virtual void light_barrier_entry_close() {
 			int systemType = false; // data->pc->systemType;
@@ -77,7 +80,7 @@ private:
 	struct Sequenz_CTRL : public State {
 		Sequenz_CTRL(){
 			// Get Sequenz from sequenz ctrl
-			bool sequenz_correct = data->pc->sequenz_group();
+			bool sequenz_correct = data->puk_control->sequenz_group();
 			if (sequenz_correct){
 				new (this) Go_Group;
 			} else {
@@ -89,7 +92,8 @@ private:
 	struct Go_Group : public State {
 		Go_Group() {
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_GROUP_E_ID);
-			// TODO: Register for TIMER_GROUP
+			// TODO: Register for TIMER_GROUP_OUT
+			data->puk_control->register_for_event(data->puk_fsm, TIMER_GROUP_OUT_E_ID);
 		}
 		virtual void exit(){
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
@@ -100,6 +104,7 @@ private:
 		Go() {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
 			// TODO: register for light barrier entry open
+			data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_ENTRY_OPEN_E_ID);
 		}
 		virtual void light_barrier_entry_open() {
 			new (this) Height_Sensor_Measure_Register;
@@ -109,18 +114,21 @@ private:
 	struct Height_Sensor_Measure_Register : public State {
 		Height_Sensor_Measure_Register(){
 			// TODO: register for H_S_MEASURE_START
+		    data->puk_control->register_for_event(data->puk_fsm, HEIGHT_SENSOR_MEASURE_START_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_ENTRY_E_ID);
 			// TODO: register for TIMER_ENTRY_OUT
+			data->puk_control->register_for_event(data->puk_fsm, TIMER_ENTRY_OUT_E_ID);
 		}
 		virtual void h_s_measure_start(){
 			new (this) Height_Sensor_Measure_Active;
 		}
 		virtual void timer_entry_out() {
 			// TODO: unregister H_S_MEASURE_START
+		    data->puk_control->unregister_for_event(data->puk_fsm, HEIGHT_SENSOR_MEASURE_START_E_ID);
 			new (this) Err_Lost_Puk;
 		}
 		virtual void timer_group_out(){
-			if (data->pc->systemType == 3){
+			if (data->puk_control->systemType == 3){
 				new (this) Group_Stop;
 			}
 		}
@@ -133,6 +141,7 @@ private:
 		}
 		virtual void timer_entry_out(){
 			// TODO: unregister H_S_MEASURE_START
+		    data->puk_control->unregister_for_event(data->puk_fsm, HEIGHT_SENSOR_MEASURE_START_E_ID);
 		}
 		virtual void h_s_measure_start(){
 			new (this) Height_Sensor_Measure_Active;
@@ -156,13 +165,14 @@ private:
 	struct Expect_Puk : public State {
 		virtual void actio_do(){
 			// TODO: register IDENTIFIED_REGISTER
+		    data->puk_control->register_for_event(data->puk_fsm, IDENTIFIED_REGISTER_E_ID);
 		}
 		virtual void identified_false(){
 			// TODO: update PUK_DATA
 			new (this) Err_Undefined_Puk;
 		}
 		virtual void identified_puk(){
-			bool sequenz_correct = false;//data->pc->sequenz_group();
+			bool sequenz_correct = data->puk_control->sequenz_group();
 			if (sequenz_correct){
 				// TODO: update PUK_DATA
 				new (this) To_Switch;
@@ -180,7 +190,9 @@ private:
 		}
 		virtual void action_do(){
 			// TODO: register for L_B_S_Close
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 			// TODO: register for TIMER_MEASURE_OUT
+		    data->puk_control->register_for_event(data->puk_fsm, TIMER_MEASURE_OUT_E_ID);
 		}
 		virtual void timer_measure_out() {
 			new (this) Err_Lost_Puk;
@@ -206,9 +218,10 @@ private:
 		In_Switch() {
 			MsgSendPulse(CON_ID, PRIO, CODE, PUK_SWITCH_OPEN_E_ID);
 			// TODO: register for SWITCH_CLOSE
+			 data->puk_control->register_for_event(data->puk_fsm, PUK_SWITCH_CLOSE_E_ID);
 		}
 		virtual void action_do(){
-			int systemType = data->pc->systemType;
+			int systemType = data->puk_control->systemType;
 			if((systemType == 1) || (systemType == 2)){
 				MsgSendPulse(CON_ID, PRIO, CODE, TIMER_SWITCH_E_ID);
 			} else if(systemType == 3){
@@ -223,7 +236,9 @@ private:
 	struct Outgoing_Register : public State {
 		Outgoing_Register() {
 			// TODO: register for TIMER_EXIT_OUT
+		    data->puk_control->register_for_event(data->puk_fsm, TIMER_EXIT_OUT_E_ID);
 			// TODO: register for L_B_EXIT_CLOSE
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 		}
 		virtual void timer_exit_out() {
 			new (this) Err_Lost_Puk;
@@ -232,9 +247,11 @@ private:
 			new (this) Outgoing_Active;
 		}
 		virtual void rdy_taking_ok(){
-			if(data->pc->systemType == 3){
+			if(data->puk_control->systemType == 3){
 				// TODO: unregister for TIMER_EXIT_OUT
+			    data->puk_control->register_for_event(data->puk_fsm, TIMER_EXIT_OUT_E_ID);
 				// TODO: unregrister for L_B_EXIT_CLOSE
+			    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 				new (this) Kill_Puk;
 			}
 		}
@@ -247,7 +264,7 @@ private:
 			new (this) Err_To_Many_Puk_Chance_OA;
 		}
 		virtual void timer_exit_out(){
-			int systemType = data->pc->systemType;
+			int systemType = data->puk_control->systemType;
 			if((systemType == 1) || (systemType == 2)){
 				new (this) Out_Check;
 			} else if(systemType == 3){
@@ -255,9 +272,11 @@ private:
 			}
 		}
 		virtual void rdy_taking_ok(){
-			if(data->pc->systemType == 3){
+			if(data->puk_control->systemType == 3){
 				// TODO: unregister for TIMER_EXIT_OUT
-				// TODO: unregister L_B_E_C
+			    data->puk_control->register_for_event(data->puk_fsm, TIMER_EXIT_OUT_E_ID);
+				// TODO: unregister L_B_EXIT_C
+			    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 				new (this) Kill_Puk;
 			}
 		}
@@ -269,10 +288,11 @@ private:
 		}
 		virtual void action_do() {
 			// TODO: register for L_B_EXIT_CLOSE
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, SEND_WANT_E_ID);
 		}
 		virtual void send_ok(){
-			// TODO: Welchen Guard hat die Transition?
+			// TODO: Welchen Guard hat die Transition? Mehr States!
 			// If L_B_EXIT_CLOSE
 				new (this) Go_Out;
 			// else
@@ -284,9 +304,8 @@ private:
 	struct Go_Out : public State {
 		Go_Out(){
 			// TODO: register L_B_EXIT_OPEN
-		}
-		virtual void action_do(){
-			// TODO: send PUK_DATA via puk_contoler
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_OPEN_E_ID);
+		    // TODO: send PUK_DATA via puk_contoler
 		}
 		virtual void exit(){
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
@@ -315,10 +334,13 @@ private:
 		}
 		virtual void action_do() {
 			// TODO: register for LIGHT_BARRIER_SWITCH_CLOSE
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 			// TODO: register for TIMER_MEASURE_OUT
+		    data->puk_control->register_for_event(data->puk_fsm, TIMER_MEASURE_OUT_E_ID);
 		}
 		virtual void timer_measure_out(){
 			// TODO: unregister for TIMER_MEASURE_OUT
+		    data->puk_control->unregister_for_event(data->puk_fsm, TIMER_MEASURE_OUT_E_ID);
 			new (this) Err_Lost_Puk;
 		}
 		virtual void light_barrier_switch_close(){
@@ -339,16 +361,22 @@ private:
 	struct On_Ramp : public State {
 		On_Ramp() {
 			// TODO: register for L_B_S_OPEN
-			// TODO: regisetr for SLIDE_NOT_FULL
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_OPEN_E_ID);
+			// TODO: register for SLIDE_NOT_FULL
+		    data->puk_control->register_for_event(data->puk_fsm, SLIDE_NOT_FULL_E_ID);
+		    // TODO register for SLIDE_FULL
+		    data->puk_control->register_for_event(data->puk_fsm, SLIDE_FULL_E_ID);
 		}
 		virtual void action_do() {
 			// TODO: [SLIDE_NOT_FULL] if SLIDE is full throw error
 			// TODO: unregister for SLIDE_NOT_FULL
+		    data->puk_control->unregister_for_event(data->puk_fsm, SLIDE_NOT_FULL_E_ID);
 			new (this) Err_Slide_Full;
 		}
 		virtual void light_barrier_switch_open(){
 			// TODO: [SLIDE_NOT_FULL] if SLIDE is is not full kill puk
-			// TODO: unregister for SLIDE_NOT_FULL
+			// TODO: unregister for SLIDE_FULL
+		    data->puk_control->unregister_for_event(data->puk_fsm, SLIDE_FULL_E_ID);
 			new (this) Kill_Puk;
 		}
 	};
@@ -365,6 +393,7 @@ private:
 		}
 		virtual void action_do(){
 			// TODO: register for ERR_SLIDE_FULL_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_SLIDE_FULL_OK_E_ID);
 		}
 		virtual void err_slide_full_ok(){
 			new (this) Kill_Puk;
@@ -377,6 +406,7 @@ private:
 		}
 		virtual void action_do(){
 			// TODO: register for ERR_UNDEFINED_PUK_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_UNDEFINED_PUK_E_ID);
 		}
 		virtual void err_undefined_puk_ok(){
 			new (this) Kill_Puk;
@@ -389,6 +419,7 @@ private:
 		}
 		virtual void action_do(){
 			// TODO: register for ERR_LOST_PUK_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_LOST_PUK_OK_E_ID);
 		}
 		virtual void err_lost_puk_ok(){
 			new (this) Kill_Puk;
@@ -401,6 +432,7 @@ private:
 		}
 		virtual void action_do(){
 			// TODO: register for ERR_TOO_MANY_PUK_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_TOO_MANY_PUK_OK_E_ID);
 		}
 		virtual void err_too_many_puk_ok(){
 			new (this) Kill_Puk;
@@ -410,7 +442,9 @@ private:
 	struct Err_To_Many_Puk_Chance_OA : public State {
 		Err_To_Many_Puk_Chance_OA(){
 			// TODO: register ERR_TOO_MANY_PUKS_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_TOO_MANY_PUK_OK_E_ID);
 			// TODO: register L_B_EXIT_CLOSE
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 		}
 		virtual void action_do(){
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
@@ -420,13 +454,16 @@ private:
 		}
 		virtual void timer_exit_out(){
 			// TODO: unregister L_B_EXIT_CLOSE
+		    data->puk_control->unregister_for_event(data->puk_fsm, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 		}
 	};
 
 	struct Err_Too_Many_Puk_Chance_SO : public State {
 		Err_Too_Many_Puk_Chance_SO() {
 			// TODO: register ERR_TOO_MANY_PUK_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_TOO_MANY_PUK_E_ID);
 			// TODO: register L_B_SWITCH_CLOSE
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 		}
 		virtual void action_do(){
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
@@ -436,13 +473,16 @@ private:
  		}
 		virtual void timer_measure_out(){
 			// TODO: unregister L_B_SWICH_CLOSE
+		    data->puk_control->unregister_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 		}
 	};
 
 	struct Err_Too_Many_Puk_Chance_SS: public State {
 		Err_Too_Many_Puk_Chance_SS() {
 			// TODO: register for ERR_T_M_P_OK
+		    data->puk_control->register_for_event(data->puk_fsm, ERR_TOO_MANY_PUK_OK_E_ID);
 			// TODO: register for L_B_S_C
+		    data->puk_control->register_for_event(data->puk_fsm, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 		}
 		virtual void action_do(){
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
@@ -475,7 +515,7 @@ private:
 			new (this) Height_Sensor_Measure_Active;
 		}
 		virtual void timer_group_out(){
-			if(data->pc->systemType){
+			if(data->puk_control->systemType){
 				new (this) Group_Stop;
 			}
 		}
@@ -488,7 +528,7 @@ private:
 
 public:
 	Puk_fsm(Puk_control* pc) :
-			statePtr(&stateMember), contextdata(0,pc){
+			statePtr(&stateMember), contextdata(0,pc, this){
 		statePtr->data = &contextdata;
 	}
 
