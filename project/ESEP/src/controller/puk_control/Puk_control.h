@@ -8,23 +8,28 @@
 #ifndef PUK_CONTROL_H_
 #define PUK_CONTROL_H_
 
+#include <vector>
+#include "src/lib/dispatcher/Dispatcher.cpp"
 
 
+using namespace std;
 class Puk_fsm;
 class Puk_control {
 private:
-
-
+	Dispatcher* dispatcher;
+	vector<Puk_fsm *> puk_list;
 public:
-    const int systemType;
+	const int systemType;
 
-    Puk_control(int systemType): systemType(systemType){}
-	~Puk_control(){}
+	Puk_control(int systemType, Dispatcher* d);
+	~Puk_control();
 
-	void register_for_event(Puk_fsm *p, int event_id){}
-	void unregister_for_event(Puk_fsm *p, int event_id){}
+	void register_for_event(Puk_fsm *p, int event_id);
+	void unregister_for_event(Puk_fsm *p, int event_id);
+	void delete_puk(Puk_fsm *p);
+	void send_puk(Puk_fsm *p);
+	void create_puk(Puk_fsm *p);
 	bool sequenz_group();
-
 };
 
 #endif /* PUK_CONTROL_H_ */

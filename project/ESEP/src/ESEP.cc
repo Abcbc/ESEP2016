@@ -33,7 +33,6 @@ int main(int argc, char *argv[]) {
 //	Timer_test timer_test;
 //	timer_test.test_timer();
 
-
-	Puk_control pc(1);
-	Puk_fsm* pf = new Puk_fsm(&pc);
+	Dispatcher* dis = Dispatcher::getInstance();
+	Puk_control pc(1, dis);
 }

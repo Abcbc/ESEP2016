@@ -39,8 +39,6 @@ private:
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_OPEN));
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_CLOSE));
 
-
-
 		//MOTOR
 		_methods.insert(std::pair<int, method_t>(MOTOR_STOP_E_ID, &Event_methods::MOTOR_STOP));
 		_methods.insert(std::pair<int, method_t>(MOTOR_START_E_ID, &Event_methods::MOTOR_START));

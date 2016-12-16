@@ -124,5 +124,7 @@ const unsigned int ERR_SLIDE_FULL_OK_E_ID = -1;
 const unsigned int IDENTIFIED_REGISTER_E_ID = -1;
 const unsigned int SLIDE_NOT_FULL_E_ID = -1;
 const unsigned int SLIDE_FULL_E_ID = -1;
+const unsigned int IDENTIFIED_PUK_E_ID = -1;
+const unsigned int IDENTIFIED_FALSE_PUK_E_ID = -1;
 
 #endif

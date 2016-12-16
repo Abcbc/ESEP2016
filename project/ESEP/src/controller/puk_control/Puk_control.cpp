@@ -5,10 +5,11 @@
  *      Author: aby520
  */
 
-#include "Puk_control.h"
+#include "src/controller/puk_control/puk_fsm.h"
 
-Puk_control::Puk_control() {
-	// TODO Auto-generated constructor stub
+Puk_control::Puk_control(int systemType, Dispatcher* d) :
+		dispatcher(d), systemType(systemType) {
+	puk_list.push_back(new Puk_fsm(this, dispatcher));
 }
 
 Puk_control::~Puk_control() {
@@ -19,6 +20,22 @@ void Puk_control::register_for_event(Puk_fsm *p, int event_id){
 
 }
 
-bool Puk_control::sequenz_group(){
+void Puk_control::unregister_for_event(Puk_fsm *p, int event_id){
+
+}
+
+void Puk_control::delete_puk(Puk_fsm* p) {
+	std::cout << "Deleting Puk" << std::endl;
+}
+
+void Puk_control::send_puk(Puk_fsm* p) {
+	std::cout << "Sending Puk to Serial Manager" << std::endl;
+}
+
+void Puk_control::create_puk(Puk_fsm *p) {
+	std::cout << "Create Puk" << std::endl;
+}
+
+bool Puk_control::sequenz_group() {
 	return true;
 }
