@@ -7,9 +7,9 @@
 
 #include "puk_fsm.h"
 
-Puk_fsm::Puk_fsm() {
-	// TODO Auto-generated constructor stub
-
+Puk_fsm(int pukType) :
+			statePtr(&stateMember), contextdata(pukType, Puk_control::get_instance(), this, Dispatcher::getInstance()) {
+		statePtr->data = &contextdata;
 }
 
 Puk_fsm::~Puk_fsm() {
