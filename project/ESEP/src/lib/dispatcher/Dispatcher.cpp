@@ -11,24 +11,41 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <stdint.h>
+#include <sys/neutrino.h>
+#include <sys/siginfo.h>
+#include <pthread.h>
+#include "lib/HAWThread.h"
+#include "src/lib/HWaccess.h"
+
 using namespace std;
+using namespace thread;
 
 
 // typedef: Method from Class "Event_methods"
 typedef void (Event_methods::*method_t)(void);
 
-class Dispatcher {
+class Dispatcher : public HAWThread {
 
 private:
 	map<int, method_t> _methods;
 	map<int, vector<Event_methods *> > _listeners;
+	int _cid, _con;
+
 
 private:
 
 
 	Dispatcher() {
-		// Add Method pointer to Call Method Array
+		if (( _cid = ChannelCreate(0)) == -1){
+		    cout << "ChannelCreate() failed." << endl;
+		}
 
+		if ((_con = ConnectAttach(0, 0, _cid, 0, 0)) == -1){
+		    cout << "ConnectAttach() failed." << endl;
+		}
+
+		// Add Method pointer to Call Method Array
 		//LIGHT BARRIERS
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_OPEN));
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_ENTRY_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_ENTRY_CLOSE));
@@ -61,6 +78,15 @@ private:
 
 	}
 
+	void execute(void*){
+		cout << "exec" << endl;
+		waitPulse();
+	}
+	virtual void shutdown(){
+
+	}
+
+
 	virtual ~Dispatcher() {}
 
 	Dispatcher(const Dispatcher &other);
@@ -74,6 +100,7 @@ public:
 
 	virtual void addListener(Event_methods *listener, int event) {
 		// Add Listener to be called on a specific Event
+		cout << "hi" << endl;
 		_listeners[event].push_back(listener);
 	}
 
@@ -88,12 +115,28 @@ public:
 
 
 
-	static void waitPulse()
+	virtual void waitPulse()
 	{
+		struct _pulse pulse;
+
+		if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
+	        //TODO throw exception
+	    }
+
 		while (1) {
-		//pulse get
-		//callLists
-		//TODO
+			MsgReceivePulse(_cid, &pulse, sizeof (pulse), NULL);
+			cout << "loop" << endl;
+
+			map<int,method_t>::iterator it = _methods.find(pulse.value.sival_int);
+			if(it != _methods.end())
+			{
+			   getInstance()->callListeners(pulse.value.sival_int);
+			}
+			else
+			{
+				//TODO TIMER
+			}
+
 		}
 	}
 
@@ -101,6 +144,8 @@ public:
 	virtual void callListeners(int event) {
 		// Call for every registered Listener
 		// the Method that corresponds with event.
+
+		cout << "ho" << endl;
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {
 			(_listeners[event][i]->*_methods[event])();
 		}
