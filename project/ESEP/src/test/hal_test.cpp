@@ -58,42 +58,22 @@ void HAL_Test::test_actuators(){
 	std::cout << "test motor" << std::endl;
 	Motor* component1 = Motor::get_instance();
 	is_not_Null(component1, "failed test: motor component is null");
-	is_True(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_False(component1 -> is_running(), "failed test: motor.is_running");
 	std::cout << "run slow right" << std::endl;
 	component1 -> go_slow();
 	component1 -> go_right();
 	component1 -> start();
-	is_True(component1 -> is_slow(), "failed test: motor.is_slow");
-	is_False(component1 -> is_fast(), "failed test: motor.is_fast");
-	is_False(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_True(component1 -> is_running(), "failed test: motor.is_running");
 	sleep(DELAY_TIME);
 	std::cout << "run slow left" << std::endl;
 	component1 -> go_left();
-	is_True(component1 -> is_slow(), "failed test: motor.is_slow");
-	is_False(component1 -> is_fast(), "failed test: motor.is_fast");
-	is_False(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_True(component1 -> is_running(), "failed test: motor.is_running");
 	sleep(DELAY_TIME);
 	std::cout << "run fast left" << std::endl;
 	component1 -> go_fast();
-	is_False(component1 -> is_slow(), "failed test: motor.is_slow");
-	is_True(component1 -> is_fast(), "failed test: motor.is_fast");
-	is_False(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_True(component1 -> is_running(), "failed test: motor.is_running");
 	sleep(DELAY_TIME);
 	std::cout << "run fast right" << std::endl;
 	component1 -> go_right();
-	is_False(component1 -> is_slow(), "failed test: motor.is_slow");
-	is_True(component1 -> is_fast(), "failed test: motor.is_fast");
-	is_False(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_True(component1 -> is_running(), "failed test: motor.is_running");
 	sleep(DELAY_TIME);
 	std::cout << "stop motor" << std::endl;
 	component1 -> stop();
-	is_True(component1 -> is_stopped(), "failed test: motor.is_stopped");
-	is_False(component1 -> is_running(), "failed test: motor.is_running");
 	sleep(DELAY_TIME);
 
 	//test lights
@@ -143,7 +123,6 @@ void HAL_Test::test_actuators(){
 	component2 -> stop_blink(green);
 	component2 -> stop_blink(red);
 	sleep(DELAY_TIME);
-	component2 -> set_all_lights();
 	//TODO missing functions: errors
 
 	//test height_sensor

@@ -55,20 +55,29 @@ void Signal_light::clear_all_lights(void){
 void Signal_light::blink(Color c, uint32_t hz){
 	switch(c){
 		case green:
-			if(bl_threads.green_thread == NULL || hz != bl_threads.green_hz){
+			if(bl_threads.green_thread != NULL){
+				stop_blink(green);
+			}
+			if(bl_threads.green_thread == NULL){
 				bl_threads.green_thread = new Blink_green(hz);
 				bl_threads.green_thread -> start(NULL);
 				bl_threads.green_hz = hz;
 			}
 			break;
 		case yellow:
-			if(bl_threads.yellow_thread == NULL || hz != bl_threads.yellow_hz){
+			if(bl_threads.green_thread != NULL){
+				stop_blink(yellow);
+			}
+			if(bl_threads.yellow_thread == NULL){
 				bl_threads.yellow_thread = new Blink_yellow(hz);
 				bl_threads.yellow_thread -> start(NULL);
 				bl_threads.yellow_hz = hz;
 			}
 			break;
 		case red:
+			if(bl_threads.green_thread != NULL){
+				stop_blink(red);
+			}
 			if(bl_threads.red_thread == NULL || hz != bl_threads.red_hz){
 				bl_threads.red_thread = new Blink_red(hz);
 				bl_threads.red_thread -> start(NULL);
@@ -82,18 +91,21 @@ void Signal_light::stop_blink(Color c){
 		case green:
 			if(bl_threads.green_thread != NULL){
 				bl_threads.green_thread -> stop();
+				delete bl_threads.green_thread;
 				bl_threads.green_thread = NULL;
 			}
 			break;
 		case yellow:
 			if(bl_threads.yellow_thread != NULL){
 				bl_threads.yellow_thread -> stop();
+				delete bl_threads.yellow_thread;
 				bl_threads.yellow_thread = NULL;
 			}
 			break;
 		case red:
 			if(bl_threads.red_thread != NULL){
 				bl_threads.red_thread -> stop();
+				delete bl_threads.red_thread;
 				bl_threads.red_thread = NULL;
 			}
 			break;

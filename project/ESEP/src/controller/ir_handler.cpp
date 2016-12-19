@@ -29,7 +29,9 @@ struct sigevent isrEvent;
 
 uint32_t source_init;
 uint32_t old_changes = 0;
+uint32_t old_changes2 = 0;
 uint64_t change_time = 0;
+uint64_t change_time2 = 0;
 const uint64_t DEBOUNCE_TIME = 140;
 
 Ir_handler* Ir_handler::instance_ = NULL;
@@ -48,7 +50,13 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 	source_old = source;
 
 	bool debounce = true;
+	uint64_t debounce_change_time = 0;
 	if(old_changes == changes){
+		debounce_change_time = change_time;
+	}else if(old_changes2 == changes){
+		debounce_change_time = change_time2;
+	}
+	if(debounce_change_time != 0){
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
 		uint64_t current_time = tp.tv_sec * 1000 + tp.tv_usec / 1000;
@@ -127,7 +135,9 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 
 		struct timeval tp;
 		gettimeofday(&tp, NULL);
+		change_time2 = change_time;
 		change_time = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+		old_changes2 = old_changes;
 		old_changes = changes;
 	}
 	struct sigevent* event = (struct sigevent*) arg;
