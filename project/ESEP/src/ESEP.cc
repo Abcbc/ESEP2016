@@ -9,15 +9,17 @@
 #include "src/test/ir_test.h"
 #include "src/test/timer_test.h"
 #include "src/test/testTools/distance_time.h"
+#include "src/test/testTools/profile_creator.h"
+#include "src/test/height_measurement_test.h"
 
 int main(int argc, char *argv[]) {
 	// Test HAL
-	HAL_Test hal_test;
-	hal_test.test_actuators();
+//	HAL_Test hal_test;
+//	hal_test.test_actuators();
 
 	// Test height sensor
-//	Height_Sensor_Test hs_test;
-//	hs_test.test_height();
+	Height_Sensor_Test hs_test;
+	hs_test.test_height();
 
 	// Test Interrupt
 //	IR_Test ir_test;
@@ -30,4 +32,12 @@ int main(int argc, char *argv[]) {
 	// Test tick_timer
 //	Timer_test timer_test;
 //	timer_test.test_timer();
+
+	// get profile
+	Profile_Creator creator;
+	creator.create_profile();
+
+	// Test Height_measurement
+	Height_Measurement_Test hm;
+	hm.test_measurement();
 }
