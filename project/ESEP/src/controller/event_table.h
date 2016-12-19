@@ -48,6 +48,10 @@ const unsigned int MOTOR_FAST_E_ID = TYPE_MOTOR + 4;
 const unsigned int MOTOR_LEFT_E_ID = TYPE_MOTOR + 5;
 const unsigned int MOTOR_RIGHT_E_ID = TYPE_MOTOR + 6;
 
+const unsigned int SPEED_SLOW_E_ID = TYPE_MOTOR + 7;
+const unsigned int SPEED_FAST_E_ID = TYPE_MOTOR + 8;
+const unsigned int SPEED_STOP_E_ID = TYPE_MOTOR + 9;
+
 //Puk Switch
 const unsigned int TYPE_PUK_SWITCH = TYPE_SIG_EVENT + (3<<SCR_START);
 
@@ -93,5 +97,6 @@ const unsigned int TIMER_RUNOUT_E_ID = TYPE_TIMER + 1;
 
 const unsigned int ERR_ERMERGENCY_STOP_E_ID = -1;
 const unsigned int ERR_UNKNOWN_PUK_E_ID = -1;
+
 
 #endif
