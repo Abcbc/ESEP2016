@@ -79,7 +79,6 @@ private:
 	}
 
 	void execute(void*){
-		cout << "exec" << endl;
 		waitPulse();
 	}
 	virtual void shutdown(){
@@ -100,7 +99,6 @@ public:
 
 	virtual void addListener(Event_methods *listener, int event) {
 		// Add Listener to be called on a specific Event
-		cout << "hi" << endl;
 		_listeners[event].push_back(listener);
 	}
 
@@ -119,13 +117,8 @@ public:
 	{
 		struct _pulse pulse;
 
-		if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
-	        //TODO throw exception
-	    }
-
 		while (1) {
 			MsgReceivePulse(_cid, &pulse, sizeof (pulse), NULL);
-			cout << "loop" << endl;
 
 			map<int,method_t>::iterator it = _methods.find(pulse.value.sival_int);
 			if(it != _methods.end())
@@ -144,8 +137,6 @@ public:
 	virtual void callListeners(int event) {
 		// Call for every registered Listener
 		// the Method that corresponds with event.
-
-		cout << "ho" << endl;
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {
 			(_listeners[event][i]->*_methods[event])();
 		}
