@@ -14,14 +14,14 @@
 
 
 using namespace std;
-class Puk_fsm;
+class Puk_fsm_dummy;
 
 class Puk_control : public State {
 private:
 	static Puk_control* instance_;
 	static pthread_mutex_t init_mtx;
 
-	list<Puk_fsm *> puk_list_;
+	list<Puk_fsm_dummy *> puk_list_;
 	Dispatcher* dispatcher_;
 	
 	Puk_control();
@@ -76,8 +76,8 @@ public:
 
 	static Puk_control* get_instance();
 	
-	void delete_puk(Puk_fsm *p);
-	void send_puk(Puk_fsm *p);
+	void delete_puk(Puk_fsm_dummy *p);
+	void send_puk(Puk_fsm_dummy *p);
 	void create_puk(int pukType);
 	bool sequenz_group(int pukType);
 	

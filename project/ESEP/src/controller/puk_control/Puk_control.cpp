@@ -6,7 +6,7 @@
  */
 
 #include <algorithm>
-#include "src/controller/puk_control/puk_fsm.h"
+#include "src/controller/puk_control/puk_fsm_dummy.h"
 #include "src/controller/event_table.h"
 
 Puk_control* Puk_control::instance_ = NULL;
@@ -30,18 +30,18 @@ Puk_control* Puk_control::get_instance(){
 	return instance_;
 }
 
-void Puk_control::delete_puk(Puk_fsm* p) {
+void Puk_control::delete_puk(Puk_fsm_dummy* p) {
 	std::cout << "Deleting Puk" << std::endl;
 	puk_list_.erase(std::find(puk_list_.begin(), puk_list_.end(), p));
 	}
 
-void Puk_control::send_puk(Puk_fsm* p) {
+void Puk_control::send_puk(Puk_fsm_dummy* p) {
 	std::cout << "Sending Puk to Serial Manager" << std::endl;
 }
 
 void Puk_control::create_puk(int pukType) {
 	std::cout << "Create new Puk object" << std::endl;
-	puk_list_.push_back(new Puk_fsm(pukType));
+	puk_list_.push_back(new Puk_fsm_dummy(pukType));
 }
 
 bool Puk_control::sequenz_group(int pukType) {
