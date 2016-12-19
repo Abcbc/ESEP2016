@@ -7,7 +7,7 @@
 
 #include "puk_fsm.h"
 
-Puk_fsm(int pukType) :
+Puk_fsm::Puk_fsm(int pukType) :
 			statePtr(&stateMember), contextdata(pukType, Puk_control::get_instance(), this, Dispatcher::getInstance()) {
 		statePtr->data = &contextdata;
 }

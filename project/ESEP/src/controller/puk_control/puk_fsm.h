@@ -90,15 +90,13 @@ private:
 		}
 		virtual void light_barrier_entry_close() {
 			// unregister for LIGHT_BARRIER_ENTRY_CLOSE
-			data->dispatcher->remListeners(data-puk_fsm, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
+			data->dispatcher->remListeners(data->puk_fsm, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 			int systemType = data->puk_control->systemType;
 			if ((systemType == 1) || (systemType == 2)) {
 				new (this) Sequenz_CTRL;
 			} else if (systemType == 3) {
 				new (this) Go;
 			}
-			// Create new Puk object for next Puk
-			data->puk_control->create_puk();
 		}
 		// virtual void action_do() {
 		// TODO: Update Puk Data on System 1
@@ -115,7 +113,7 @@ private:
 	struct Sequenz_CTRL: public MyState {
 		Sequenz_CTRL() {
 			// Get Sequenz from sequenz ctrl
-			bool sequenz_correct = data->puk_control->sequenz_group();
+			bool sequenz_correct = data->puk_control->sequenz_group(-1);
 			if (sequenz_correct) {
 				new (this) Go_Group;
 			} else {
@@ -215,7 +213,7 @@ private:
 			new (this) Err_Undefined_Puk;
 		}
 		virtual void identified_puk() {
-			bool sequenz_correct = data->puk_control->sequenz_group();
+			bool sequenz_correct = data->puk_control->sequenz_group(-1);
 			if (sequenz_correct) {
 				// TODO: update PUK_DATA
 				new (this) To_Switch;
@@ -307,7 +305,7 @@ private:
 	};
 
 	struct Outgoing_Active: public MyState {
-		virtual void Outgoing_Active() {
+		Outgoing_Active() {
 			// TODO: [NO_TIMER_EXIT_OUT] if TIMER_EXIT_OUT is out of tolerance throw error
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_E_ID);
 			new (this) Err_To_Many_Puk_Chance_OA;
@@ -556,7 +554,6 @@ private:
 		}
 		virtual void timer_measure_out() {
 			// TODO: unregister L_B_S_C
-			data->dispatcher->addListener(
 			new (this) Err_Lost_Puk;
 		}
 	};
@@ -595,22 +592,22 @@ public:
 
 	void exit() {
 	}
-	void LIGHT_BARIER_ENTRY_OPEN() {
+	void LIGHT_BARRIER_ENTRY_OPEN() {
 		statePtr->light_barrier_entry_open();
 	}
-	void LIGHT_BARIER_ENTRY_CLOSE() {
+	void LIGHT_BARRIER_ENTRY_CLOSE() {
 		statePtr->light_barrier_entry_close();
 	}
-	void LIGHT_BARIER_SWITCH_OPEN() {
+	void LIGHT_BARRIER_SWITCH_OPEN() {
 		statePtr->light_barrier_switch_open();
 	}
-	void LIGHT_BARIER_SWITCH_CLOSE() {
+	void LIGHT_BARRIER_SWTICH_CLOSE() {
 		statePtr->light_barrier_switch_close();
 	}
-	void LIGHT_BARIER_EXIT_OPEN() {
+	void LIGHT_BARRIER_EXIT_OPEN() {
 		statePtr->light_barrier_exit_open();
 	}
-	void LIGHT_BARIER_EXIT_CLOSE() {
+	void LIGHT_BARRIER_EXIT_CLOSE() {
 		statePtr->light_barrier_exit_close();
 	}
 	void HEIGHT_SENSOR_MEASURE_START() {

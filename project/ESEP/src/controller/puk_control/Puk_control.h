@@ -10,21 +10,25 @@
 
 #include <list>
 #include "src/lib/dispatcher/Dispatcher.cpp"
+#include "src/lib/dispatcher/State.cpp"
 
 
 using namespace std;
 class Puk_fsm;
+
 class Puk_control : public State {
 private:
 	static Puk_control* instance_;
 	static pthread_mutex_t init_mtx;
 
-	Dispatcher* dispatcher_;
 	list<Puk_fsm *> puk_list_;
+	Dispatcher* dispatcher_;
 	
+	Puk_control();
+
 	struct myState {
-		virtual bool check(int pukType){}
-	} statePtr*;
+		virtual bool check(int pukType){return false;}
+	}*statePtr;
 	
 	struct Idle : public myState {
 		virtual bool check(int pukType){
@@ -36,7 +40,7 @@ private:
 				return false;
 			}
 		}
-	}
+	};
 	
 	struct Ohne_metall_1 : public myState{
 		virtual bool check(int pukType){
@@ -48,7 +52,7 @@ private:
 				return false;
 			}
 		}
-	}
+	};
 	
 	struct Ohne_metall_2 : public myState{
 		virtual bool check(int pukType){
@@ -60,15 +64,14 @@ private:
 				return false;
 			}
 		}
-	}
+	};
 	
 	Idle startState;
 	
 	
 public:
-	const int systemType;
+	const int systemType = 1;
 
-	Puk_control(int systemType, Dispatcher* d);
 	~Puk_control();
 
 	static Puk_control* get_instance();
@@ -76,9 +79,9 @@ public:
 	void delete_puk(Puk_fsm *p);
 	void send_puk(Puk_fsm *p);
 	void create_puk(int pukType);
-	bool sequenz_group();
+	bool sequenz_group(int pukType);
 	
-	virtual void LIGHT_BARIER_ENTRY_CLOSE();
+	virtual void LIGHT_BARRIER_ENTRY_CLOSE();
 };
 
 #endif /* PUK_CONTROL_H_ */
