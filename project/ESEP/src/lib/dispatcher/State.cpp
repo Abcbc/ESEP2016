@@ -17,43 +17,48 @@ class State: public Event_methods {
 
 public:
 
-	State(){}
+	State(){
+		//Konstruktor
+	}
 	virtual ~State(){
 		//Dekonstruktor
 	}
 
-	  //LIGHT BARRIERS
-	  virtual void LIGHT_BARRIER_ENTRY_OPEN(void) {} ;
-	  virtual void LIGHT_BARRIER_ENTRY_CLOSE(void) {} ;
+	//LIGHT BARRIERS
+	virtual void LIGHT_BARRIER_ENTRY_OPEN(void) {} ;
+	virtual void LIGHT_BARRIER_ENTRY_CLOSE(void) {} ;
 
-	  virtual void LIGHT_BARRIER_HEIGHT_OPEN(void) {} ;
-	  virtual void LIGHT_BARRIER_HEIGHT_CLOSE(void) {} ;
+	virtual void LIGHT_BARRIER_HEIGHT_OPEN(void) {} ;
+	virtual void LIGHT_BARRIER_HEIGHT_CLOSE(void) {} ;
 
-	  virtual void LIGHT_BARRIER_SWITCH_OPEN(void) {} ;
-	  virtual void LIGHT_BARRIER_SWITCH_CLOSE(void) {} ;
+	virtual void LIGHT_BARRIER_SWITCH_OPEN(void) {} ;
+	virtual void LIGHT_BARRIER_SWITCH_CLOSE(void) {} ;
 
-	  virtual void LIGHT_BARRIER_EXIT_OPEN(void) {} ;
-	  virtual void LIGHT_BARRIER_EXIT_CLOSE(void) {} ;
-
-
-	  //MOTOR
-	  virtual void MOTOR_START(void) {} ;
-	  virtual void MOTOR_STOP(void) {} ;
-	  virtual void MOTOR_FAST(void) {} ;
-	  virtual void MOTOR_SLOW(void) {} ;
-	  virtual void MOTOR_LEFT(void) {} ;
-    virtual void MOTOR_RIGHT(void) {} ;
+	virtual void LIGHT_BARRIER_EXIT_OPEN(void) {} ;
+	virtual void LIGHT_BARRIER_EXIT_CLOSE(void) {} ;
 
 
-    //BUTTON
-    virtual void BUTTON_START_PRESSED(void) {} ;
-    virtual void BUTTON_START_RELEASED() {} ;
-    virtual void BUTTON_STOP_PRESSED(void) {} ;
-    virtual void BUTTON_STOP_RELEASED(void) {} ;
-    virtual void BUTTON_RESET_PRESSED(void) {} ;
-    virtual void BUTTON_RESET_RELEASED(void) {} ;
-    virtual void BUTTON_E_STOP_PRESSED(void) {} ;
-    virtual void BUTTON_E_STOP_RELEASED(void) {} ;
+	//MOTOR
+	virtual void MOTOR_START(void) {} ;
+	virtual void MOTOR_STOP(void) {} ;
+	virtual void MOTOR_FAST(void) {} ;
+	virtual void MOTOR_SLOW(void) {} ;
+	virtual void MOTOR_LEFT(void) {} ;
+	virtual void MOTOR_RIGHT(void) {} ;
+
+
+	//BUTTON
+	virtual void BUTTON_START_PRESSED(void) {} ;
+	virtual void BUTTON_START_RELEASED() {} ;
+	virtual void BUTTON_STOP_PRESSED(void) {} ;
+	virtual void BUTTON_STOP_RELEASED(void) {} ;
+	virtual void BUTTON_RESET_PRESSED(void) {} ;
+	virtual void BUTTON_RESET_RELEASED(void) {} ;
+	virtual void BUTTON_E_STOP_PRESSED(void) {} ;
+	virtual void BUTTON_E_STOP_RELEASED(void) {} ;
+
+	//HOEHENMESSUNG
+	 virtual void HEIGHT_SENSOR_MEASURE_START(void) {};
 
 
 private:

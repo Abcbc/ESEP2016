@@ -16,7 +16,7 @@
 #include <sys/siginfo.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
-#include "src/lib/HWaccess.h"
+#include <pthread.h>
 
 using namespace std;
 using namespace thread;
@@ -31,12 +31,15 @@ private:
 	map<int, method_t> _methods;
 	map<int, vector<Event_methods *> > _listeners;
 	int _cid, _con;
+	pthread_mutex_t  _init_mtx;
 
 
 private:
 
 
 	Dispatcher() {
+		_init_mtx = PTHREAD_MUTEX_INITIALIZER;
+
 		if (( _cid = ChannelCreate(0)) == -1){
 		    cout << "ChannelCreate() failed." << endl;
 		}
@@ -76,6 +79,9 @@ private:
 		_methods.insert(std::pair<int, method_t>(BUTTON_E_STOP_PRESSED_E_ID, &Event_methods::BUTTON_E_STOP_PRESSED));
 		_methods.insert(std::pair<int, method_t>(BUTTON_E_STOP_RELEASED_E_ID, &Event_methods::BUTTON_E_STOP_RELEASED));
 
+		//HOEHENMESSUNG
+		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_START_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_START));
+
 	}
 
 	void execute(void*){
@@ -99,16 +105,22 @@ public:
 
 	virtual void addListener(Event_methods *listener, int event) {
 		// Add Listener to be called on a specific Event
+		pthread_mutex_lock(&_init_mtx);
 		_listeners[event].push_back(listener);
+		pthread_mutex_unlock(&_init_mtx);
 	}
 
 	virtual void remListeners(Event_methods *listener, int event) {
+		pthread_mutex_lock(&_init_mtx);
+
 		// Remove Listener from a specific Event
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {
 			if (_listeners[event][i] == listener){
 				_listeners[event].erase(_listeners[event].begin() + i);
 			}
 		}
+
+		pthread_mutex_unlock(&_init_mtx);
 	}
 
 
@@ -135,11 +147,15 @@ public:
 
 
 	virtual void callListeners(int event) {
+		pthread_mutex_lock(&_init_mtx);
+
 		// Call for every registered Listener
 		// the Method that corresponds with event.
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {
 			(_listeners[event][i]->*_methods[event])();
 		}
+
+		pthread_mutex_unlock(&_init_mtx);
 	}
 };
 

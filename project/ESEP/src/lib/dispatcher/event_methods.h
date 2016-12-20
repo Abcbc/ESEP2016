@@ -44,6 +44,9 @@ class Event_methods{
       virtual void BUTTON_E_STOP_PRESSED(void) = 0 ;
       virtual void BUTTON_E_STOP_RELEASED(void) = 0 ;
 
+      //HOEHENMESSUNG
+      virtual void HEIGHT_SENSOR_MEASURE_START(void) = 0;
+
 
 
 	  virtual ~Event_methods(void){};
