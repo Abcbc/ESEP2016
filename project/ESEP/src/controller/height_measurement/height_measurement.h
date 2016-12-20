@@ -41,8 +41,7 @@ class Height_Measurement: public HAWThread {
         height_array get_height_array(void);
 		uint32_t compare_arrays(height_array ha);
 		
-		//struct PROFILES profiles;
-		uint32_t* profiles[10];
+		static uint32_t profiles[10][550];
 
 	public:
 		Height_Measurement();

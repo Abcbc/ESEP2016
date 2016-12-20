@@ -34,13 +34,14 @@ void Height_Measurement_Test::test_measurement(){
 	int isrChannel;
 	int isrConnection;
 	std::cout << "test height_measurement" << std::endl;
-	height_measurement = new Height_Measurement();
-	height_measurement -> start(NULL);
 	
 	motor = Motor::get_instance();
 	motor -> go_slow();
 	motor -> go_right();
 	motor -> start();
+
+	height_measurement = new Height_Measurement();
+	height_measurement -> start(NULL);
 
 	if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){
 		cout << "ThreadCtl() failed." << endl;

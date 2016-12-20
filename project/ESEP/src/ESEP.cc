@@ -13,13 +13,18 @@
 #include "src/test/height_measurement_test.h"
 
 int main(int argc, char *argv[]) {
+    /* Zugriffsrechte von QNX fuer diesen Thread, auf die Hardware erbitten. */
+    if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
+        cout << "Can't get Hardware access, therefore can't do anything." << endl;
+    }
+
 	// Test HAL
 //	HAL_Test hal_test;
 //	hal_test.test_actuators();
 
 	// Test height sensor
-	Height_Sensor_Test hs_test;
-	hs_test.test_height();
+//	Height_Sensor_Test hs_test;
+//	hs_test.test_height();
 
 	// Test Interrupt
 //	IR_Test ir_test;
@@ -34,8 +39,8 @@ int main(int argc, char *argv[]) {
 //	timer_test.test_timer();
 
 	// get profile
-	Profile_Creator creator;
-	creator.create_profile();
+//	Profile_Creator creator;
+//	creator.create_profile();
 
 	// Test Height_measurement
 	Height_Measurement_Test hm;

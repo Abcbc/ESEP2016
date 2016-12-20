@@ -24,7 +24,6 @@ void Height_Sensor_Test::test_height(){
 	uint16_t* height_array = new uint16_t[SUM_VALUES];
 	Height_sensor* component = Height_sensor::get_instance();
 	Motor* component1 = Motor::get_instance();
-	Puk_switch* component2 = Puk_switch::get_instance();
 	component1 -> go_slow();
 	component1 -> go_right();
 	component1 -> start();
@@ -44,7 +43,6 @@ void Height_Sensor_Test::test_height(){
 
 	gettimeofday(&tp, NULL);
 	uint64_t end_time_ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
-	component2 -> close();
 
 	for(i = 0; i < SUM_VALUES; i++){
 		std::cout << height_array[i] << ",";
