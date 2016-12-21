@@ -91,6 +91,10 @@ public:
      virtual void SLIDE_NOT_FULL(void)  { } ;
      virtual void SLIDE_FULL(void)  { } ;
 
+     //PUK-SWITCH
+     virtual void PUK_SWITCH_OPEN(void) { } ;
+     virtual void PUK_SWITCH_CLOSE(void) { };
+
 	 State(const State& other);
 
 private:

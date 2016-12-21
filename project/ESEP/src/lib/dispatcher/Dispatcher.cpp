@@ -116,6 +116,9 @@ private:
 		_methods.insert(std::pair<int, method_t>( SLIDE_FULL_E_ID, &Event_methods::SLIDE_FULL));
 		_methods.insert(std::pair<int, method_t>( SLIDE_NOT_FULL_E_ID, &Event_methods::SLIDE_NOT_FULL));
 
+		//PUK-SWITCH
+		_methods.insert(std::pair<int, method_t>( PUK_SWITCH_OPEN_E_ID, &Event_methods::PUK_SWITCH_OPEN));
+		_methods.insert(std::pair<int, method_t>( PUK_SWITCH_CLOSE_E_ID, &Event_methods::PUK_SWITCH_CLOSE));
 
 
 		cout << "Dispatcher constructed on Channel: " << _cid << " Con: " << _con << endl;

@@ -78,6 +78,10 @@ class Event_methods{
       virtual void SLIDE_NOT_FULL(void) = 0;
       virtual void SLIDE_FULL(void) = 0;
 
+      //PUK-SWITCH
+      virtual void PUK_SWITCH_OPEN(void) = 0;
+      virtual void PUK_SWITCH_CLOSE(void) = 0;
+
 
 
 
