@@ -15,6 +15,8 @@
 #include <cstdlib>
 #include <iostream>
 
+using namespace std;
+
 pthread_mutex_t Hal_component::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Hal_component::bo_mtx = PTHREAD_MUTEX_INITIALIZER;
 
