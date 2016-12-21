@@ -9,11 +9,13 @@
 #include "src/test/ir_test.h"
 #include "src/test/timer_test.h"
 #include "src/test/testTools/distance_time.h"
+#include "src/controller/Puk_control/Puk_control.h"
+#include "src/controller/Puk_control/puk_fsm.h"
 
 int main(int argc, char *argv[]) {
 	// Test HAL
-	HAL_Test hal_test;
-	hal_test.test_actuators();
+//	HAL_Test hal_test;
+//	hal_test.test_actuators();
 
 	// Test height sensor
 //	Height_Sensor_Test hs_test;
@@ -30,4 +32,7 @@ int main(int argc, char *argv[]) {
 	// Test tick_timer
 //	Timer_test timer_test;
 //	timer_test.test_timer();
+
+	Dispatcher* dis = Dispatcher::getInstance();
+	Puk_control pc(1, dis);
 }
