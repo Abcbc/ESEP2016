@@ -59,6 +59,37 @@ public:
 
 	//HOEHENMESSUNG
 	 virtual void HEIGHT_SENSOR_MEASURE_START(void) {};
+	 virtual void HEIGHT_SENSOR_MEASURE_FINISHED(void) {} ;
+     virtual void IDENTIFIED_REGISTER(void)  { } ;
+     virtual void IDENTIFIED_PUK(void)  { } ;
+     virtual void IDENTIFIED_FALSE(void)  { } ;
+
+     //TIMER
+     virtual void TIMER_RUNOUT(void)  { } ;
+     virtual void TIMER_ENTRY(void)  { } ;
+     virtual void TIMER_ENTRY_OUT(void)  { } ;
+     virtual void TIMER_GROUP(void)  { } ;
+     virtual void TIMER_GROUP_OUT(void)  { } ;
+     virtual void TIMER_MEASURE(void)  { } ;
+     virtual void TIMER_MEASURE_OUT(void)  { } ;
+     virtual void TIMER_EXIT(void)  { } ;
+     virtual void TIMER_EXIT_OUT(void)  { } ;
+     virtual void TIMER_SWITCH(void)  { } ;
+     virtual void TIMER_SWITCH_OUT(void)  { } ;
+     virtual void TIMER_SWITCH_LONG(void)  { } ;
+     virtual void TIMER_SWITCH_LONG_OUT(void)  { } ;
+
+     //SERIAL
+     virtual void SEND_WANT(void)  { } ;
+     virtual void RDY_TAKING(void)  { } ;
+     virtual void RDY_TAKING_OK(void)  { } ;
+
+     //ERROR-EVENTS
+     //TODO
+
+     //SLIDE
+     virtual void SLIDE_NOT_FULL(void)  { } ;
+     virtual void SLIDE_FULL(void)  { } ;
 
 	 State(const State& other);
 

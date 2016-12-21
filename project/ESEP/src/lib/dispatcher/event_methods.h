@@ -46,6 +46,38 @@ class Event_methods{
 
       //HOEHENMESSUNG
       virtual void HEIGHT_SENSOR_MEASURE_START(void) = 0;
+      virtual void HEIGHT_SENSOR_MEASURE_FINISHED(void) = 0;
+      virtual void IDENTIFIED_REGISTER(void) = 0;
+      virtual void IDENTIFIED_PUK(void) = 0;
+      virtual void IDENTIFIED_FALSE(void) = 0;
+
+      //TIMER
+      virtual void TIMER_RUNOUT(void) = 0;
+      virtual void TIMER_ENTRY(void) = 0;
+      virtual void TIMER_ENTRY_OUT(void) = 0;
+      virtual void TIMER_GROUP(void) = 0;
+      virtual void TIMER_GROUP_OUT(void) = 0;
+      virtual void TIMER_MEASURE(void) = 0;
+      virtual void TIMER_MEASURE_OUT(void) = 0;
+      virtual void TIMER_EXIT(void) = 0;
+      virtual void TIMER_EXIT_OUT(void) = 0;
+      virtual void TIMER_SWITCH(void) = 0;
+      virtual void TIMER_SWITCH_OUT(void) = 0;
+      virtual void TIMER_SWITCH_LONG(void) = 0;
+      virtual void TIMER_SWITCH_LONG_OUT(void) = 0;
+
+      //SERIAL
+      virtual void SEND_WANT(void) = 0;
+      virtual void RDY_TAKING(void) = 0;
+      virtual void RDY_TAKING_OK(void) = 0;
+
+      //ERROR-EVENTS
+      //TODO
+
+      //SLIDE
+      virtual void SLIDE_NOT_FULL(void) = 0;
+      virtual void SLIDE_FULL(void) = 0;
+
 
 
 

@@ -40,10 +40,11 @@ private:
 	Dispatcher() {
 		_init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-		// Wird für korekte Funtkzionalitaet benoetigt
+		// Hardwarezugriff für Mulithreading benötigt
 		if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
 			//TODO throw exception
 		}
+
 
 		if (( _cid = ChannelCreate(0)) == -1){
 		    cout << "ChannelCreate() failed." << endl;
@@ -84,6 +85,38 @@ private:
 
 		//HOEHENMESSUNG
 		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_START_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_START));
+		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_FINISHED_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_FINISHED));
+		_methods.insert(std::pair<int, method_t>( IDENTIFIED_PUK_E_ID, &Event_methods::IDENTIFIED_PUK));
+		_methods.insert(std::pair<int, method_t>( IDENTIFIED_REGISTER_E_ID, &Event_methods::IDENTIFIED_REGISTER));
+		_methods.insert(std::pair<int, method_t>( IDENTIFIED_FALSE_PUK_E_ID, &Event_methods::IDENTIFIED_FALSE));
+
+
+		//TIMER
+		_methods.insert(std::pair<int, method_t>( TIMER_RUNOUT_E_ID, &Event_methods::TIMER_RUNOUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_ENTRY_E_ID, &Event_methods::TIMER_ENTRY));
+		_methods.insert(std::pair<int, method_t>( TIMER_ENTRY_OUT_E_ID, &Event_methods::TIMER_ENTRY_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_GROUP_E_ID, &Event_methods::TIMER_GROUP));
+		_methods.insert(std::pair<int, method_t>( TIMER_GROUP_OUT_E_ID, &Event_methods::TIMER_GROUP_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_MEASURE_E_ID, &Event_methods::TIMER_MEASURE));
+		_methods.insert(std::pair<int, method_t>( TIMER_MEASURE_OUT_E_ID, &Event_methods::TIMER_MEASURE_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_EXIT_E_ID, &Event_methods::TIMER_EXIT));
+		_methods.insert(std::pair<int, method_t>( TIMER_EXIT_OUT_E_ID, &Event_methods::TIMER_EXIT_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_E_ID, &Event_methods::TIMER_SWITCH));
+		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_OUT_E_ID, &Event_methods::TIMER_SWITCH_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_LONG_E_ID, &Event_methods::TIMER_SWITCH_LONG));
+		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_LONG_OUT_E_ID, &Event_methods::TIMER_SWITCH_LONG_OUT));
+
+
+		//SERIAL
+		_methods.insert(std::pair<int, method_t>( SEND_WANT_E_ID, &Event_methods::SEND_WANT));
+		_methods.insert(std::pair<int, method_t>( RDY_TAKING_E_ID, &Event_methods::RDY_TAKING));
+		_methods.insert(std::pair<int, method_t>( RDY_TAKING_OK_E_ID, &Event_methods::RDY_TAKING_OK));
+
+		//SLIDE
+		_methods.insert(std::pair<int, method_t>( SLIDE_FULL_E_ID, &Event_methods::SLIDE_FULL));
+		_methods.insert(std::pair<int, method_t>( SLIDE_NOT_FULL_E_ID, &Event_methods::SLIDE_NOT_FULL));
+
+
 
 		cout << "Dispatcher constructed on Channel: " << _cid << " Con: " << _con << endl;
 	}
