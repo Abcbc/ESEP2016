@@ -60,9 +60,10 @@ public:
 	//HOEHENMESSUNG
 	 virtual void HEIGHT_SENSOR_MEASURE_START(void) {};
 
+	 State(const State& other);
 
 private:
-		State(const State& other);
+
 		State& operator=(const State& other);
 };
 

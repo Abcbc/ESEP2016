@@ -2,6 +2,7 @@
 #include <sys/siginfo.h>
 #include <iomanip>
 #include <pthread.h>
+#include <iostream>
 #include "lib/Lock.h"
 #include "lib/HAWThread.h"
 #include <iostream>
@@ -13,9 +14,11 @@
 #include "src/lib/hal/hal_component.h"
 #include <sys/time.h>
 
+using namespace std;
+
 struct sigevent isrEvent;
 
-#define FILTER_MASK 0b1111000010010011
+#define FILTER_MASK 0b1111000010011011
 #define ON_BIT 0h10000
 
 #define ENRTY 1
@@ -64,7 +67,6 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 			debounce = false;
 		}
 	}
-
 	if (changes > 0 && debounce) {
 		switch (changes) {
 			case ENRTY:
@@ -85,9 +87,9 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 
 			case PUK_SWITCH:
 				if ((source & PUK_SWITCH) > 0) {
-					e_id = PUK_SWITCH_CLOSE_E_ID;
+					e_id = LIGHT_BARRIER_SWITCH_OPEN_E_ID;
 				} else {
-					e_id = PUK_SWITCH_OPEN_E_ID;
+					e_id = LIGHT_BARRIER_SWITCH_CLOSE_E_ID;
 				}
 				break;
 

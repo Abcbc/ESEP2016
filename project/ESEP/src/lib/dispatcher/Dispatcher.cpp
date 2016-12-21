@@ -40,6 +40,11 @@ private:
 	Dispatcher() {
 		_init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
+		// Wird für korekte Funtkzionalitaet benoetigt
+		if( ThreadCtl(_NTO_TCTL_IO_PRIV,0) == -1 ){
+			//TODO throw exception
+		}
+
 		if (( _cid = ChannelCreate(0)) == -1){
 		    cout << "ChannelCreate() failed." << endl;
 		}
@@ -80,6 +85,7 @@ private:
 		//HOEHENMESSUNG
 		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_START_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_START));
 
+		cout << "Dispatcher constructed on Channel: " << _cid << " Con: " << _con << endl;
 	}
 
 	void execute(void*){
@@ -139,7 +145,6 @@ public:
 			{
 				//TODO TIMER
 			}
-
 		}
 	}
 

@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cstring>
 #include <sys/neutrino.h>
+#include <pthread.h>
+#include "lib/HAWThread.h"
 #include "src/lib/hal/hal_component.h"
 #include "src/lib/hal/motor.h"
 #include "src/controller/event_table.h"
@@ -19,14 +21,14 @@
 
 #define CON 3
 
+using namespace thread;
 using namespace std;
-class Motorcontroler: public State {
+class Motorcontroler: public State, public HAWThread {
 private:
 	Motor* motor;
 
 	struct MyState {
 		virtual void motor_normal(Motorcontroler* m) {
-			cout << "Normal failed" << endl;
 		}
 		virtual void motor_slow(Motorcontroler* m) {
 		}
@@ -145,10 +147,20 @@ private:
 	Motorcontroler() :
 			motor(Motor::get_instance()), statePtr(&startState) {
 		cout << "Motorcontroler constructed" << endl;
+
 		Dispatcher *d = Dispatcher::getInstance();
 		d->addListener(this, MOTOR_FAST_E_ID);
 		d->addListener(this, MOTOR_SLOW_E_ID);
 		d->addListener(this, MOTOR_STOP_E_ID);
+	}
+
+	void execute(void*) {
+		while (1) {
+			usleep(10000); // Sleep 10 ms
+		}
+	}
+	virtual void shutdown() {
+
 	}
 
 public:
@@ -198,6 +210,7 @@ public:
 		statePtr->stop_error(this);
 		statePtr->entry(this);
 	}
-};
+}
+;
 
 #endif /* MOTORCONTROLER_H_ */

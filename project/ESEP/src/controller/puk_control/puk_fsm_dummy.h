@@ -8,6 +8,7 @@
 #ifndef PUK_FSM_DUMMY_H_
 #define PUK_FSM_DUMMY_H_
 
+#include <iostream>
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
 #include "Puk_fsm_data.h"
@@ -30,11 +31,13 @@ struct Data {
 	Puk_fsm_dummy* puk_fsm_dummy;
 	Dispatcher* dispatcher;
 };
-
+using namespace std;
 class Puk_fsm_dummy: public State {
 private:
 
 	struct MyState {
+		virtual void start() {
+		}
 		virtual void light_barrier_entry_open() {
 		}
 		virtual void light_barrier_switch_close() {
@@ -46,6 +49,9 @@ private:
 
 	struct Start: public MyState {
 		Start() {
+			cout << "State: start" << endl;
+		}
+		virtual void start() {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
 			data->dispatcher->addListener(data->puk_fsm_dummy,
 					LIGHT_BARRIER_ENTRY_OPEN_E_ID);
@@ -59,20 +65,23 @@ private:
 
 	struct Active: public MyState {
 		Active() {
+			cout << "State: Active" << endl;
 			data->dispatcher->addListener(data->puk_fsm_dummy,
 					LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_SLOW_E_ID);
 		}
 		virtual void light_barrier_switch_close() {
+			cout << "try to open Switch" << endl;
 			data->dispatcher->remListeners(data->puk_fsm_dummy,
 					LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, PUK_SWITCH_OPEN_E_ID);
 			new (this) Exit;
 		}
 	};
 
 	struct Exit: public MyState {
 		Exit() {
+			cout << "State: exit" << endl;
 			data->dispatcher->addListener(data->puk_fsm_dummy,
 					LIGHT_BARRIER_EXIT_CLOSE_E_ID);
 		}
@@ -87,13 +96,16 @@ private:
 public:
 	Puk_fsm_dummy(int Type);
 	virtual ~Puk_fsm_dummy();
-	virtual void LIGHT_BARRIER_ENTRY_OPEN(){
+	virtual void start(){
+		statePtr->start();
+	}
+	virtual void LIGHT_BARRIER_ENTRY_OPEN() {
 		statePtr->light_barrier_entry_open();
 	}
-	virtual void LIGHT_BARRIER_SWITCH_OPEN(){
+	virtual void LIGHT_BARRIER_SWITCH_CLOSE() {
 		statePtr->light_barrier_switch_close();
 	}
-	virtual void LIGHT_BARRIER_EXIT_OPEN(){
+	virtual void LIGHT_BARRIER_EXIT_CLOSE() {
 		statePtr->light_barrier_exit_close();
 	}
 };

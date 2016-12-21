@@ -21,6 +21,7 @@ LDFLAGS+=-lang-c++ -Y _gpp
 EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src  \
 	$(PROJECT_ROOT)/src/controller  \
+	$(PROJECT_ROOT)/src/controller/puk_control  \
 	$(PROJECT_ROOT)/src/lib  \
 	$(PROJECT_ROOT)/src/lib/hal  \
 	$(PROJECT_ROOT)/src/lib/serial  \
