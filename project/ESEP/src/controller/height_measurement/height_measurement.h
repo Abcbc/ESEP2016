@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <vector>
 #include <sys/neutrino.h>
+#include <sys/siginfo.h>
 #include "src/lib/hal/height_sensor.h"
 
 using namespace thread;
@@ -40,8 +41,10 @@ class Height_Measurement: public HAWThread {
 		
         height_array get_height_array(void);
 		uint32_t compare_arrays(height_array ha);
+		void get_height_difference(Height_sensor* height_sensor);
+		void  init_timer(void);
 		
-		static uint32_t profiles[10][550];
+		static uint32_t profiles[10][450];
 
 	public:
 		Height_Measurement();
