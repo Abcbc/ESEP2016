@@ -7,8 +7,11 @@
 
 #include "Switch_control.h"
 
-Switch_control::Switch_control() {
-	// TODO Auto-generated constructor stub
+Switch_control::Switch_control() :
+		statePtr(&startState), history_(0), contextdata(this,
+				Puk_switch::get_instance(), Dispatcher::getInstance()) {
+	cout << "Switchcontroler constructed" << endl;
+	statePtr->data = &contextdata;
 
 }
 

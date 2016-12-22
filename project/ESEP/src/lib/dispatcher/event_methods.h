@@ -28,21 +28,18 @@ class Event_methods{
 	  //MOTOR
 	  virtual void MOTOR_START(void) = 0 ;
 	  virtual void MOTOR_STOP(void) = 0 ;
-	  virtual void MOTOR_FAST(void) = 0 ;
+	  virtual void MOTOR_NORMAL(void) = 0 ;
 	  virtual void MOTOR_SLOW(void) = 0 ;
 	  virtual void MOTOR_LEFT(void) = 0 ;
       virtual void MOTOR_RIGHT(void) = 0 ;
 
 
       //BUTTON
-      virtual void BUTTON_START_PRESSED(void) = 0 ;
-      virtual void BUTTON_START_RELEASED() = 0 ;
-      virtual void BUTTON_STOP_PRESSED(void) = 0 ;
-      virtual void BUTTON_STOP_RELEASED(void) = 0 ;
-      virtual void BUTTON_RESET_PRESSED(void) = 0 ;
-      virtual void BUTTON_RESET_RELEASED(void) = 0 ;
-      virtual void BUTTON_E_STOP_PRESSED(void) = 0 ;
-      virtual void BUTTON_E_STOP_RELEASED(void) = 0 ;
+      virtual void BUTTON_START(void) = 0 ;
+      virtual void BUTTON_STOP(void) = 0 ;
+      virtual void BUTTON_RESET(void) = 0 ;
+      virtual void ESTOP_THIS(void) = 0 ;
+      virtual void ESTOP_RELEASED_THIS(void) = 0 ;
 
       //HOEHENMESSUNG
       virtual void HEIGHT_SENSOR_MEASURE_START(void) = 0;
@@ -78,6 +75,10 @@ class Event_methods{
       virtual void SLIDE_NOT_FULL(void) = 0;
       virtual void SLIDE_FULL(void) = 0;
 
+      //PUK Switch
+      virtual void SWITCH_OPEN(void) = 0;
+      // TODO DEBUG ONLY
+      virtual void SWITCH_CLOSE(void) = 0;
 
 
 

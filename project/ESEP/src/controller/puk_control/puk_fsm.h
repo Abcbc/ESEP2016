@@ -132,13 +132,13 @@ private:
 					TIMER_GROUP_OUT_E_ID);
 		}
 		virtual void exit() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 		}
 	};
 
 	struct Go: public MyState {
 		Go() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 			// TODO: register for light barrier entry open
 			data->dispatcher->addListener(data->puk_fsm,
 					LIGHT_BARRIER_ENTRY_OPEN_E_ID);
@@ -192,7 +192,7 @@ private:
 		Height_Sensor_Measure_Active() {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_SLOW_E_ID);
 			// TODO: [NO_TIMER_ENTRY_OUT] Check if Puk is in tolerance of timer. If not throw error.
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 			new (this) Err_Too_Many_Chance_HM;
 		}
 		
@@ -207,8 +207,7 @@ private:
 			data->dispatcher->addListener(data->puk_fsm,
 					IDENTIFIED_PUK_E_ID);
 			// TODO: register IDENTIFIED_FALSE_PUK
-			data->dispatcher->addListener(data->puk_fsm,
-					IDENTIFIED_FALSE_PUK_E_ID);
+			//data->dispatcher->addListener(data->puk_fsm, IDENTIFIED_FALSE_PUK_E_ID);
 		}
 		virtual void identified_register() {
 			// TODO: update puk_type
@@ -228,7 +227,7 @@ private:
 
 	struct To_Switch: public MyState {
 		To_Switch() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_MEASURE_E_ID);
 			// TODO: register for L_B_S_Close
 			data->dispatcher->addListener(data->puk_fsm,
@@ -249,7 +248,7 @@ private:
 	struct Switch_ok: public MyState {
 		Switch_ok(){
 			// TODO: [NO_TIMER_MEASURE_OUT] if TIMER_MEASURE_OUT is out of tolerance thorw error
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 			new (this) Err_Too_Many_Puk_Chance_SO;
 		}
 		
@@ -261,10 +260,9 @@ private:
 
 	struct In_Switch: public MyState {
 		In_Switch() {
-			MsgSendPulse(CON_ID, PRIO, CODE, PUK_SWITCH_OPEN_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
 			// TODO: register for SWITCH_CLOSE
-			data->dispatcher->addListener(data->puk_fsm,
-					PUK_SWITCH_CLOSE_E_ID);
+			//data->dispatcher->addListener(data->puk_fsm,PUK_SWITCH_CLOSE_E_ID);
 				int systemType = data->puk_control->systemType;
 			if ((systemType == 1) || (systemType == 2)) {
 				MsgSendPulse(CON_ID, PRIO, CODE, TIMER_SWITCH_E_ID);
@@ -309,7 +307,7 @@ private:
 	struct Outgoing_Active: public MyState {
 		Outgoing_Active() {
 			// TODO: [NO_TIMER_EXIT_OUT] if TIMER_EXIT_OUT is out of tolerance throw error
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 			new (this) Err_To_Many_Puk_Chance_OA;
 		}
 		virtual void timer_exit_out() {
@@ -360,7 +358,7 @@ private:
 			// TODO: send PUK_DATA via puk_contoler
 		}
 		virtual void exit() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 		}
 		virtual void light_barrier_exit_open() {
 			new (this) Kill_Puk;
@@ -378,7 +376,7 @@ private:
 
 	struct Sortout: public MyState {
 		Sortout() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_MEASURE_E_ID);
 			// TODO: register for LIGHT_BARRIER_SWITCH_CLOSE
 			data->dispatcher->addListener(data->puk_fsm,
@@ -451,7 +449,7 @@ private:
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_SLIDE_FULL_E_ID);
 			// TODO: register for ERR_SLIDE_FULL_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_SLIDE_FULL_OK_E_ID);
+					ERR_SLIDE_FULL_E_ID);
 		}
 		
 		virtual void err_slide_full_ok() {
@@ -477,7 +475,7 @@ private:
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_LOST_PUK_E_ID);
 			// TODO: register for ERR_LOST_PUK_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_LOST_PUK_OK_E_ID);
+					ERR_LOST_PUK_E_ID);
 		}
 		
 		virtual void err_lost_puk_ok() {
@@ -487,10 +485,10 @@ private:
 
 	struct Err_To_Many_Puk: public MyState {
 		Err_To_Many_Puk() {
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 			// TODO: register for ERR_TOO_MANY_PUK_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_TOO_MANY_PUK_OK_E_ID);
+					ERR_TO_MANY_PUK_E_ID);
 		}
 		
 		virtual void err_too_many_puk_ok() {
@@ -502,11 +500,11 @@ private:
 		Err_To_Many_Puk_Chance_OA() {
 			// TODO: register ERR_TOO_MANY_PUKS_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_TOO_MANY_PUK_OK_E_ID);
+					ERR_TO_MANY_PUK_E_ID);
 			// TODO: register L_B_EXIT_CLOSE
 			data->dispatcher->addListener(data->puk_fsm,
 					LIGHT_BARRIER_EXIT_CLOSE_E_ID);
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 		}
 		
 		virtual void light_barrier_exit_close() {
@@ -523,11 +521,11 @@ private:
 		Err_Too_Many_Puk_Chance_SO() {
 			// TODO: register ERR_TOO_MANY_PUK_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_TOO_MANY_PUK_E_ID);
+					ERR_TO_MANY_PUK_E_ID);
 			// TODO: register L_B_SWITCH_CLOSE
 			data->dispatcher->addListener(data->puk_fsm,
 					LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
-					MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
+					MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 		}
 	
 		virtual void light_barrier_switch_close() {
@@ -544,11 +542,11 @@ private:
 		Err_Too_Many_Puk_Chance_SS() {
 			// TODO: register for ERR_T_M_P_OK
 			data->dispatcher->addListener(data->puk_fsm,
-					ERR_TOO_MANY_PUK_OK_E_ID);
+					ERR_TO_MANY_PUK_E_ID);
 			// TODO: register for L_B_S_C
 			data->dispatcher->addListener(data->puk_fsm,
 					LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
-					MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
+					MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 		}
 		
 		virtual void light_barrier_switch_close() {
@@ -564,11 +562,11 @@ private:
 		Err_Too_Many_Chance_HM() {
 			// TODO: register ERR_TOO_MANY_PUK_OK
 			// TODO: register HEIGHT_SENSOR_MEASURE_START
-			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TOO_MANY_PUK_OK_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_TO_MANY_PUK_E_ID);
 		}
 		
 		virtual void exit() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 		}
 		virtual void timer_entry_out() {
 			// TODO: unregister HEIGHT_SENSOR_MEASURE_START

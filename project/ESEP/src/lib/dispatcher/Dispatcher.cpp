@@ -68,28 +68,20 @@ private:
 		//MOTOR
 		_methods.insert(std::pair<int, method_t>(MOTOR_STOP_E_ID, &Event_methods::MOTOR_STOP));
 		_methods.insert(std::pair<int, method_t>(MOTOR_START_E_ID, &Event_methods::MOTOR_START));
-		_methods.insert(std::pair<int, method_t>(MOTOR_FAST_E_ID, &Event_methods::MOTOR_FAST));
+		_methods.insert(std::pair<int, method_t>(MOTOR_NORMAL_E_ID, &Event_methods::MOTOR_NORMAL));
 		_methods.insert(std::pair<int, method_t>(MOTOR_SLOW_E_ID, &Event_methods::MOTOR_SLOW));
-		_methods.insert(std::pair<int, method_t>(MOTOR_LEFT_E_ID, &Event_methods::MOTOR_LEFT));
-		_methods.insert(std::pair<int, method_t>(MOTOR_RIGHT_E_ID, &Event_methods::MOTOR_RIGHT));
 
 		//BUTTONS
-		_methods.insert(std::pair<int, method_t>(BUTTON_START_PRESSED_E_ID, &Event_methods::BUTTON_START_PRESSED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_START_RELEASED_E_ID, &Event_methods::BUTTON_START_RELEASED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_STOP_PRESSED_E_ID, &Event_methods::BUTTON_STOP_PRESSED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_STOP_RELEASED_E_ID, &Event_methods::BUTTON_STOP_RELEASED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_RESET_PRESSED_E_ID, &Event_methods::BUTTON_RESET_PRESSED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_RESET_RELEASED_E_ID, &Event_methods::BUTTON_RESET_RELEASED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_E_STOP_PRESSED_E_ID, &Event_methods::BUTTON_E_STOP_PRESSED));
-		_methods.insert(std::pair<int, method_t>(BUTTON_E_STOP_RELEASED_E_ID, &Event_methods::BUTTON_E_STOP_RELEASED));
+		_methods.insert(std::pair<int, method_t>(BUTTON_START_E_ID, &Event_methods::BUTTON_START));
+		_methods.insert(std::pair<int, method_t>(BUTTON_STOP_E_ID, &Event_methods::BUTTON_STOP));
+		_methods.insert(std::pair<int, method_t>(BUTTON_RESET_E_ID, &Event_methods::BUTTON_RESET));
+		_methods.insert(std::pair<int, method_t>(ESTOP_THIS_E_ID, &Event_methods::ESTOP_THIS));
+		_methods.insert(std::pair<int, method_t>(ESTOP_RELEASED_THIS_E_ID, &Event_methods::ESTOP_RELEASED_THIS));
 
 		//HOEHENMESSUNG
 		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_START_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_START));
 		_methods.insert(std::pair<int, method_t>( HEIGHT_SENSOR_MEASURE_FINISHED_E_ID, &Event_methods::HEIGHT_SENSOR_MEASURE_FINISHED));
 		_methods.insert(std::pair<int, method_t>( IDENTIFIED_PUK_E_ID, &Event_methods::IDENTIFIED_PUK));
-		_methods.insert(std::pair<int, method_t>( IDENTIFIED_REGISTER_E_ID, &Event_methods::IDENTIFIED_REGISTER));
-		_methods.insert(std::pair<int, method_t>( IDENTIFIED_FALSE_PUK_E_ID, &Event_methods::IDENTIFIED_FALSE));
-
 
 		//TIMER
 		_methods.insert(std::pair<int, method_t>( TIMER_RUNOUT_E_ID, &Event_methods::TIMER_RUNOUT));
@@ -116,6 +108,9 @@ private:
 		_methods.insert(std::pair<int, method_t>( SLIDE_FULL_E_ID, &Event_methods::SLIDE_FULL));
 		_methods.insert(std::pair<int, method_t>( SLIDE_NOT_FULL_E_ID, &Event_methods::SLIDE_NOT_FULL));
 
+		// PUK
+		_methods.insert(std::pair<int, method_t>( SWITCH_OPEN_E_ID, &Event_methods::SWITCH_OPEN));
+		_methods.insert(std::pair<int, method_t>( SWITCH_CLOSE_E_ID, &Event_methods::SWITCH_CLOSE));
 
 
 		cout << "Dispatcher constructed on Channel: " << _cid << " Con: " << _con << endl;

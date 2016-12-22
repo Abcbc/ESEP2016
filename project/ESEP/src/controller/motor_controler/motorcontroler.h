@@ -107,7 +107,7 @@ private:
 			m->motor->go_fast();
 			m->setHistory(speeds, this);
 			m->setHistory(error, this);
-			MsgSendPulse(CON, -1, 5, SPEED_FAST_E_ID);
+			MsgSendPulse(CON, -1, 5, SPEED_NORMAL_E_ID);
 		}
 		virtual void motor_slow(Motorcontroler* m) {
 			new (this) Slow;
@@ -149,7 +149,7 @@ private:
 		cout << "Motorcontroler constructed" << endl;
 
 		Dispatcher *d = Dispatcher::getInstance();
-		d->addListener(this, MOTOR_FAST_E_ID);
+		d->addListener(this, MOTOR_NORMAL_E_ID);
 		d->addListener(this, MOTOR_SLOW_E_ID);
 		d->addListener(this, MOTOR_STOP_E_ID);
 	}
@@ -169,7 +169,7 @@ public:
 		return &instance_;
 	}
 
-	virtual void MOTOR_FAST() {
+	virtual void MOTOR_NORMAL() {
 		cout << "Method triggered" << endl;
 		//statePtr->exit(this);
 		statePtr->motor_normal(this);

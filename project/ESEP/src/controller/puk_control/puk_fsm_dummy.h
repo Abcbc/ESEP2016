@@ -52,7 +52,7 @@ private:
 			cout << "State: start" << endl;
 		}
 		virtual void start() {
-			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_FAST_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_NORMAL_E_ID);
 			data->dispatcher->addListener(data->puk_fsm_dummy,
 					LIGHT_BARRIER_ENTRY_OPEN_E_ID);
 		}
@@ -74,7 +74,7 @@ private:
 			cout << "try to open Switch" << endl;
 			data->dispatcher->remListeners(data->puk_fsm_dummy,
 					LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
-			MsgSendPulse(CON_ID, PRIO, CODE, PUK_SWITCH_OPEN_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
 			new (this) Exit;
 		}
 	};
@@ -87,6 +87,7 @@ private:
 		}
 		virtual void light_barrier_exit_close() {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_E_ID);
+			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_CLOSE_E_ID);
 		}
 	};
 
