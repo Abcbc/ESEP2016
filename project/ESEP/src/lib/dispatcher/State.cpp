@@ -37,29 +37,42 @@ public:
 		  virtual void LIGHT_BARRIER_EXIT_OPEN(void){} ;
 		  virtual void LIGHT_BARRIER_EXIT_CLOSE(void){} ;
 
+		  // SPEED
+		  virtual void SPEED_SLOW(void){} ;
+		  virtual void SPEED_NORMAL(void){} ;
+		  virtual void SPEED_STOP(void){} ;
 
 		  //MOTOR
 		  virtual void MOTOR_START(void){} ;
 		  virtual void MOTOR_STOP(void){} ;
 		  virtual void MOTOR_NORMAL(void){} ;
+		  virtual void MOTOR_IDLE(void){} ;
 		  virtual void MOTOR_SLOW(void){} ;
-		  virtual void MOTOR_LEFT(void){} ;
-	      virtual void MOTOR_RIGHT(void){} ;
+	      virtual void MOTOR_STOP_ERR(void){} ;
+	      virtual void MOTOR_START_ERR(void){} ;
 
+	      // PUK Switch
+	      virtual void SWITCH_OPEN(void){};
+	      virtual void SWITCH_CLOSE(void){};
 
-	      //BUTTON
-	      virtual void BUTTON_START(void){} ;
-	      virtual void BUTTON_STOP(void){} ;
-	      virtual void BUTTON_RESET(void){} ;
-	      virtual void ESTOP_THIS(void){} ;
-	      virtual void ESTOP_RELEASED_THIS(void){} ;
+	      //SLIDE
+	      virtual void SLIDE_NOT_FULL(void){};
+	      virtual void SLIDE_FULL(void){};
 
 	      //HOEHENMESSUNG
 	      virtual void HEIGHT_SENSOR_MEASURE_START(void){};
 	      virtual void HEIGHT_SENSOR_MEASURE_FINISHED(void){};
-	      virtual void IDENTIFIED_REGISTER(void){};
+
+	      //Puk
 	      virtual void IDENTIFIED_PUK(void){};
-	      virtual void IDENTIFIED_FALSE(void){};
+
+		  // Signal Lights
+	      virtual void TRAFFIC_LIGHT_NORMAL(void){};
+	      virtual void TRAFFIC_LIGHT_WARNING(void){};
+	      virtual void TRAFFIC_LIGHT_UNACK_ERROR(void){};
+	      virtual void TRAFFIC_LIGHT_ACKED_ERROR(void){};
+	      virtual void TRAFFIC_LIGHT_PASSED_ERROR(void){};
+	      virtual void TRAFFIC_LIGHT_RDY(void){};
 
 	      //TIMER
 	      virtual void TIMER_RUNOUT(void){};
@@ -76,23 +89,49 @@ public:
 	      virtual void TIMER_SWITCH_LONG(void){};
 	      virtual void TIMER_SWITCH_LONG_OUT(void){};
 
-	      //SERIAL
-	      virtual void SEND_WANT(void){};
+		  // Errors
+	      virtual void ERR_LOST_PUK(void){};
+	      virtual void ERR_TO_MANY_PUK(void){};
+	      virtual void ERR_SLIDE_FULL(void){};
+	      virtual void ERR_UNDEFINED_PUK(void){};
+	      virtual void ERR_OK(void){};
+
+		  // Ready
 	      virtual void RDY_TAKING(void){};
 	      virtual void RDY_TAKING_OK(void){};
 
-	      //ERROR-EVENTS
-	      //TODO
+	      //ESTOP
+	      virtual void ESTOP_THIS(void){};
+	      virtual void ESTOP_SYSTEM2(void){};
+	      virtual void ESTOP_SYSTEM3(void){};
+	      virtual void ESTOP_RELEASED_THIS(void){};
+	      virtual void ESTOP_RELEASED_SYSTEM2(void){};
+	      virtual void ESTOP_RELEASED_SYSTEM3(void){};
+	      virtual void ESTOP_RESET_THIS(void){};
+	      virtual void ESTOP_RESET_SYSTEM2(void){};
+	      virtual void ESTOP_RESET_SYSTEM3(void){};
+	      virtual void ESTOP_SEND(void){};
+	      virtual void ESTOP_RESET_SEND(void){};
+	      virtual void ESTOP_OK(void){};
 
-	      //SLIDE
-	      virtual void SLIDE_NOT_FULL(void){};
-	      virtual void SLIDE_FULL(void){};
+	      //BUTTON
+	      virtual void BUTTON_START(void){};
+	      virtual void BUTTON_START_INCOMMING(void){};
+	      virtual void BUTTON_STOP(void){};
+	      virtual void BUTTON_RESET(void){};
+	      virtual void BUTTON_RESET_SYSTEM2(void){};
+	      virtual void BUTTON_RESET_SYSTEM3(void){};
 
-	      // PUK
-	      virtual void SWITCH_OPEN(void){};
-	      virtual void SWITCH_CLOSE(void){};
+	      //SERIAL
+	      virtual void SEND_OK(void){};
+	      virtual void SEND_WANT(void){};
+	      virtual void SEND_REQUEST(void){};
+	      virtual void SEND_REQUEST_OK(void){};
 
-     //PUK-SWITCH
+	      // Receive Puk
+	      virtual void NEW_PUK(void){};
+
+     //PUK-SWITCH ? DO WE NEED THIS
      virtual void PUK_SWITCH_OPEN(void) { } ;
      virtual void PUK_SWITCH_CLOSE(void) { };
 
