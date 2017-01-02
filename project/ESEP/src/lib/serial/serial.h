@@ -28,14 +28,7 @@ public:
 		 * Sendet struc
 		 */
 		int send(const int puk_id);
-		/*
-		 * Sende estop
-		 */
-		int send_estop();
-		/*
-		 * Sende: Band soll laufen
-		 */
-		int send_reset();
+
 
 		int get_puk_id();
 

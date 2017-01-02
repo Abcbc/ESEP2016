@@ -9,6 +9,9 @@ pthread_mutex_t Serial_Transmit::mtx_ = PTHREAD_MUTEX_INITIALIZER;
 
 Serial_Transmit::Serial_Transmit(int fdesc_number) {
 	fdesc_ = fdesc_number;
+	Dispatcher *d = Dispatcher::getInstance();
+	d->addListener(this, SEND_WANT_E_ID);
+	d->addListener(this, ESTOP_THIS_E_ID);
 }
 
 Serial_Transmit::~Serial_Transmit() {
@@ -47,27 +50,6 @@ int Serial_Transmit::transmit_puk(const int puk_id) {
 	return result_write;
 }
 
-int Serial_Transmit::transmit_estop() {
-	pthread_mutex_lock(&mtx_);
-	if (SHOW_DEBUG_MESSAGE) {
-		cerr << "Send ESTOP\n";
-	}
-	// Verkapsulung des ESTOP
-	Header header;
-	header.paket_typ = ESTOP;
-	header.paket_size = 1;
-	// Transmit ESTOP
-	int result_write = write(this->fdesc_, &header, sizeof(header));
-	if (result_write <= 0) {
-		perror("Error Serial, Transmit ESTOP");
-		result_write = -1;
-	} else {
-		result_write = 0;
-	}
-	pthread_mutex_unlock(&mtx_);
-	return result_write;
-}
-
 int Serial_Transmit::transmit_reset() {
 	pthread_mutex_lock(&mtx_);
 	if (SHOW_DEBUG_MESSAGE) {
@@ -88,6 +70,35 @@ int Serial_Transmit::transmit_reset() {
 	pthread_mutex_unlock(&mtx_);
 	return result_write;
 }
+
+void Serial_Transmit::ESTOP_THIS() {
+	pthread_mutex_lock(&mtx_);
+		if (SHOW_DEBUG_MESSAGE) {
+			cerr << "Send ESTOP\n";
+		}
+		// Verkapsulung des ESTOP
+		Header header;
+		header.paket_typ = ESTOP;
+		header.paket_size = 1;
+		// Transmit ESTOP
+		int result_write = write(this->fdesc_, &header, sizeof(header));
+		if (result_write <= 0) {
+			perror("Error Serial, Transmit ESTOP");
+		}
+		pthread_mutex_unlock(&mtx_);
+}
+
+void Serial_Transmit::SEND_WANT() {
+	Header header;
+	header.paket_typ = SEND_REQUEST_PACKED;
+	header.paket_size = 1;
+	// Transmit Send Want
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Send Want");
+	}
+}
+
 
 
 

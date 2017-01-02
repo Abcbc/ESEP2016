@@ -36,18 +36,6 @@ class Serial_Manager{
 	int send_to_system3(const int puk_id);
 
 	/**
-	 * Postcondition: Estop wurde an alle GEME versendet.
-	 * Rueckgabewert 0, Estop Paket wurde gesendet. -1 Fehler.
-	 */
-	int send_estop();
-
-	/**
-	 * Postcondition: Fortsetzung nach Estopp wurde an alle GEME versendet.
-	 * Rueckckgabewert 0, Estop Pakete wurden gesendet. -1 Fehler.
-	 */
-	int send_reset();
-
-	/**
 	 * Precondition:
 	 * Postcondition: True wenn GEME2 anonsten false f�r GEME1 oder GEME3.
 	 */

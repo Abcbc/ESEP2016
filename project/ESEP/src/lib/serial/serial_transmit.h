@@ -14,10 +14,13 @@
 #include <unistd.h>
 #include "lib/HAWThread.h"
 #include <stdio.h>
+#include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/dispatcher.cpp"
 
 using namespace std;
 
-class Serial_Transmit {
+class Serial_Transmit: public State {
 	public:
 	Serial_Transmit(int fdesc_number);
 	~Serial_Transmit();
@@ -29,11 +32,13 @@ class Serial_Transmit {
 	/*
 	 * Sende estop
 	 */
-	int transmit_estop();
+	void ESTOP_THIS();
 	/*
 	 * Sende: Band soll laufen
 	 */
 	int transmit_reset();
+
+	void SEND_WANT();
 
 	private:
 	Serial_Transmit(const Serial_Transmit& other);
@@ -44,6 +49,7 @@ class Serial_Transmit {
 	int fdesc_;
 	// Mutex um Senden zu schuetzen
     static pthread_mutex_t mtx_;
+
 };
 
 #endif /* SERIAL_TRANSMIT_H_ */

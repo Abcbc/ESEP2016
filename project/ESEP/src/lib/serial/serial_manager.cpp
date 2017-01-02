@@ -48,20 +48,6 @@ int Serial_Manager::get_puk_id() {
 	return serial1->get_puk_id();
 }
 
-int Serial_Manager::send_estop() {
-	if (serial1->send_estop() == -1) {
-		return -1;
-	}
-	return serial2->send_estop();
-}
-
-int Serial_Manager::send_reset() {
-	if(serial1->send_reset() == -1) {
-		return -1;
-	}
-	return serial2->send_reset();
-}
-
 bool Serial_Manager::is_GEME_2() {
 	return geme_2;
 }

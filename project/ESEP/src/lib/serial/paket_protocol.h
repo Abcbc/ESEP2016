@@ -19,7 +19,7 @@
  * ACK = Bestaetigung eines Paketes
  */
 enum PAKET_TYP {
-	PUK_ID, RESET, ESTOP, SEND_REQUEST, SEND_OK
+	PUK_ID, RESET, ESTOP, SEND_REQUEST_PACKED, SEND_OK_PACKED
 };
 
 /**

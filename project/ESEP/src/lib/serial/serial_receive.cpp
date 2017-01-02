@@ -54,11 +54,11 @@ void Serial_Receive::execute(void*) {
 				}
 				break;
 				// Send ok wurde empfangen
-			case SEND_OK:
+			case SEND_OK_PACKED:
 				create_event_send_ok();
 				break;
 				// Send Request wurde empfangen
-			case SEND_REQUEST:
+			case SEND_REQUEST_PACKED:
 				create_event_send_request();
 				break;
 			}

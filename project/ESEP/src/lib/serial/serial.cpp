@@ -51,14 +51,6 @@ int Serial::send(const int puk_id) {
 	return transmit->transmit_puk(puk_id);
 }
 
-int Serial::send_estop() {
-	return transmit->transmit_estop();
-}
-
-int Serial::send_reset() {
-	return transmit->transmit_reset();
-}
-
 int Serial::get_puk_id() {
 	return receive->get_puk_id();
 }
