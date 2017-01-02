@@ -151,7 +151,9 @@ private:
 		Dispatcher *d = Dispatcher::getInstance();
 		d->addListener(this, MOTOR_NORMAL_E_ID);
 		d->addListener(this, MOTOR_SLOW_E_ID);
+		d->addListener(this, MOTOR_START_E_ID);
 		d->addListener(this, MOTOR_STOP_E_ID);
+		d->addListener(this, TIMER_MEASURE_OUT_E_ID);
 	}
 
 	void execute(void*) {
@@ -170,7 +172,6 @@ public:
 	}
 
 	virtual void MOTOR_NORMAL() {
-		cout << "Method triggered" << endl;
 		//statePtr->exit(this);
 		statePtr->motor_normal(this);
 		statePtr->entry(this);
@@ -181,32 +182,32 @@ public:
 		statePtr->entry(this);
 	}
 
-	void MOTOR_START() {
+	virtual void MOTOR_START() {
 		statePtr->motor_start(this);
 		statePtr->entry(this);
 	}
 
-	void MOTOR_STOP() {
+	virtual void MOTOR_STOP() {
 		statePtr->motor_stop(this);
 		statePtr->entry(this);
 	}
 
-	void MOTOR_IDLE() {
+	virtual void MOTOR_IDLE() {
 		statePtr->motor_idle(this);
 		statePtr->entry(this);
 	}
 
-	void TIME_MEASURE_OUT() {
+	virtual void TIMER_MEASURE_OUT() {
 		statePtr->time_measure_out(this);
 		statePtr->entry(this);
 	}
 
-	void START_ERROR() {
+	virtual void START_ERROR() {
 		statePtr->start_error(this);
 		statePtr->entry(this);
 	}
 
-	void STOP_ERROR() {
+	virtual void STOP_ERROR() {
 		statePtr->stop_error(this);
 		statePtr->entry(this);
 	}

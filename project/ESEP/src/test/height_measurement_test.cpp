@@ -40,7 +40,7 @@ void Height_Measurement_Test::test_measurement(){
 	motor -> go_right();
 	motor -> start();
 
-	height_measurement = new Height_Measurement();
+	height_measurement = Height_Measurement::get_instance();
 	height_measurement -> start(NULL);
 
 	if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){
