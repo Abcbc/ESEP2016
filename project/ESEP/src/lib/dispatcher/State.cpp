@@ -24,72 +24,73 @@ public:
 		//Dekonstruktor
 	}
 
-	//LIGHT BARRIERS
-	virtual void LIGHT_BARRIER_ENTRY_OPEN(void) {} ;
-	virtual void LIGHT_BARRIER_ENTRY_CLOSE(void) {} ;
+	 //LIGHT BARRIERS
+		  virtual void LIGHT_BARRIER_ENTRY_OPEN(void){} ;
+		  virtual void LIGHT_BARRIER_ENTRY_CLOSE(void){} ;
 
-	virtual void LIGHT_BARRIER_HEIGHT_OPEN(void) {} ;
-	virtual void LIGHT_BARRIER_HEIGHT_CLOSE(void) {} ;
+		  virtual void LIGHT_BARRIER_HEIGHT_OPEN(void){} ;
+		  virtual void LIGHT_BARRIER_HEIGHT_CLOSE(void){} ;
 
-	virtual void LIGHT_BARRIER_SWITCH_OPEN(void) {} ;
-	virtual void LIGHT_BARRIER_SWITCH_CLOSE(void) {} ;
+		  virtual void LIGHT_BARRIER_SWITCH_OPEN(void){} ;
+		  virtual void LIGHT_BARRIER_SWITCH_CLOSE(void){} ;
 
-	virtual void LIGHT_BARRIER_EXIT_OPEN(void) {} ;
-	virtual void LIGHT_BARRIER_EXIT_CLOSE(void) {} ;
-
-
-	//MOTOR
-	virtual void MOTOR_START(void) {} ;
-	virtual void MOTOR_STOP(void) {} ;
-	virtual void MOTOR_FAST(void) {} ;
-	virtual void MOTOR_SLOW(void) {} ;
-	virtual void MOTOR_LEFT(void) {} ;
-	virtual void MOTOR_RIGHT(void) {} ;
+		  virtual void LIGHT_BARRIER_EXIT_OPEN(void){} ;
+		  virtual void LIGHT_BARRIER_EXIT_CLOSE(void){} ;
 
 
-	//BUTTON
-	virtual void BUTTON_START_PRESSED(void) {} ;
-	virtual void BUTTON_START_RELEASED() {} ;
-	virtual void BUTTON_STOP_PRESSED(void) {} ;
-	virtual void BUTTON_STOP_RELEASED(void) {} ;
-	virtual void BUTTON_RESET_PRESSED(void) {} ;
-	virtual void BUTTON_RESET_RELEASED(void) {} ;
-	virtual void BUTTON_E_STOP_PRESSED(void) {} ;
-	virtual void BUTTON_E_STOP_RELEASED(void) {} ;
+		  //MOTOR
+		  virtual void MOTOR_START(void){} ;
+		  virtual void MOTOR_STOP(void){} ;
+		  virtual void MOTOR_NORMAL(void){} ;
+		  virtual void MOTOR_SLOW(void){} ;
+		  virtual void MOTOR_LEFT(void){} ;
+	      virtual void MOTOR_RIGHT(void){} ;
 
-	//HOEHENMESSUNG
-	 virtual void HEIGHT_SENSOR_MEASURE_START(void) {};
-	 virtual void HEIGHT_SENSOR_MEASURE_FINISHED(void) {} ;
-     virtual void IDENTIFIED_REGISTER(void)  { } ;
-     virtual void IDENTIFIED_PUK(void)  { } ;
-     virtual void IDENTIFIED_FALSE(void)  { } ;
 
-     //TIMER
-     virtual void TIMER_RUNOUT(void)  { } ;
-     virtual void TIMER_ENTRY(void)  { } ;
-     virtual void TIMER_ENTRY_OUT(void)  { } ;
-     virtual void TIMER_GROUP(void)  { } ;
-     virtual void TIMER_GROUP_OUT(void)  { } ;
-     virtual void TIMER_MEASURE(void)  { } ;
-     virtual void TIMER_MEASURE_OUT(void)  { } ;
-     virtual void TIMER_EXIT(void)  { } ;
-     virtual void TIMER_EXIT_OUT(void)  { } ;
-     virtual void TIMER_SWITCH(void)  { } ;
-     virtual void TIMER_SWITCH_OUT(void)  { } ;
-     virtual void TIMER_SWITCH_LONG(void)  { } ;
-     virtual void TIMER_SWITCH_LONG_OUT(void)  { } ;
+	      //BUTTON
+	      virtual void BUTTON_START(void){} ;
+	      virtual void BUTTON_STOP(void){} ;
+	      virtual void BUTTON_RESET(void){} ;
+	      virtual void ESTOP_THIS(void){} ;
+	      virtual void ESTOP_RELEASED_THIS(void){} ;
 
-     //SERIAL
-     virtual void SEND_WANT(void)  { } ;
-     virtual void RDY_TAKING(void)  { } ;
-     virtual void RDY_TAKING_OK(void)  { } ;
+	      //HOEHENMESSUNG
+	      virtual void HEIGHT_SENSOR_MEASURE_START(void){};
+	      virtual void HEIGHT_SENSOR_MEASURE_FINISHED(void){};
+	      virtual void IDENTIFIED_REGISTER(void){};
+	      virtual void IDENTIFIED_PUK(void){};
+	      virtual void IDENTIFIED_FALSE(void){};
 
-     //ERROR-EVENTS
-     //TODO
+	      //TIMER
+	      virtual void TIMER_RUNOUT(void){};
+	      virtual void TIMER_ENTRY(void){};
+	      virtual void TIMER_ENTRY_OUT(void){};
+	      virtual void TIMER_GROUP(void){};
+	      virtual void TIMER_GROUP_OUT(void){};
+	      virtual void TIMER_MEASURE(void){};
+	      virtual void TIMER_MEASURE_OUT(void){};
+	      virtual void TIMER_EXIT(void){};
+	      virtual void TIMER_EXIT_OUT(void){};
+	      virtual void TIMER_SWITCH(void){};
+	      virtual void TIMER_SWITCH_OUT(void){};
+	      virtual void TIMER_SWITCH_LONG(void){};
+	      virtual void TIMER_SWITCH_LONG_OUT(void){};
 
-     //SLIDE
-     virtual void SLIDE_NOT_FULL(void)  { } ;
-     virtual void SLIDE_FULL(void)  { } ;
+	      //SERIAL
+	      virtual void SEND_WANT(void){};
+	      virtual void RDY_TAKING(void){};
+	      virtual void RDY_TAKING_OK(void){};
+
+	      //ERROR-EVENTS
+	      //TODO
+
+	      //SLIDE
+	      virtual void SLIDE_NOT_FULL(void){};
+	      virtual void SLIDE_FULL(void){};
+
+	      // PUK
+	      virtual void SWITCH_OPEN(void){};
+	      virtual void SWITCH_CLOSE(void){};
 
      //PUK-SWITCH
      virtual void PUK_SWITCH_OPEN(void) { } ;

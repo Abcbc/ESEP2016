@@ -14,69 +14,86 @@
 #include "src/lib/hal/hal_component.h"
 #include "src/lib/hal/puk_switch.h"
 #include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/Dispatcher.cpp"
+
+class Switch_control;
+struct Data {
+	Data(Switch_control *sc, Puk_switch *ps, Dispatcher *ds) :
+			switch_ctrl(sc), puk_switch(ps), dispatcher(ds) {
+	}
+	Switch_control* switch_ctrl;
+	Puk_switch* puk_switch;
+	Dispatcher *dispatcher;
+};
 
 #define CON 3
 using namespace std;
-class Switch_control {
+class Switch_control: public State {
 private:
 
-	Puk_switch* puk_switch;
-
-	struct State {
-		virtual void entry(Switch_control* s) {
+	struct MyState {
+		virtual void switch_open() {
 		}
-		virtual void switch_open(Switch_control* S) {
+		virtual void timer_switch_out() {
 		}
-		virtual void timer_switch_out(Switch_control* s) {
+		virtual void error_switch() {
 		}
-		virtual void error_switch(Switch_control* s) {
+		virtual void error_switch_ok() {
 		}
-		virtual void error_switch_ok(Switch_control* s) {
-		}
+		Data *data;
 	}*statePtr;
 
-	struct States: public State {
-		virtual void error_switch(Switch_control* s){
+	struct States: public MyState {
+		virtual void error_switch() {
 			new (this) Error;
 		}
 	};
 
-	struct Error: public State {
-		virtual void entry(Switch_control* s) {
+	struct Error: public MyState {
+		Error() {
 			cout << "Switch Error" << endl;
 		}
-		virtual void error_switch_ok(Switch_control* s) {
-			void* history = s->getStateFromHistory_();
+		virtual void error_switch_ok() {
+			void* history = data->switch_ctrl->getStateFromHistory_();
 			memcpy(this, &history, 4);
 		}
 	};
 
-	struct Close: public States {
-		virtual void entry(Switch_control* s) {
+	struct Close: public MyState {
+		Close() {
 			cout << "Close switch" << endl;
-			s->puk_switch->close();
-			s->setHistory_(this);
+			// register for SWITCH_OPEN_E_ID
+			cout << "Close switch2" << endl;
+			data->dispatcher->addListener(data->switch_ctrl, SWITCH_OPEN_E_ID);
+			cout << "Close switch2" << endl;
+			data->puk_switch->close();
+			cout << "Close switch3" << endl;
+			data->switch_ctrl->setHistory_(this);
 		}
-		virtual void switch_open(Switch_control* s) {
+		virtual void switch_open() {
+			data->dispatcher->remListeners(data->switch_ctrl, SWITCH_OPEN_E_ID);
 			new (this) Open;
 		}
 	};
 
-	struct Open: public States {
-		virtual void entry(Switch_control* s) {
+	struct Open: public MyState {
+		Open() {
 			cout << "Open switch" << endl;
-			s->puk_switch->open();
-			s->setHistory_(this);
-			MsgSendPulse(CON, -1, 5, TIMER_SWITCH_E_ID);
+			data->puk_switch->open();
+			data->switch_ctrl->setHistory_(this);
+//			MsgSendPulse(CON, -1, 5, TIMER_SWITCH_E_ID);
+			data->dispatcher->addListener(data->switch_ctrl, SWITCH_CLOSE_E_ID);
 		}
-		virtual void timer_switch_out(Switch_control* s) {
+		virtual void timer_switch_out() {
+			data->dispatcher->remListeners(data->switch_ctrl, SWITCH_CLOSE_E_ID);
 			new (this) Close;
 		}
 	};
 
 	void* history_;
 
-	void setHistory_(State* ptr) {
+	void setHistory_(MyState* ptr) {
 		history_ = *((void**) ptr);
 	}
 
@@ -84,26 +101,38 @@ private:
 		return history_;
 	}
 
-	Open startState;
+	Close startState;
+	Data contextdata;
+
+	Switch_control();
+	virtual ~Switch_control();
 
 public:
-	Switch_control() : puk_switch(Puk_switch::get_instance()),statePtr(&startState), history_(0){}
 
-	void switch_open() {
-		statePtr->switch_open(this);
-		statePtr->entry(this);
+	static Switch_control* get_instance() {
+		static Switch_control instance_;
+		return &instance_;
 	}
-	void timer_switch_out() {
-		statePtr->timer_switch_out(this);
-		statePtr->entry(this);
+
+	virtual void SWITCH_OPEN() {
+		statePtr->switch_open();
 	}
-	void error_switch() {
-		statePtr->error_switch(this);
-		statePtr->entry(this);
+
+	// TODO: Only for testing
+	virtual void SWITCH_CLOSE() {
+		statePtr->timer_switch_out();
 	}
-	void error_switch_ok() {
-		statePtr->error_switch_ok(this);
-		//statePtr->entry(this);
+
+	virtual void TIMER_SWITCH_OUT() {
+		statePtr->timer_switch_out();
+	}
+
+	virtual void ERROR_SWITCH() {
+		statePtr->error_switch();
+	}
+
+	virtual void ERROR_SWITCH_OK() {
+		statePtr->error_switch_ok();
 	}
 
 };

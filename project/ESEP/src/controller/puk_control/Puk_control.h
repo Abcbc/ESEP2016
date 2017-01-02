@@ -16,8 +16,6 @@
 #include "src/lib/dispatcher/State.cpp"
 
 
-
-
 using namespace thread;
 using namespace std;
 class Puk_fsm_dummy;
