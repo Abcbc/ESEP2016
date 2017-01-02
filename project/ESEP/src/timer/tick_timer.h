@@ -64,7 +64,7 @@ class Tick_timer: public HAWThread {
 		uint32_t get_id(void);
 
 		/*
-		 * This Method return an instance of IR_Handler(Singelton)
+		 * This Method return an instance of Tick_timer(Singelton)
 		 * @return Return the pointer of the instance.
 		 */
 		static Tick_timer* get_instance(int con);

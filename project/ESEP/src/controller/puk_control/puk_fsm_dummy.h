@@ -119,6 +119,7 @@ private:
         virtual void light_barrier_exit_close() {
             MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_E_ID);
             MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_CLOSE_E_ID);
+            data->puk_control->delete_puk(data->puk_fsm_dummy);
         }
     };
 
