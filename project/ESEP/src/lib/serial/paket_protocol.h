@@ -1,13 +1,9 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* paket_protocol.h
-* Hier sind die Pakete definiert die Verschickt und
-* empfangen werden ueber die Serielle Schnittstelle.
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
+/*
+ * Paket_Protocol.h
+ *
+ *  Created on: 01.11.2016
+ *      Author: abw181
+ */
 
 #ifndef PAKET_PROTOCOL_H_
 #define PAKT_PROTOCOL_H_
@@ -23,25 +19,31 @@
  * ACK = Bestaetigung eines Paketes
  */
 enum PAKET_TYP {
-	DATA, RESET, ESTOP, ACK
+	PUK_ID, RESET, ESTOP, SEND_REQUEST, SEND_OK
 };
 
+/**
+ * Zeigt alle Debug Messages aus oder an.
+ * An  = 1
+ * Aus = 0
+ */
+#define SHOW_DEBUG_MESSAGE 1
 /**
  * Der Header wird zuerst uebertragen.
  * paket_size: git die Groesse des naehsten Pakets an
  * PAKET_TYP: gibt den Typ des naecsten Pakets an
  */
-typedef struct Header {
+typedef struct {
 	size_t paket_size;
 	PAKET_TYP paket_typ;
-	uint8_t sequenznummer;
-} __attribute__((packed));;
+} Header;
 
 /**
  * Payload
  */
-typedef struct Data {
-	char data[256];
-} __attribute__((packed));;
+typedef struct {
+	uint32_t puk_id;
+
+} Data;
 
 #endif /* PAKET_PROTOCOL_H_ */

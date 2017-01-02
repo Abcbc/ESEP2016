@@ -1,19 +1,16 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial_receive.cpp
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
-
+/*
+ * serial_receive.cpp
+ *
+ *  Created on: 11 Nov 2016
+ *      Author: Julian Magierski
+ */
 #include "serial_receive.h"
 #include "paket_protocol.h"
+#include <stdio.h>
 
-Serial_Receive::Serial_Receive(int fdesc_number, uint8_t* sequenznr, bool* estop) {
+Serial_Receive::Serial_Receive(int fdesc_number, int com_number) {
 	fdesc_ = fdesc_number;
-	sequenznummer = sequenznr;
-	estop_on = estop;
+	com = com_number;
 	// Receive Thread soll laufen
 	thread_run = true;
 }
@@ -29,70 +26,93 @@ void Serial_Receive::execute(void*) {
 		if (readcond(this->fdesc_, &header, sizeof(Header), sizeof(Header), 0,
 				0) > 0) {
 			switch (header.paket_typ) {
-			case ACK:
-				cout << "RECEIVE: ACK, SQZ: " << header.sequenznummer << endl;
-				*sequenznummer = header.sequenznummer;
-				break;
+			// Ein ESTOP wurde empfangen
 			case ESTOP:
-				transmit_ack(header.sequenznummer);
-				cout << "RECEIVE: ESTOP, SQZ: " << header.sequenznummer << endl;
-				if (!(*estop_on)) {
-					*estop_on = true;
-					create_event_estop();
-				} else {
-					cout << "ESTOP is already activ" << endl;
-				}
+				create_event_estop();
 				break;
+				// Reset wurde empfangen
 			case RESET:
-				transmit_ack(header.sequenznummer);
-				cout << "RECEIVE: EGO, SQZ: " << header.sequenznummer << endl;
-				if (*estop_on) {
-					*estop_on = false;
-					create_event_reset();
-				} else {
-					cout << "RESET is already activ" << endl;
-				}
+				// Erstell ein RESET Event
+				create_event_reset();
 				break;
-			case DATA:
-				transmit_ack(header.sequenznummer);
-				cout << "RECEIVE: Payload Paket Size:" << header.paket_size
-						<< endl;
+				// Puk ID wurde empfangen
+			case PUK_ID:
+				cerr << "RECEIVE: Payload Paket Size:" << header.paket_size
+						<< "\n";
 				if (readcond(this->fdesc_, &data, header.paket_size,
 						header.paket_size, 0, 0) > 0) {
-					transmit_ack((header.sequenznummer + 1) % MAX_SQZ);
-					uint8_t seq = (header.sequenznummer + 1) % MAX_SQZ;
-					cout << "RECEIVE: Erhalten DATA Ja, SQZ: " << seq << endl;
-					cout << "RECEIVE DATA: " << data.data << endl;
-					create_event_puk_data(&data);
+					if (SHOW_DEBUG_MESSAGE) {
+						cerr << "RECEIVE DATA: " << data.puk_id << "\n";
+					}
+					// Erstell ein NEW_PUK Event
+					add_puk_id(data.puk_id);
+					create_event_new_puk();
 				} else {
-					cout << "RECEIVE: Erhalten DATA Nein" << endl;
+					if (SHOW_DEBUG_MESSAGE) {
+						cerr << "RECEIVE: Erhalten DATA Nein" << "\n";
+					}
 				}
+				break;
+				// Send ok wurde empfangen
+			case SEND_OK:
+				create_event_send_ok();
+				break;
+				// Send Request wurde empfangen
+			case SEND_REQUEST:
+				create_event_send_request();
+				break;
 			}
+			// Beim empfangen ist ein Fehler aufgetreten.
+		} else {
+			perror("Error Serial, Receive Header");
 		}
 	}
 }
 
-
-int Serial_Receive::transmit_ack(int ack_sqz) {
-	Header header;
-	header.paket_typ = ACK;
-	header.paket_size = 0;
-	header.sequenznummer = ack_sqz;
-	write(this->fdesc_, &header, sizeof(header));
-	return 0;
+void Serial_Receive::create_event_new_puk() {
+	if ( SHOW_DEBUG_MESSAGE ) {
+		cerr << "create event NEW_PUK\n";
+	}
 }
 
-void Serial_Receive::create_event_puk_data(void* data) {
-	Data puk_data = *static_cast<Data*>(data);
-	cout << "Puk data: " << puk_data.data << endl;
+void Serial_Receive::create_event_send_ok() {
+	if ( SHOW_DEBUG_MESSAGE ) {
+		cerr << "create event SEND_OK\n";
+	}
+}
+
+void Serial_Receive::create_event_send_request() {
+	if ( SHOW_DEBUG_MESSAGE ) {
+		cerr << "create event SEND_REQUEST\n";
+	}
 }
 
 void Serial_Receive::create_event_reset() {
-	cout << "Create Event RESET" << endl;
+	if ( SHOW_DEBUG_MESSAGE ) {
+	cerr << "Create Event RESET\n";
+	}
+}
+
+
+int Serial_Receive::get_puk_id() {
+	int puk_id;
+	if (!puk_fifo.empty()) {
+		puk_id = puk_fifo.front();
+		puk_fifo.pop();
+	} else {
+		puk_id = -1;
+	}
+	return puk_id;
+}
+
+void Serial_Receive::add_puk_id(const int puk_id) {
+	puk_fifo.push(puk_id);
 }
 
 void Serial_Receive::create_event_estop() {
-	cout << "Create Event ESTOP" << endl;
+	if ( SHOW_DEBUG_MESSAGE ) {
+	cerr << "Create Event ESTOP\n";
+	}
 }
 
 void Serial_Receive::shutdown() {

@@ -1,12 +1,10 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial_transmit.h
-* Pakete werden versendet an ein Nachbarsystem.
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
+/*
+ * serial_transmit.h
+ *
+ *  Created on: 11 Nov 2016
+ *      Author: Julian Magierski
+ */
+
 #ifndef SERIAL_TRANSMIT_H_
 #define SERIAL_TRANSMIT_H_
 
@@ -15,18 +13,19 @@
 #include <pthread.h>
 #include <unistd.h>
 #include "lib/HAWThread.h"
+#include <stdio.h>
 
 using namespace std;
 
 class Serial_Transmit {
 	public:
-	Serial_Transmit(int fdesc_number, uint8_t* sequenznr, bool* estop);
+	Serial_Transmit(int fdesc_number);
 	~Serial_Transmit();
 
 	/*
-	 * Sendet struc
+	 * Sendet Puk ID zum Nachbarsystem
 	 */
-	int transmit(const Data *data);
+	int transmit_puk(const int puk_id);
 	/*
 	 * Sende estop
 	 */
@@ -43,15 +42,8 @@ class Serial_Transmit {
 	 * Warte darauf das Paket bestaetigt wird.
 	 */
 	int fdesc_;
-	uint8_t* sequenznummer;
-	uint8_t sqz_transmit;
-	bool* estop_on;
 	// Mutex um Senden zu schuetzen
-    pthread_mutex_t mtx_;
-    // Die Anzahl der Microsekunden die gewartet werden sollen bis zum naechsten Senden
-    static const int QSEC = 200000;
-    //  Die Maximale Groesse der Sequenznummer
-    static const int MAX_SQZ = 256;
+    static pthread_mutex_t mtx_;
 };
 
 #endif /* SERIAL_TRANSMIT_H_ */

@@ -1,12 +1,9 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial.cpp
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
-
+/*
+ * Serial.cpp
+ *
+ *  Created on: 28.10.2016
+ *      Author: abw181
+ */
 #include "serial.h"
 #include <iostream>
 #include <stdint.h>
@@ -16,12 +13,15 @@
 #include <termios.h>
 
 Serial::Serial(int serial_nr) {
-	estop_on = false;
-	sequenznummer = 0;
 	string str;
+	// Com siehe auch Serial Componenten Diagram
+	int com = 0;
+	// Zuerst wird das Serial Device bestimmt
 	if (serial_nr == 1) {
 		str = "/dev/ser1";
+		com = 1;
 	} else if (serial_nr == 2) {
+		com = 2;
 		str = "/dev/ser2";
 	} else {
 		exit(-1);
@@ -31,10 +31,11 @@ Serial::Serial(int serial_nr) {
 	if (this->fdesc_ == -1) {
 		exit(-1);
 	}
-	cout << "SQZ Serial: " << sequenznummer << endl;
-	transmit = new Serial_Transmit(fdesc_, &sequenznummer, &estop_on);
-	receive = new Serial_Receive(fdesc_, &sequenznummer, &estop_on);
+	// Dann wird der Empfaenger und Sender definiert
+	transmit = new Serial_Transmit(fdesc_);
+	receive = new Serial_Receive(fdesc_, com);
 	receive->start(NULL);
+	// Die Serial Connection wird Konfiguriert
 	this->configuration();
 }
 
@@ -46,8 +47,8 @@ Serial::~Serial() {
 	}
 }
 
-int Serial::send(const Data *data) {
-	return transmit->transmit(data);
+int Serial::send(const int puk_id) {
+	return transmit->transmit_puk(puk_id);
 }
 
 int Serial::send_estop() {
@@ -56,6 +57,10 @@ int Serial::send_estop() {
 
 int Serial::send_reset() {
 	return transmit->transmit_reset();
+}
+
+int Serial::get_puk_id() {
+	return receive->get_puk_id();
 }
 
 void Serial::configuration() {

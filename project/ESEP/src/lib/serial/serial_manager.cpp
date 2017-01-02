@@ -1,12 +1,9 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial_manager.cpp
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
-
+/*
+ * Serial_Manager.cpp
+ *
+ *  Created on: 28.10.2016
+ *      Author: abw181
+ */
 #include "serial_manager.h"
 
 Serial_Manager* Serial_Manager::instance_ = NULL;
@@ -35,16 +32,20 @@ Serial_Manager* Serial_Manager::get_instance(const bool sys_middle) {
 	return instance_;
 }
 
-int Serial_Manager::send(const Data *data) {
-	return serial1->send(data);
+int Serial_Manager::send_to_system2(const int puk_id) {
+	return serial1->send(puk_id);
 }
 
-int Serial_Manager::send2(const Data *data) {
+int Serial_Manager::send_to_system3(const int puk_id) {
 	if (is_GEME_2()) {
-		return serial2->send(data);
+		return serial2->send(puk_id);
 	} else {
 		return -1;
 	}
+}
+
+int Serial_Manager::get_puk_id() {
+	return serial1->get_puk_id();
 }
 
 int Serial_Manager::send_estop() {
