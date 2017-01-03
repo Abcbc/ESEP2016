@@ -30,15 +30,34 @@ class Serial_Transmit: public State {
 	 */
 	int transmit_puk(const int puk_id);
 	/*
-	 * Sende estop
+	 * Sende Estop
 	 */
 	void ESTOP_THIS();
-	/*
-	 * Sende: Band soll laufen
-	 */
-	int transmit_reset();
 
+	/*
+	 * Sende Reset
+	 */
+	void ESTOP_RESET_THIS();
+
+	/*
+	 * Sende ESTOP_RELEASED auf ein Nachbarsystem
+	 */
+	void ESTOP_RELEASED_THIS();
+
+	/*
+	 * Sende Button Start auf ein Nachbarsystem
+	 */
+	void BUTTON_START();
+
+	/*
+	 * Sende SEND_WANT auf ein Nachbarsystem
+	 */
 	void SEND_WANT();
+
+	/*
+	 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
+	 */
+	void SEND_REQUEST_OK();
 
 	private:
 	Serial_Transmit(const Serial_Transmit& other);

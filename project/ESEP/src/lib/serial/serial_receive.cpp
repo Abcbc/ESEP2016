@@ -54,12 +54,20 @@ void Serial_Receive::execute(void*) {
 				}
 				break;
 				// Send ok wurde empfangen
-			case SEND_OK_PACKED:
+			case REQUEST_OK:
 				create_event_send_ok();
 				break;
 				// Send Request wurde empfangen
-			case SEND_REQUEST_PACKED:
+			case REQUEST:
 				create_event_send_request();
+				break;
+				// Released wurde empfangen
+			case RELEASED:
+				create_event_released();
+				break;
+				// Button Start wurde empfangen
+			case START:
+				create_event_button_start();
 				break;
 			}
 			// Beim empfangen ist ein Fehler aufgetreten.
@@ -70,8 +78,35 @@ void Serial_Receive::execute(void*) {
 }
 
 void Serial_Receive::create_event_new_puk() {
-	if ( SHOW_DEBUG_MESSAGE ) {
+	if (SHOW_DEBUG_MESSAGE) {
 		cerr << "create event NEW_PUK\n";
+	}
+	if (MsgSendPulse(3, -1, 100, NEW_PUK_E_ID) < 0) {
+		perror("Error Receive NEW_PUK from Serial com: " + com);
+	}
+}
+
+void Serial_Receive::create_event_released() {
+	if (SHOW_DEBUG_MESSAGE) {
+		cerr << "create event RELEASED\n";
+	}
+	if (com == 1) {
+		if (MsgSendPulse(3, -1, 101, ESTOP_RELEASED_SYSTEM3_E_ID) < 0) {
+			perror("Error Receive RELEASED from Serial com: " + com);
+		}
+	} else {
+		if (MsgSendPulse(3, -1, 102, ESTOP_RELEASED_SYSTEM3_E_ID) < 0) {
+			perror("Error Receive RELEASED from Serial com: " + com);
+		}
+	}
+}
+
+void Serial_Receive::create_event_button_start() {
+	if (SHOW_DEBUG_MESSAGE) {
+		cerr << "create event BUTTON_START_INCOMMING\n";
+	}
+	if (MsgSendPulse(3, -1, 103, BUTTON_START_INCOMMING_E_ID) < 0) {
+		perror("Error Receive BUTTON_START from Serial com: " + com);
 	}
 }
 
@@ -79,17 +114,32 @@ void Serial_Receive::create_event_send_ok() {
 	if ( SHOW_DEBUG_MESSAGE ) {
 		cerr << "create event SEND_OK\n";
 	}
+	if (MsgSendPulse(3, -1, 104, SEND_OK_E_ID) < 0) {
+		perror("Error Receive SEND_OK from Serial com: " + com);
+	}
 }
 
 void Serial_Receive::create_event_send_request() {
 	if ( SHOW_DEBUG_MESSAGE ) {
 		cerr << "create event SEND_REQUEST\n";
 	}
+	if (MsgSendPulse(3, -1, 105, SEND_REQUEST_E_ID) < 0) {
+		perror("Error Receive SEND_REQUEST from Serial com: " + com);
+	}
 }
 
 void Serial_Receive::create_event_reset() {
-	if ( SHOW_DEBUG_MESSAGE ) {
-	cerr << "Create Event RESET\n";
+	if (SHOW_DEBUG_MESSAGE) {
+		cerr << "Create Event RESET\n";
+	}
+	if (com == 1) {
+		if (MsgSendPulse(3, -1, 101, ESTOP_RESET_SYSTEM2_E_ID) < 0) {
+			perror("Error Receive RESET from Serial com: " + com);
+		}
+	} else {
+		if (MsgSendPulse(3, -1, 102, ESTOP_RESET_SYSTEM3_E_ID) < 0) {
+			perror("Error Receive RESET from Serial com: " + com);
+		}
 	}
 }
 
@@ -113,6 +163,15 @@ void Serial_Receive::create_event_estop() {
 	if ( SHOW_DEBUG_MESSAGE ) {
 	cerr << "Create Event ESTOP\n";
 	}
+	if (com == 1) {
+			if (MsgSendPulse(3, -1, 101, ESTOP_SYSTEM2_E_ID) < 0) {
+				perror("Error Receive ESTOP from Serial com: " + com);
+			}
+		} else {
+			if (MsgSendPulse(3, -1, 102, ESTOP_SYSTEM3_E_ID) < 0) {
+				perror("Error Receive ESTOP from Serial com: " + com);
+			}
+		}
 }
 
 void Serial_Receive::shutdown() {

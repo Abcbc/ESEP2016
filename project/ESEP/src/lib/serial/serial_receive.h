@@ -15,6 +15,9 @@
 #include <fcntl.h>
 #include "lib/HAWThread.h"
 #include <queue>
+#include <sys/neutrino.h>
+#include <stdio.h>
+#include "src/controller/event_table.h"
 
 using namespace std;
 using namespace thread;
@@ -40,6 +43,8 @@ private:
 	 * Receive struc from Serial Port
 	 */
 	void create_event_new_puk();
+	void create_event_released();
+	void create_event_button_start();
 	void create_event_send_ok();
 	void create_event_send_request();
 	void create_event_reset();

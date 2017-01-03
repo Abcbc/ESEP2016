@@ -12,6 +12,10 @@ Serial_Transmit::Serial_Transmit(int fdesc_number) {
 	Dispatcher *d = Dispatcher::getInstance();
 	d->addListener(this, SEND_WANT_E_ID);
 	d->addListener(this, ESTOP_THIS_E_ID);
+	d->addListener(this, ESTOP_RESET_THIS_E_ID);
+	d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
+	d->addListener(this, BUTTON_START_E_ID);
+	d->addListener(this, SEND_REQUEST_OK_E_ID);
 }
 
 Serial_Transmit::~Serial_Transmit() {
@@ -50,7 +54,7 @@ int Serial_Transmit::transmit_puk(const int puk_id) {
 	return result_write;
 }
 
-int Serial_Transmit::transmit_reset() {
+void Serial_Transmit::ESTOP_RESET_THIS() {
 	pthread_mutex_lock(&mtx_);
 	if (SHOW_DEBUG_MESSAGE) {
 		cerr << "Send Reset\n";
@@ -63,12 +67,8 @@ int Serial_Transmit::transmit_reset() {
 	int result_write = write(this->fdesc_, &header, sizeof(header));
 	if (result_write <= 0) {
 		perror("Error Serial, Transmit RESET");
-		result_write = -1;
-	} else {
-		result_write = 0;
 	}
 	pthread_mutex_unlock(&mtx_);
-	return result_write;
 }
 
 void Serial_Transmit::ESTOP_THIS() {
@@ -88,14 +88,54 @@ void Serial_Transmit::ESTOP_THIS() {
 		pthread_mutex_unlock(&mtx_);
 }
 
+void Serial_Transmit::ESTOP_RELEASED_THIS() {
+	pthread_mutex_lock(&mtx_);
+		if (SHOW_DEBUG_MESSAGE) {
+			cerr << "Send ESTOP_RELEASED_THIS\n";
+		}
+		// Verkapsulung des ESTOP
+		Header header;
+		header.paket_typ = RELEASED;
+		header.paket_size = 1;
+		// Transmit ESTOP
+		int result_write = write(this->fdesc_, &header, sizeof(header));
+		if (result_write <= 0) {
+			perror("Error Serial, Transmit RELEASED");
+		}
+		pthread_mutex_unlock(&mtx_);
+}
+
+void Serial_Transmit::BUTTON_START() {
+	Header header;
+	header.paket_typ = START;
+	header.paket_size = 1;
+	// Transmit Send Button Start
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit START");
+	}
+}
+
+
 void Serial_Transmit::SEND_WANT() {
 	Header header;
-	header.paket_typ = SEND_REQUEST_PACKED;
+	header.paket_typ = REQUEST;
 	header.paket_size = 1;
 	// Transmit Send Want
 	int result_write = write(this->fdesc_, &header, sizeof(header));
 	if (result_write <= 0) {
 		perror("Error Serial, Transmit Send Want");
+	}
+}
+
+void Serial_Transmit::SEND_REQUEST_OK() {
+	Header header;
+	header.paket_typ = REQUEST_OK;
+	header.paket_size = 1;
+	// Transmit Send REQUEST_OK_PACKED
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Send REQUEST_OK");
 	}
 }
 
