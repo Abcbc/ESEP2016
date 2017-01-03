@@ -49,6 +49,7 @@ private:
 		}
 		virtual void height_sensor_measure_finished() {
 		}
+		virtual void identified_puk() {}
 		virtual void send_ok() {
 		}
 		MyData* data;
@@ -89,13 +90,13 @@ private:
 		Measure_Height() {
 			cout << "in Height Measurement" << endl;
 			data->dispatcher->addListener(data->puk_fsm_dummy,
-					HEIGHT_SENSOR_MEASURE_FINISHED_E_ID);
+					IDENTIFIED_PUK_E_ID);
 		}
-		virtual void height_sensor_measure_finished() {
+		virtual void identified_puk() {
 			cout << "Height Measurement finished" << endl;
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_MEASURE_OUT_E_ID);
 			data->dispatcher->remListeners(data->puk_fsm_dummy,
-					HEIGHT_SENSOR_MEASURE_FINISHED_E_ID);
+					IDENTIFIED_PUK_E_ID);
 			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
 			new (this) Exit;
 		}
@@ -178,6 +179,9 @@ public:
 	}
 	virtual void SEND_OK() {
 		statePtr->send_ok();
+	}
+	virtual void IDENTIFIED_PUK() {
+		statePtr->identified_puk();
 	}
 };
 

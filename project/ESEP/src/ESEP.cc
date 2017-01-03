@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 	Ir_handler *ir = Ir_handler::get_instance();
 	ir->connect(3);
 
-	Serial_Manager* sm = Serial_Manager::get_instance(false);
+	Serial_Manager* sm = Serial_Manager::get_instance(true);
 
 	Motorcontroler* mc = Motorcontroler::get_instance();
 	mc->start(NULL);

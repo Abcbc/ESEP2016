@@ -53,6 +53,10 @@ class Height_Measurement: public HAWThread {
 
 	public:
 		Height_Measurement();
+		static Height_Measurement* get_instance(){
+			static Height_Measurement instance_;
+			return &instance_;
+		}
 		
         ~Height_Measurement(){};
         static uint32_t get_type(void);

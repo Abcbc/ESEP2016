@@ -15,7 +15,7 @@ Puk_control* Puk_control::instance_ = NULL;
 pthread_mutex_t Puk_control::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 Puk_control::Puk_control() :
-		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState), systemType(1) {
+		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState), systemType(2) {
 	dispatcher_ = Dispatcher::getInstance();
 	dispatcher_->addListener(this, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 	dispatcher_->addListener(this, SEND_REQUEST_E_ID);
@@ -73,6 +73,7 @@ void Puk_control::SEND_REQUEST(){
 
 void Puk_control::NEW_PUK(){
 	Serial_Manager* sm = Serial_Manager::get_instance(false);
+	cout << sm->get_puk_id() << endl;
 	create_puk(sm->get_puk_id());
 }
 
