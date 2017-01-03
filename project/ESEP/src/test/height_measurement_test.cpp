@@ -40,7 +40,7 @@ void Height_Measurement_Test::test_measurement(){
 	motor -> go_right();
 	motor -> start();
 
-	height_measurement = Height_Measurement::get_instance();
+	height_measurement = new Height_Measurement();
 	height_measurement -> start(NULL);
 
 	if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){
@@ -64,33 +64,25 @@ void Height_Measurement_Test::test_measurement(){
 		}else if(pulse.value.sival_int == HM_START_EVENT_ID_E){
 			cout << "start height measurement" << endl;
 		}else if(pulse.value.sival_int == HM_DONE_EVENT_ID_E){
-			switch(height_measurement -> get_type()){
-				case 0 :
-					cout << "iron_core" << endl;
-					break;
-				case 3 :
-					cout << "little_one" << endl;
-					break;
-				case 4 :
-					cout << "normal" << endl;
-					break;
-				case 5 :
-					cout << "hole" << endl;
-					break;
-				case 6 :
-					cout << "sunshine" << endl;
-					break;
-				case 7 :
-					cout << "black_beauty" << endl;
-					break;
-				case 8 :
-					cout << "white_innocence" << endl;
-					break;
-				case 9 :
-					cout << "deep_blue" << endl;
-					break;
-				default :
-					cout << "wrong type id: " << height_measurement -> get_type() << endl;
+			if((height_measurement -> get_type()) < 32){
+				cout << "bit code detected: "<< height_measurement -> get_type() << endl;
+			}else{
+				switch(height_measurement -> get_type()){
+					case 0xA000001 :
+						cout << "iron_core" << endl;
+						break;
+					case 0xF000001 :
+						cout << "little_one" << endl;
+						break;
+					case 0xE000001 :
+						cout << "normal" << endl;
+						break;
+					case 0xC000001 :
+						cout << "hole" << endl;
+						break;
+					default :
+						cout << "wrong type id: " << height_measurement -> get_type() << endl;
+				}
 			}
 		}
 	}

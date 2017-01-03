@@ -8,7 +8,6 @@
 #include <vector>
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
-#include "src/controller/event_table.h"
 #include "src/lib/hal/height_sensor.h"
 
 using namespace thread;
@@ -28,7 +27,9 @@ using namespace thread;
 
 struct height_array {
 	uint32_t length;
-	uint32_t* array;
+	double* array;
+	double max;
+	double min;
 };
 
 class Height_Measurement: public HAWThread {
@@ -41,21 +42,18 @@ class Height_Measurement: public HAWThread {
         virtual void shutdown();
 		
         height_array get_height_array(void);
-		uint32_t compare_arrays(height_array ha);
+//		uint32_t compare_arrays(height_array ha);
 		void get_height_difference(Height_sensor* height_sensor);
+		uint32_t evaluate_puk_type(height_array ha_unfiltered);
 		void  init_timer(void);
+		height_array filter_array(height_array ha);
+		double mean(height_array ha);
 		
-		static uint32_t profiles[10][450];
-
-		Height_Measurement();
+//		static uint32_t profiles[10][450];
 
 	public:
-		static Height_Measurement* get_instance(){
-		    static Height_Measurement instance;
-		    return &instance;
-		}
+		Height_Measurement();
 		
-
         ~Height_Measurement(){};
         static uint32_t get_type(void);
 		static void set_motor_speed(uint32_t speed);
