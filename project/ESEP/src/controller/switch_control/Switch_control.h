@@ -18,8 +18,8 @@
 #include "src/lib/dispatcher/Dispatcher.cpp"
 
 class Switch_control;
-struct Data {
-	Data(Switch_control *sc, Puk_switch *ps, Dispatcher *ds) :
+struct MyData {
+	MyData(Switch_control *sc, Puk_switch *ps, Dispatcher *ds) :
 			switch_ctrl(sc), puk_switch(ps), dispatcher(ds) {
 	}
 	Switch_control* switch_ctrl;
@@ -42,7 +42,7 @@ private:
 		virtual void error_switch_ok() {
 		}
 		virtual void start(){}
-		Data *data;
+		MyData *data;
 	}*statePtr;
 
 	struct States: public MyState {
@@ -106,7 +106,7 @@ private:
 	}
 
 	StartState startState;
-	Data contextdata;
+	MyData contextdata;
 
 	Switch_control();
 	virtual ~Switch_control();

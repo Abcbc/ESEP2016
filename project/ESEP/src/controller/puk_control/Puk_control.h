@@ -27,6 +27,7 @@ private:
 
 	vector<Puk_fsm_dummy *> puk_list_;
 	Dispatcher* dispatcher_;
+	bool belt_is_free;
 
 	Puk_control();
 
@@ -84,7 +85,7 @@ private:
 	}
 
 public:
-	const int systemType = 1;
+	const int systemType;
 
 	~Puk_control();
 
@@ -96,6 +97,8 @@ public:
 	bool sequenz_group(int pukType);
 
 	virtual void LIGHT_BARRIER_ENTRY_CLOSE();
+	virtual void SEND_REQUEST();
+	virtual void NEW_PUK();
 };
 
 #endif /* PUK_CONTROL_H_ */
