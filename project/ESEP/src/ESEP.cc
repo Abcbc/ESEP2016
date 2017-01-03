@@ -16,6 +16,7 @@
 #include "src/controller/event_table.h"
 #include "src/controller/ir_handler.h"
 #include "src/controller/switch_control/Switch_control.h"
+#include "src/controller/height_measurement/height_measurement.h"
 
 int main(int argc, char *argv[]) {
 	/* Zugriffsrechte von QNX fuer diesen Thread, auf die Hardware erbitten. */
@@ -59,6 +60,10 @@ int main(int argc, char *argv[]) {
 	Motorcontroler* mc = Motorcontroler::get_instance();
 	mc->start(NULL);
 	Switch_control* sc = Switch_control::get_instance();
+
+	Height_Measurement* hm = Height_Measurement::get_instance();
+	hm->start(NULL);
+
 	Puk_control* pc = Puk_control::get_instance();
 	pc->start(NULL);
 

@@ -41,6 +41,7 @@ private:
 		}
 		virtual void error_switch_ok() {
 		}
+		virtual void start(){}
 		Data *data;
 	}*statePtr;
 
@@ -60,15 +61,18 @@ private:
 		}
 	};
 
+	struct StartState : public MyState {
+	    virtual void start(){
+	        new (this) Close;
+	    }
+	};
+
 	struct Close: public MyState {
 		Close() {
 			cout << "Close switch" << endl;
 			// register for SWITCH_OPEN_E_ID
-			cout << "Close switch2" << endl;
 			data->dispatcher->addListener(data->switch_ctrl, SWITCH_OPEN_E_ID);
-			cout << "Close switch2" << endl;
 			data->puk_switch->close();
-			cout << "Close switch3" << endl;
 			data->switch_ctrl->setHistory_(this);
 		}
 		virtual void switch_open() {
@@ -101,7 +105,7 @@ private:
 		return history_;
 	}
 
-	Close startState;
+	StartState startState;
 	Data contextdata;
 
 	Switch_control();

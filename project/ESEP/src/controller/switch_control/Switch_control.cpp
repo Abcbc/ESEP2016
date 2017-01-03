@@ -12,7 +12,7 @@ Switch_control::Switch_control() :
 				Puk_switch::get_instance(), Dispatcher::getInstance()) {
 	cout << "Switchcontroler constructed" << endl;
 	statePtr->data = &contextdata;
-
+	statePtr->start();
 }
 
 Switch_control::~Switch_control() {

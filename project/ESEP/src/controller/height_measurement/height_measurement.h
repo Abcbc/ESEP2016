@@ -8,6 +8,7 @@
 #include <vector>
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
+#include "src/controller/event_table.h"
 #include "src/lib/hal/height_sensor.h"
 
 using namespace thread;
@@ -46,9 +47,15 @@ class Height_Measurement: public HAWThread {
 		
 		static uint32_t profiles[10][450];
 
-	public:
 		Height_Measurement();
+
+	public:
+		static Height_Measurement* get_instance(){
+		    static Height_Measurement instance;
+		    return &instance;
+		}
 		
+
         ~Height_Measurement(){};
         static uint32_t get_type(void);
 		static void set_motor_speed(uint32_t speed);
