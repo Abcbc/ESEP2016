@@ -8,7 +8,7 @@
 #ifndef PUK_CONTROL_H_
 #define PUK_CONTROL_H_
 
-#include <list>
+#include <vector>
 #include <unistd.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
