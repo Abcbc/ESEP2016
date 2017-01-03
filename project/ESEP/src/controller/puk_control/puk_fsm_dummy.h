@@ -16,13 +16,14 @@
 #include "src/lib/dispatcher/Dispatcher.cpp"
 #include "src/controller/event_table.h"
 #include "src/controller/puk_control/Puk_control.h"
+#include "src/lib/serial/serial_manager.h"
 
 #define CON_ID 3
 #define PRIO -1
 #define CODE 5
 
-struct Data {
-    Data(int d, Puk_control* pc, Puk_fsm_dummy* pf, Dispatcher* dis) :
+struct MyData {
+	MyData(int d, Puk_control* pc, Puk_fsm_dummy* pf, Dispatcher* dis) :
             pukType(d), puk_control(pc), puk_fsm_dummy(pf), dispatcher(dis) {
 
     }
@@ -47,7 +48,8 @@ private:
         virtual void height_sensor_measure_start() {
         }
         virtual void height_sensor_measure_finished(){}
-        Data* data;
+        virtual void send_ok(){}
+        MyData* data;
     }*statePtr;
 
     struct Start: public MyState {
@@ -117,14 +119,30 @@ private:
                     LIGHT_BARRIER_EXIT_CLOSE_E_ID);
         }
         virtual void light_barrier_exit_close() {
+        	data->dispatcher->remListeners(data->puk_fsm_dummy,
+        	                    LIGHT_BARRIER_EXIT_CLOSE_E_ID);
             MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_E_ID);
             MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_CLOSE_E_ID);
-            data->puk_control->delete_puk(data->puk_fsm_dummy);
+            new (this) Transmit;
         }
     };
 
+    struct Transmit: public MyState {
+    	Transmit() {
+    		cout << "State: Transmit"
+    		data->dispatcher->addListener(data->puk_fsm_dummy, SEND_OK_E_ID);
+    		MsgSendPulse(CON_ID, PRIO, CODE, SEND_WANT_E_ID);
+    	}
+    	virtual void send_ok(){
+    		data->dispatcher->remListeners(data->puk_fsm_dummy, SEND_OK_E_ID);
+    		// Send pukType via serial
+    		Serial_Manager* sm = Serial_Manager::get_instance(false);
+    		sm->send_to_system2(data->pukType);
+    	}
+    };
+
     Start stateMember;
-    Data contextdata;
+    MyData contextdata;
 
 public:
     Puk_fsm_dummy(int Type);
@@ -146,6 +164,9 @@ public:
     }
     virtual void HEIGHT_SENSOR_MEASURE_FINISHED(){
         statePtr->height_sensor_measure_finished();
+    }
+    virtual void SEND_OK(){
+    	statePtr->send_ok();
     }
 };
 

@@ -17,6 +17,7 @@
 #include "src/controller/ir_handler.h"
 #include "src/controller/switch_control/Switch_control.h"
 #include "src/controller/height_measurement/height_measurement.h"
+#include "src/lib/serial/serial_manager.h"
 
 int main(int argc, char *argv[]) {
 	/* Zugriffsrechte von QNX fuer diesen Thread, auf die Hardware erbitten. */
@@ -57,6 +58,9 @@ int main(int argc, char *argv[]) {
 	dis->start(NULL);
 	Ir_handler *ir = Ir_handler::get_instance();
 	ir->connect(3);
+
+	Serial_Manager* sm = Serial_Manager::get_instance(false);
+
 	Motorcontroler* mc = Motorcontroler::get_instance();
 	mc->start(NULL);
 	Switch_control* sc = Switch_control::get_instance();
