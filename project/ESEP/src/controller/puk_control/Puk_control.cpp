@@ -15,9 +15,11 @@ Puk_control* Puk_control::instance_ = NULL;
 pthread_mutex_t Puk_control::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 Puk_control::Puk_control() :
-		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState) {
+		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState), systemType(1) {
 	dispatcher_ = Dispatcher::getInstance();
 	dispatcher_->addListener(this, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
+	dispatcher_->addListener(this, SEND_REQUEST_E_ID);
+	dispatcher_->addListener(this, NEW_PUK_E_ID);
 	std::cout << "Puk_control contructed" << std::endl;
 }
 
@@ -34,14 +36,10 @@ Puk_control* Puk_control::get_instance() {
 	return instance_;
 }
 
+// TODO: Nothing is getting deleted
 void Puk_control::delete_puk(Puk_fsm_dummy* p) {
 	std::cout << "Deleting Puk" << std::endl;
-//	puk_list_.erase(std::find(puk_list_.begin(), puk_list_.end(), p));
-	puk_list_.erase(std::remove(puk_list_.begin(), puk_list_.end(), p),
-			puk_list_.end());
-	if ((systemType != 1) && puk_list_.empty()){
-		belt_is_free = true;
-	}
+	puk_list_.erase(std::remove(puk_list_.begin(), puk_list_.end(), p), puk_list_.end());
 }
 
 void Puk_control::send_puk(Puk_fsm_dummy* p) {
@@ -52,9 +50,6 @@ void Puk_control::create_puk(int pukType) {
 	std::cout << "Create new Puk object" << std::endl;
 	puk_list_.push_back(new Puk_fsm_dummy(pukType));
 	puk_list_.back()->start();
-	if(systemType != 1){
-		belt_is_free = false;
-	}
 }
 
 bool Puk_control::sequenz_group(int pukType) {
@@ -69,7 +64,8 @@ void Puk_control::LIGHT_BARRIER_ENTRY_CLOSE() {
 
 void Puk_control::SEND_REQUEST(){
 	if (systemType != 1){
-		if (belt_is_free){
+		cout << "number of puks: " << puk_list_.size() << endl;
+		if (puk_list_.empty()){ // puk_list_.empty()
 			MsgSendPulse(CON_ID, PRIO, CODE, SEND_REQUEST_OK_E_ID);
 		}
 	}

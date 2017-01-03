@@ -85,7 +85,7 @@ private:
 	}
 
 public:
-	const int systemType = 1;
+	const int systemType;
 
 	~Puk_control();
 
