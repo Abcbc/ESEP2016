@@ -54,16 +54,43 @@ class Signal_light:Hal_component, State{
 			 */
 			void stop_blink(Color c);
 			
+			/*
+			 *The stop blink function is stoping for all lights
+			 */
+			void stop_all_blinks();
+
+			/*
+			 * light Normal Event Handling
+			 * Green light
+			 */
 		    void TRAFFIC_LIGHT_NORMAL();
 
+		    /*
+		     * light Warning
+		     */
 		    void TRAFFIC_LIGHT_WARNING();
 
+		    /*
+		     * Light unack Error
+		     * Red light and blink fast
+		     */
 		    void TRAFFIC_LIGHT_UNACK_ERROR();
 
+		    /*
+		     * Light Acked Error
+		     * Red Light
+		     */
 		    void TRAFFIC_LIGHT_ACKED_ERROR();
 
+		    /*
+		     * Light passed Error blink slow
+		     */
 		    void TRAFFIC_LIGHT_PASSED_ERROR();
 
+		    /*
+		     * Light ready for puk taking
+		     * Green light and blink
+		     */
 		    void TRAFFIC_LIGHT_RDY();
 
 			/*

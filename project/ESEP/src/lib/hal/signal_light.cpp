@@ -30,6 +30,13 @@ Signal_light::Signal_light(){
 	GREEN 	= 5;
 	YELLOW 	= 6;
 	RED 	= 7;
+	Dispatcher *d = Dispatcher::getInstance();
+	d->addListener(this, TRAFFIC_LIGHT_NORMAL_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_WARNING_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_PASSED_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_RDY_E_ID);
 }
 Signal_light::~Signal_light(){
 	pthread_mutex_destroy(&init_mtx);
@@ -86,6 +93,7 @@ void Signal_light::blink(Color c, uint32_t hz){
 			break;
 	}
 }
+
 void Signal_light::stop_blink(Color c){
 	switch(c){
 		case green:
@@ -112,28 +120,51 @@ void Signal_light::stop_blink(Color c){
 	}
 }
 
-void Signal_light::TRAFFIC_LIGHT_NORMAL() {
+void Signal_light::stop_all_blinks() {
+	stop_blink(red);
+	stop_blink(yellow);
+	stop_blink(green);
+}
 
+void Signal_light::TRAFFIC_LIGHT_NORMAL() {
+	clear_all_lights();
+	stop_all_blinks();
+	std::cout << "shall be green" << std::endl;
+	set_light(green);
 }
 
 void Signal_light::TRAFFIC_LIGHT_WARNING() {
-
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(yellow);
+	blink(yellow, 1000000);
 }
 
 void Signal_light::TRAFFIC_LIGHT_UNACK_ERROR() {
-
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(red);
+	blink(red, 1000000);
 }
 
 void Signal_light::TRAFFIC_LIGHT_ACKED_ERROR() {
-
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(red);
 }
 
 void Signal_light::TRAFFIC_LIGHT_PASSED_ERROR() {
-
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(red);
+	blink(red, 500000);
 }
 
 void Signal_light::TRAFFIC_LIGHT_RDY() {
-
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(green);
+	blink(green, 1000000);
 }
 
 uint8_t Signal_light::color_bit(Color c){

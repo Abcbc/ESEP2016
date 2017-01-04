@@ -26,10 +26,6 @@ int main(int argc, char *argv[]) {
 				<< endl;
 	}
 
-	// Test HAL
-//	HAL_Test hal_test;
-//	hal_test.test_actuators();
-
 // Test height sensor
 //	Height_Sensor_Test hs_test;
 //	hs_test.test_height();
@@ -58,6 +54,10 @@ int main(int argc, char *argv[]) {
 	dis->start(NULL);
 	Ir_handler *ir = Ir_handler::get_instance();
 	ir->connect(3);
+
+	// Test HAL
+	//HAL_Test hal_test;
+	//hal_test.test_actuators();
 
 	Serial_Manager* sm = Serial_Manager::get_instance(true);
 
