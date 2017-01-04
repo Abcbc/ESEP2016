@@ -39,12 +39,12 @@ void Timer_test::test_timer(){
 	SIGEV_PULSE_INIT(&event, con, 1, 5, NULL);
 	cout << "cid: " << cid << " conid: " << con << endl;
 
-	Tick_timer* timer = Tick_timer::get_instance(con);
+	Tick_timer* timer = Tick_timer::get_instance();
 	timer -> start(NULL);
 
 	// test single timer slow
-	timer -> set_speed(MOTOR_SLOW);
-	timer -> start_timer(600, 1);
+	timer -> set_speed(MOTOR_SLOW_VALUE);
+	timer -> start_timer(600);
 	MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
 	if(timer -> get_id() == 1){
 		cout << "success" << endl;
@@ -52,8 +52,8 @@ void Timer_test::test_timer(){
 		cout << "failed" << endl;
 	}
 	// test single timer fast
-	timer -> set_speed(MOTOR_FAST);
-	timer -> start_timer(600, 2);
+	timer -> set_speed(MOTOR_FAST_VALUE);
+	timer -> start_timer(600);
 	MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
 	if(timer -> get_id() == 2){
 		cout << "success" << endl;
@@ -61,9 +61,9 @@ void Timer_test::test_timer(){
 		cout << "failed" << endl;
 	}
 	//test many timer fast
-	timer -> start_timer(600, 1);
-	timer -> start_timer(700, 2);
-	timer -> start_timer(800, 3);
+	timer -> start_timer(600);
+	timer -> start_timer(700);
+	timer -> start_timer(800);
 	for(int i = 1; i < 4; i++){
 		MsgReceivePulse(cid,&pulse,sizeof(pulse),NULL);
 		if(timer -> get_id() == i){
@@ -73,7 +73,7 @@ void Timer_test::test_timer(){
 		}
 	}
 	// test get duration
-	timer ->start_timer(8000, 1);
+	timer ->start_timer(8000);
 	sleep(1);
 	if(timer -> get_duration(1) < 8000){
 		cout << "success" << endl;

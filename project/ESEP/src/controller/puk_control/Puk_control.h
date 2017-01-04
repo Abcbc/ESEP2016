@@ -12,9 +12,8 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
-#include "src/lib/dispatcher/Dispatcher.cpp"
-#include "src/lib/dispatcher/State.cpp"
-
+#include "lib/dispatcher/Dispatcher.cpp"
+#include "lib/dispatcher/State.cpp"
 
 using namespace thread;
 using namespace std;
@@ -63,7 +62,7 @@ private:
 
 	struct Ohne_metall_2: public myState {
 		virtual bool check(int pukType) {
-			// TODO: korrekte Werte für puks eintragen 41 = oben ohne metall
+			// TODO: korrekte Werte für puks eintragen 41 = oben mit metall
 			if (pukType == 41) {
 				new (this) Idle;
 				return true;
@@ -76,13 +75,15 @@ private:
 	Idle startState;
 
 	void execute(void*) {
-		while(1){
+		while (1) {
 			usleep(10000);
 		}
 	}
 	virtual void shutdown() {
 
 	}
+
+	void try_event(bool (*ptToSignal)());
 
 public:
 	const int systemType;
@@ -95,10 +96,22 @@ public:
 	void send_puk(Puk_fsm_dummy *p);
 	void create_puk(int pukType);
 	bool sequenz_group(int pukType);
+	int puk_count();
 
+// Events for puk control
 	virtual void LIGHT_BARRIER_ENTRY_CLOSE();
 	virtual void SEND_REQUEST();
 	virtual void NEW_PUK();
+
+// Events for puk fsm
+	virtual void LIGHT_BARRIER_ENTRY_OPEN();
+	virtual void LIGHT_BARRIER_SWITCH_CLOSE();
+	virtual void LIGHT_BARRIER_EXIT_CLOSE();
+	virtual void HEIGHT_SENSOR_MEASURE_START();
+	virtual void HEIGHT_SENSOR_MEASURE_FINISHED();
+	virtual void SEND_OK();
+	virtual void IDENTIFIED_PUK();
+	virtual void TIMER_EXIT_OUT();
 };
 
 #endif /* PUK_CONTROL_H_ */

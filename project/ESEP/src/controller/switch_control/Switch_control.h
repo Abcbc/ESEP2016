@@ -16,15 +16,17 @@
 #include "src/controller/event_table.h"
 #include "src/lib/dispatcher/State.cpp"
 #include "src/lib/dispatcher/Dispatcher.cpp"
+#include "timer/tick_timer.h"
 
 class Switch_control;
 struct MyData {
 	MyData(Switch_control *sc, Puk_switch *ps, Dispatcher *ds) :
-			switch_ctrl(sc), puk_switch(ps), dispatcher(ds) {
+			switch_ctrl(sc), puk_switch(ps), dispatcher(ds), timer_id(-1) {
 	}
 	Switch_control* switch_ctrl;
 	Puk_switch* puk_switch;
 	Dispatcher *dispatcher;
+	int timer_id;
 };
 
 #define CON 3
@@ -41,7 +43,8 @@ private:
 		}
 		virtual void error_switch_ok() {
 		}
-		virtual void start(){}
+		virtual void start() {
+		}
 		MyData *data;
 	}*statePtr;
 
@@ -61,10 +64,10 @@ private:
 		}
 	};
 
-	struct StartState : public MyState {
-	    virtual void start(){
-	        new (this) Close;
-	    }
+	struct StartState: public MyState {
+		virtual void start() {
+			new (this) Close;
+		}
 	};
 
 	struct Close: public MyState {
@@ -76,7 +79,6 @@ private:
 			data->switch_ctrl->setHistory_(this);
 		}
 		virtual void switch_open() {
-			data->dispatcher->remListeners(data->switch_ctrl, SWITCH_OPEN_E_ID);
 			new (this) Open;
 		}
 	};
@@ -87,10 +89,21 @@ private:
 			data->puk_switch->open();
 			data->switch_ctrl->setHistory_(this);
 //			MsgSendPulse(CON, -1, 5, TIMER_SWITCH_E_ID);
-			data->dispatcher->addListener(data->switch_ctrl, SWITCH_CLOSE_E_ID);
+			data->dispatcher->addListener(data->switch_ctrl,
+					TIMER_SWITCH_OUT_E_ID);
+			Tick_timer* t = Tick_timer::get_instance();
+			data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
+		}
+		virtual void switch_open() {
+			cout << "Open Switch again" << endl;
+			Tick_timer* t = Tick_timer::get_instance();
+			t->stop_timer(data->timer_id);
+			data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
 		}
 		virtual void timer_switch_out() {
-			data->dispatcher->remListeners(data->switch_ctrl, SWITCH_CLOSE_E_ID);
+			data->dispatcher->remListeners(data->switch_ctrl,
+					TIMER_SWITCH_OUT_E_ID);
+			data->dispatcher->remListeners(data->switch_ctrl, SWITCH_OPEN_E_ID);
 			new (this) Close;
 		}
 	};

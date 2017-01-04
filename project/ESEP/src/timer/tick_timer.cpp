@@ -10,9 +10,10 @@
 #include <stdint.h>
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
-#include "src/timer/tick_timer.h"
+#include "timer/tick_timer.h"
 #include "src/lib/hal/motor.h"
-#include "src/controller/event_table.h"
+#include "controller/event_table.h"
+#include "lib/dispatcher/Dispatcher.cpp"
 
 #define ID_DOES_NOT_EXIST -1
 #define TICK_SEC 0
@@ -21,6 +22,7 @@
 struct intern_timer{
 	uint32_t id;
 	int32_t duration;
+	int32_t start_duration;
 };
 
 static std::vector<intern_timer> timer_vector;
@@ -31,14 +33,17 @@ Tick_timer* Tick_timer::instance_ = NULL;
 pthread_mutex_t Tick_timer::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Tick_timer::vector_access_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-void Tick_timer::start_timer(uint32_t duration, uint32_t id){
+uint32_t Tick_timer::start_timer(int32_t duration){
 	pthread_mutex_lock(&vector_access_mtx);
-	struct intern_timer new_timer = {id, duration};
+	static int32_t id = 0;
+	id++;
+	struct intern_timer new_timer = {id, duration, duration};
 	timer_vector.push_back(new_timer);
 	pthread_mutex_unlock(&vector_access_mtx);
+	return id;
 }
 
-uint32_t Tick_timer::stop_timer(uint32_t id){
+int32_t Tick_timer::stop_timer(uint32_t id){
 	pthread_mutex_lock(&vector_access_mtx);
 	int idx = find_timer(id);
 	if(idx == -1){
@@ -101,6 +106,12 @@ void Tick_timer::execute(void*){
     	cout << "timer_create() failed"<< endl;
     }
 
+    // add listener to disptacher
+    Dispatcher* d = Dispatcher::getInstance();
+    d->addListener(this, SPEED_NORMAL_E_ID);
+    d->addListener(this, SPEED_STOP_E_ID);
+    d->addListener(this, SPEED_SLOW_E_ID);
+
     // init timer
 	timerSpec.it_value.tv_sec = TICK_SEC;
 	timerSpec.it_value.tv_nsec = TICK_NSEC;
@@ -111,14 +122,24 @@ void Tick_timer::execute(void*){
 	while(1){
 		// wait for tick
 	    MsgReceivePulse(cid, &pulse, sizeof (pulse), NULL);
-	    if(step != MOTOR_STOP){
+	    if(step != MOTOR_STOP_VALUE){
 	    	pthread_mutex_lock(&vector_access_mtx);
 			// calculate rest duration
 			for(uint32_t i = 0; i < timer_vector.size(); i++){
 				timer_vector[i].duration -= step;
 				if(timer_vector[i].duration <= 0){
+					cout << "timer run out" << endl;
 					// if the timer has run out the id is send in pulse-msg
-					MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);
+					switch(timer_vector[i].start_duration){
+						case SWITCH_OPEN_DURATION :
+							MsgSendPulse(3, -1, 5, TIMER_SWITCH_OUT_E_ID);
+							break;
+						case EXIT_DURATION :
+							MsgSendPulse(3, -1, 5, TIMER_EXIT_OUT_E_ID);
+							break;
+						default :
+							MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);
+					}
 					id_queue.push(timer_vector[i].id);
 					timer_vector.erase(timer_vector.begin() + i);
 				}
@@ -133,23 +154,23 @@ void Tick_timer::shutdown(){
 	ChannelDestroy(cid);
 }
 
-Tick_timer* Tick_timer::get_instance(int con) {
+Tick_timer* Tick_timer::get_instance() {
 	if (instance_ == NULL) {
  		pthread_mutex_lock(&init_mtx);
  		if (instance_ == NULL) {
- 			cout << "conid: " << con << endl;
- 			instance_ = new Tick_timer(con);
+ 			instance_ = new Tick_timer();
  		}
  		pthread_mutex_unlock(&init_mtx);
  	}
 	return instance_;
 }
 
-Tick_timer::Tick_timer(int con) {
+Tick_timer::Tick_timer() {
 	cid = 0;
 	con = 0;
 	con_dispatcher = con;
-	step = MOTOR_SLOW;
+	step = MOTOR_STOP_VALUE;
+
 }
 
 Tick_timer::~Tick_timer(){
@@ -157,6 +178,15 @@ Tick_timer::~Tick_timer(){
 }
 
 
+void Tick_timer::SPEED_NORMAL(){
+	step = MOTOR_FAST_VALUE;
+}
+void Tick_timer::SPEED_STOP(){
+	step = MOTOR_STOP_VALUE;
+}
+void Tick_timer::SPEED_SLOW(){
+	step = MOTOR_SLOW_VALUE;
+}
 
 
 

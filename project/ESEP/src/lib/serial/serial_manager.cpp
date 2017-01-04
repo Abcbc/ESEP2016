@@ -9,8 +9,8 @@
 Serial_Manager* Serial_Manager::instance_ = NULL;
 pthread_mutex_t Serial_Manager::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
-Serial_Manager::Serial_Manager(const bool sys_middle){
-	geme_2 = sys_middle;
+Serial_Manager::Serial_Manager(){
+	geme_2 = (2 == SYSTEM_NUMBER);
 	serial1 = new Serial(1);
 	serial2 = new Serial(2);
 }
@@ -21,11 +21,11 @@ Serial_Manager::~Serial_Manager() {
 	pthread_mutex_destroy(&init_mtx);
 }
 
-Serial_Manager* Serial_Manager::get_instance(const bool sys_middle) {
+Serial_Manager* Serial_Manager::get_instance() {
 	if(instance_ == NULL){
 		pthread_mutex_lock(&init_mtx);
 		if(instance_ == NULL){
-			instance_ = new Serial_Manager(sys_middle);
+			instance_ = new Serial_Manager();
 		}
 		pthread_mutex_unlock(&init_mtx);
 	}
