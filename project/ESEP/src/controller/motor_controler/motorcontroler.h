@@ -71,6 +71,7 @@ private:
 			cout << "Idle" << endl;
 			m->motor->stop();
 			m->setHistory(error, this);
+			MsgSendPulse(CON, -1, 5, SPEED_STOP_E_ID);
 		}
 		virtual void motor_normal(Motorcontroler* m) {
 			new (this) Normal;
