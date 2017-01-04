@@ -2,6 +2,9 @@
 #define SIGNAL_LIGHT_H_
 #include "hal_component.h"
 #include <pthread.h>
+#include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/dispatcher.cpp"
 /**
  * Color represents all the existing colors at the Signal light Panel.
  */
@@ -11,11 +14,10 @@ enum Color{
 	red
 };
 
-
 /**
  *Signal_lights provides function for seting, clearing and toggeling Lights. 
  */
-class Signal_light:Hal_component{
+class Signal_light:Hal_component, State{
 	public:
 			/*
 			 * This Function sets a light.
@@ -52,41 +54,18 @@ class Signal_light:Hal_component{
 			 */
 			void stop_blink(Color c);
 			
-			/*
-			 * Set the Warning-Signal
-			 */
-			void warning_on();
-			/*
-			 * Clears the Warning-Signal
-			 */
-			void warning_off();
-			
-			/*
-			 * Clears the Aktive-Signal
-			 */
-			void active_on();
-			/*
-			 * Clears the Aktive-Signal
-			 */
-			void active_off();
-			
-			/*
-			 * Set the Acknowleged-Error-Signal
-			 */
-			void ack_error_on();
-			/*
-			 * Clears the Acknowleged-Error-Signal
-			 */
-			void ack_error_off();
+		    void TRAFFIC_LIGHT_NORMAL();
 
-			/*
-			 * Set the Unacknowleged-Error-Signal
-			 */
-			void unack_error_on();
-			/*
-			 *Clears the Unacknowleged-Error-Signal
-			 */
-			void unack_error_off();
+		    void TRAFFIC_LIGHT_WARNING();
+
+		    void TRAFFIC_LIGHT_UNACK_ERROR();
+
+		    void TRAFFIC_LIGHT_ACKED_ERROR();
+
+		    void TRAFFIC_LIGHT_PASSED_ERROR();
+
+		    void TRAFFIC_LIGHT_RDY();
+
 			/*
 			 * Returns the pointer of the instance
 			 * @return 

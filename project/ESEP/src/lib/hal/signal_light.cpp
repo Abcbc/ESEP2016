@@ -112,31 +112,27 @@ void Signal_light::stop_blink(Color c){
 	}
 }
 
-void Signal_light::warning_on(){
-
-}
-void Signal_light::warning_off(){
+void Signal_light::TRAFFIC_LIGHT_NORMAL() {
 
 }
 
-void Signal_light::active_on(){
-
-}
-void Signal_light::active_off(){
+void Signal_light::TRAFFIC_LIGHT_WARNING() {
 
 }
 
-void Signal_light::ack_error_on(){
-
-}
-void Signal_light::ack_error_off(){
+void Signal_light::TRAFFIC_LIGHT_UNACK_ERROR() {
 
 }
 
-void Signal_light::unack_error_on(){
+void Signal_light::TRAFFIC_LIGHT_ACKED_ERROR() {
 
 }
-void Signal_light::unack_error_off(){
+
+void Signal_light::TRAFFIC_LIGHT_PASSED_ERROR() {
+
+}
+
+void Signal_light::TRAFFIC_LIGHT_RDY() {
 
 }
 

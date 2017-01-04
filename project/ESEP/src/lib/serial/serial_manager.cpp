@@ -45,6 +45,9 @@ int Serial_Manager::send_to_system3(const int puk_id) {
 }
 
 int Serial_Manager::get_puk_id() {
+	if (is_GEME_2()) {
+		return serial2->get_puk_id();
+	}
 	return serial1->get_puk_id();
 }
 
