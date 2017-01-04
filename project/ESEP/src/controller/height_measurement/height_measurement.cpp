@@ -1,5 +1,6 @@
 #include "src/controller/height_measurement/height_measurement.h"
 #include "Src/controller/event_table.h"
+#include "config.h"
 
 #define UNDEFINED 1576
 #define MAX_HEIGHT 2200
@@ -156,7 +157,7 @@ height_array Height_Measurement::get_height_array(void){
 			MsgSendPulse(3, -1, 5, INVALID_PUK_TYPE_ID_E);
 			return ha;
 		}else if(level >= GROUND_HEIGHT){
-			if(ground_debouncer >= 4){
+			if(ground_debouncer >= 10){
 				in_measurement = false;
 			}
 			++ground_debouncer;
@@ -319,11 +320,11 @@ uint32_t Height_Measurement::is_ic_or_hole(height_array ha_unfiltered){
 		}
 	}
 	if(type < SUM_IC_PROFILES){
-		type = 0xA000001;
+		type = puk_iron_core;
 		cout << "iron_core" << endl;
 	}else if(type < SUM_IC_PROFILES + SUM_HOLE_PROFILES){
-		type = 0xC000001;
-		cout << "hole" << endl;
+		type = puk_hole;
+		cout << "puk_hole" << endl;
 	}
 	return type;
 }
@@ -344,12 +345,12 @@ uint32_t Height_Measurement::is_little_or_normal(height_array ha_unfiltered){
 		}
 	}
 	if((new_length + CUT_OFF_FRONT) >= (ha_unfiltered.length * LO_NORMAL_CUT_OFF_TOL)){
-		cout << mittle_value << endl;
-		if(mittle_value < LO_NORMAL_UPPER_TOL && mittle_value > LO_NORMAL_LOWER_TOL){
-			type = 0xF000001;
+		cout << mean << endl;
+		if(mean < LO_NORMAL_UPPER_TOL && mittle_value > LO_NORMAL_LOWER_TOL){
+			type = puk_litte_one;
 			cout << "littleone" << endl;
-		}else if(mittle_value < 2700){
-			type = 0xE000001;
+		}else if(mean < 2600){
+			type = puk_normal;
 			cout << "normal" << endl;
 		}
 	}

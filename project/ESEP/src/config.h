@@ -12,6 +12,13 @@ extern int SYSTEM_NUMBER;
 
 // Puk types
 
+enum puk_types{
+	puk_normal = 40,
+	puk_litte_one,
+	puk_iron_core,
+	puk_hole
+};
+
 
 
 

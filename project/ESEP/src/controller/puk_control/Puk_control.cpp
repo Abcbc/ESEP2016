@@ -27,10 +27,12 @@ Puk_control::Puk_control() :
 	dispatcher_->addListener(this, LIGHT_BARRIER_ENTRY_OPEN_E_ID);
 	dispatcher_->addListener(this, LIGHT_BARRIER_SWITCH_CLOSE_E_ID);
 	dispatcher_->addListener(this, LIGHT_BARRIER_EXIT_CLOSE_E_ID);
+	dispatcher_->addListener(this, LIGHT_BARRIER_RAMP_CLOSE_E_ID);
 	dispatcher_->addListener(this, HEIGHT_SENSOR_MEASURE_START_E_ID);
 	dispatcher_->addListener(this, HEIGHT_SENSOR_MEASURE_FINISHED_E_ID);
 	dispatcher_->addListener(this, SEND_OK_E_ID);
 	dispatcher_->addListener(this, IDENTIFIED_PUK_E_ID);
+	dispatcher_->addListener(this, ERR_UNDEFINED_PUK_E_ID);
 	dispatcher_->addListener(this, TIMER_EXIT_OUT_E_ID);
 
 	std::cout << "Puk_control contructed" << std::endl;
@@ -132,6 +134,15 @@ void Puk_control::LIGHT_BARRIER_EXIT_CLOSE() {
 	}
 }
 
+void Puk_control::LIGHT_BARRIER_RAMP_CLOSE() {
+	for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
+			it != puk_list_.end(); ++it) {
+		if ((*it)->getState()->light_barrier_ramp_close()) {
+			break;
+		}
+	}
+}
+
 void Puk_control::HEIGHT_SENSOR_MEASURE_START() {
 	for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
 			it != puk_list_.end(); ++it) {
@@ -163,6 +174,15 @@ void Puk_control::IDENTIFIED_PUK() {
 	for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
 			it != puk_list_.end(); ++it) {
 		if ((*it)->getState()->identified_puk()) {
+			break;
+		}
+	}
+}
+
+void Puk_control::ERR_UNDEFINED_PUK() {
+	for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
+			it != puk_list_.end(); ++it) {
+		if ((*it)->getState()->err_undefined_puk()) {
 			break;
 		}
 	}
