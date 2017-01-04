@@ -12,19 +12,6 @@
 
 using namespace thread;
 
-//struct PROFILES {
-//	int* iron_core;
-//	int* iron_core_wmf;
-//	int* iron_core_wmb;
-//	int* little_one;
-//	int* normal;
-//	int* hole;
-//	int* sunshine;
-//	int* black_beauty;
-//	int* white_innocence;
-//	int* deep_blue;
-//};
-
 struct height_array {
 	uint32_t length;
 	double* array;
@@ -42,14 +29,16 @@ class Height_Measurement: public HAWThread {
         virtual void shutdown();
 		
         height_array get_height_array(void);
-//		uint32_t compare_arrays(height_array ha);
 		void get_height_difference(Height_sensor* height_sensor);
 		uint32_t evaluate_puk_type(height_array ha_unfiltered);
+		uint32_t is_ic_or_hole(height_array ha_unfiltered);
+		uint32_t is_little_or_normal(height_array ha_unfiltered);
+		uint32_t is_bit_code(height_array ha_unfiltered);
 		void  init_timer(void);
 		height_array filter_array(height_array ha);
 		double mean(height_array ha);
 		
-//		static uint32_t profiles[10][450];
+		static double profiles[22][15];
 
 	public:
 		Height_Measurement();
