@@ -12,8 +12,8 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
-#include "src/lib/dispatcher/Dispatcher.cpp"
-#include "src/lib/dispatcher/State.cpp"
+#include "lib/dispatcher/Dispatcher.cpp"
+#include "lib/dispatcher/State.cpp"
 
 
 using namespace thread;
@@ -63,7 +63,7 @@ private:
 
 	struct Ohne_metall_2: public myState {
 		virtual bool check(int pukType) {
-			// TODO: korrekte Werte für puks eintragen 41 = oben ohne metall
+			// TODO: korrekte Werte für puks eintragen 41 = oben mit metall
 			if (pukType == 41) {
 				new (this) Idle;
 				return true;
@@ -95,6 +95,7 @@ public:
 	void send_puk(Puk_fsm_dummy *p);
 	void create_puk(int pukType);
 	bool sequenz_group(int pukType);
+	int puk_count();
 
 	virtual void LIGHT_BARRIER_ENTRY_CLOSE();
 	virtual void SEND_REQUEST();

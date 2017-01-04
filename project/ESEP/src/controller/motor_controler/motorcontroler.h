@@ -153,6 +153,7 @@ private:
 		d->addListener(this, MOTOR_SLOW_E_ID);
 		d->addListener(this, MOTOR_START_E_ID);
 		d->addListener(this, MOTOR_STOP_E_ID);
+		d->addListener(this, MOTOR_IDLE_E_ID);
 		d->addListener(this, TIMER_MEASURE_OUT_E_ID);
 	}
 

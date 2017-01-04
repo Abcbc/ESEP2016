@@ -17,6 +17,8 @@
 #include "src/controller/event_table.h"
 #include "src/controller/puk_control/Puk_control.h"
 #include "src/lib/serial/serial_manager.h"
+#include "timer/tick_timer.h"
+#include "controller/height_measurement/height_measurement.h"
 
 #define CON_ID 3
 #define PRIO -1
@@ -49,8 +51,11 @@ private:
 		}
 		virtual void height_sensor_measure_finished() {
 		}
-		virtual void identified_puk() {}
+		virtual void identified_puk() {
+		}
 		virtual void send_ok() {
+		}
+		virtual void timer_exit_out() {
 		}
 		MyData* data;
 	}*statePtr;
@@ -94,6 +99,7 @@ private:
 		}
 		virtual void identified_puk() {
 			cout << "Height Measurement finished" << endl;
+			data->pukType = Height_Measurement::get_instance()->get_type();
 			MsgSendPulse(CON_ID, PRIO, CODE, TIMER_MEASURE_OUT_E_ID);
 			data->dispatcher->remListeners(data->puk_fsm_dummy,
 					IDENTIFIED_PUK_E_ID);
@@ -130,7 +136,6 @@ private:
 			if (data->puk_control->systemType == 2) {
 				data->puk_control->delete_puk(data->puk_fsm_dummy);
 			} else {
-
 				new (this) Transmit;
 			}
 		}
@@ -145,10 +150,18 @@ private:
 		virtual void send_ok() {
 			cout << "Send ok" << endl;
 			data->dispatcher->remListeners(data->puk_fsm_dummy, SEND_OK_E_ID);
+			data->dispatcher->addListener(data->puk_fsm_dummy, TIMER_EXIT_OUT_E_ID);
 			// Send pukType via serial
-			Serial_Manager* sm = Serial_Manager::get_instance(false);
+			Serial_Manager* sm = Serial_Manager::get_instance();
 			sm->send_to_system2(data->pukType);
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_E_ID);
+			Tick_timer* t = Tick_timer::get_instance();
+			t->start_timer(EXIT_DURATION);
+		}
+		virtual void timer_exit_out() {
+			data->dispatcher->remListeners(data->puk_fsm_dummy, TIMER_EXIT_OUT_E_ID);
+			cout << "Puk count: " <<  data->puk_control->puk_count() << endl;
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_IDLE_E_ID);
 			data->puk_control->delete_puk(data->puk_fsm_dummy);
 		}
 	};
@@ -182,6 +195,9 @@ public:
 	}
 	virtual void IDENTIFIED_PUK() {
 		statePtr->identified_puk();
+	}
+	virtual void TIMER_EXIT_OUT() {
+		statePtr->timer_exit_out();
 	}
 };
 

@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include "serial.h"
+#include "config.h"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ class Serial_Manager{
 	 * Returns the pointer of the instance
 	 * @return
 	 */
-	static Serial_Manager* get_instance(const bool sys_middle);
+	static Serial_Manager* get_instance();
 
 	private:
 	/**
@@ -60,7 +61,7 @@ class Serial_Manager{
 	 * zwei Serial fuer den mittleren GEME2 konfiguriert. Dann ist
 	 * geme_2 == true. Wenn sys_middle == false dann default Serial und geme_2 == false;
 	 */
-	Serial_Manager(const bool sys_middle);
+	Serial_Manager();
 	virtual ~Serial_Manager();
 	Serial_Manager(const Serial_Manager& other);
 	Serial_Manager& operator=(const Serial_Manager& other);

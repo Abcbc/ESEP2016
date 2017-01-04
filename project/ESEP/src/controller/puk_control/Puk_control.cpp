@@ -7,15 +7,16 @@
 
 #include <iostream>
 #include <algorithm>
-#include "src/controller/puk_control/puk_fsm_dummy.h"
-#include "src/controller/event_table.h"
-#include "src/lib/serial/serial_manager.h"
+#include "controller/puk_control/puk_fsm_dummy.h"
+#include "controller/event_table.h"
+#include "lib/serial/serial_manager.h"
+#include "config.h"
 
 Puk_control* Puk_control::instance_ = NULL;
 pthread_mutex_t Puk_control::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 Puk_control::Puk_control() :
-		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState), systemType(2) {
+		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(&startState), systemType(SYSTEM_NUMBER) {
 	dispatcher_ = Dispatcher::getInstance();
 	dispatcher_->addListener(this, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 	dispatcher_->addListener(this, SEND_REQUEST_E_ID);
@@ -40,6 +41,7 @@ Puk_control* Puk_control::get_instance() {
 void Puk_control::delete_puk(Puk_fsm_dummy* p) {
 	std::cout << "Deleting Puk" << std::endl;
 	puk_list_.erase(std::remove(puk_list_.begin(), puk_list_.end(), p), puk_list_.end());
+	SEND_REQUEST();
 }
 
 void Puk_control::send_puk(Puk_fsm_dummy* p) {
@@ -54,6 +56,10 @@ void Puk_control::create_puk(int pukType) {
 
 bool Puk_control::sequenz_group(int pukType) {
 	return statePtr->check(pukType);
+}
+
+int Puk_control::puk_count(){
+	return puk_list_.size();
 }
 
 void Puk_control::LIGHT_BARRIER_ENTRY_CLOSE() {
@@ -72,7 +78,7 @@ void Puk_control::SEND_REQUEST(){
 }
 
 void Puk_control::NEW_PUK(){
-	Serial_Manager* sm = Serial_Manager::get_instance(false);
+	Serial_Manager* sm = Serial_Manager::get_instance();
 	cout << sm->get_puk_id() << endl;
 	create_puk(sm->get_puk_id());
 }

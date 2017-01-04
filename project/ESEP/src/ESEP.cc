@@ -1,23 +1,26 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdint.h>
-#include "src/lib/HAWThread.h"
-#include "src/lib/HWaccess.h"
+#include "lib/HAWThread.h"
+#include "lib/HWaccess.h"
 #include <unistd.h>
-#include "src/test/hal_test.h"
-#include "src/test/height_sensor_test.h"
-#include "src/test/ir_test.h"
-#include "src/test/timer_test.h"
-#include "src/test/testTools/distance_time.h"
-#include "src/test/testTools/profile_creator.h"
-#include "src/test/height_measurement_test.h"
-#include "src/controller/motor_controler/motorcontroler.h"
-#include "src/controller/puk_control/Puk_control.h"
-#include "src/controller/event_table.h"
-#include "src/controller/ir_handler.h"
-#include "src/controller/switch_control/Switch_control.h"
-#include "src/controller/height_measurement/height_measurement.h"
-#include "src/lib/serial/serial_manager.h"
+#include "test/hal_test.h"
+#include "test/height_sensor_test.h"
+#include "test/ir_test.h"
+#include "test/timer_test.h"
+#include "test/testTools/distance_time.h"
+#include "test/testTools/profile_creator.h"
+#include "test/height_measurement_test.h"
+#include "controller/motor_controler/motorcontroler.h"
+#include "controller/puk_control/Puk_control.h"
+#include "controller/event_table.h"
+#include "controller/ir_handler.h"
+#include "controller/switch_control/Switch_control.h"
+#include "controller/height_measurement/height_measurement.h"
+#include "lib/serial/serial_manager.h"
+#include "config.h"
+
+int SYSTEM_NUMBER;
 
 int main(int argc, char *argv[]) {
 	/* Zugriffsrechte von QNX fuer diesen Thread, auf die Hardware erbitten. */
@@ -25,6 +28,7 @@ int main(int argc, char *argv[]) {
 		cout << "Can't get Hardware access, therefore can't do anything."
 				<< endl;
 	}
+
 
 	// Test HAL
 //	HAL_Test hal_test;
@@ -54,16 +58,25 @@ int main(int argc, char *argv[]) {
 //	Height_Measurement_Test hm;
 //	hm.test_measurement();
 
+	cout << "Welcher GEME?" << endl;
+
+	cin >> SYSTEM_NUMBER;
+
+
 	Dispatcher* dis = Dispatcher::getInstance();
 	dis->start(NULL);
 	Ir_handler *ir = Ir_handler::get_instance();
 	ir->connect(3);
 
-	Serial_Manager* sm = Serial_Manager::get_instance(true);
+	Serial_Manager* sm = Serial_Manager::get_instance();
 
 	Motorcontroler* mc = Motorcontroler::get_instance();
 	mc->start(NULL);
+
 	Switch_control* sc = Switch_control::get_instance();
+
+	Tick_timer* t = Tick_timer::get_instance();
+	t->start(NULL);
 
 	Height_Measurement* hm = Height_Measurement::get_instance();
 	hm->start(NULL);

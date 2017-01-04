@@ -11,10 +11,10 @@
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
 #include "Puk_fsm_data.h"
-#include "src/lib/dispatcher/State.cpp"
-#include "src/lib/dispatcher/Dispatcher.cpp"
-#include "src/controller/event_table.h"
-#include "src/controller/puk_control/Puk_control.h"
+#include "lib/dispatcher/State.cpp"
+#include "lib/dispatcher/Dispatcher.cpp"
+#include "controller/event_table.h"
+#include "controller/puk_control/Puk_control.h"
 
 #define CON_ID 3
 #define PRIO -1
