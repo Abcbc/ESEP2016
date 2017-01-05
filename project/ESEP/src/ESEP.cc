@@ -11,10 +11,12 @@
 #include "test/testTools/distance_time.h"
 #include "test/testTools/profile_creator.h"
 #include "test/height_measurement_test.h"
+#include "test/error_test.h"
 #include "controller/motor_controler/motorcontroler.h"
 #include "controller/puk_control/Puk_control.h"
 #include "controller/event_table.h"
 #include "controller/ir_handler.h"
+#include "controller/error_control/Error_fsm.h"
 #include "controller/switch_control/Switch_control.h"
 #include "controller/height_measurement/height_measurement.h"
 #include "lib/serial/serial_manager.h"
@@ -85,10 +87,15 @@ int main(int argc, char *argv[]) {
 	Height_Measurement* hm = Height_Measurement::get_instance();
 	hm->start(NULL);
 
+	// Error FSM
+    Error_fsm* err_fsm = Error_fsm::get_instance();
+
+	// Test Error FSM
+	//Error_Test err_test;
+	//err_test.test_error_controller();
+
 	Puk_control* pc = Puk_control::get_instance();
 	pc->start(NULL);
-
-	MsgSendPulse(3, -1, 10, ERR_LOST_PUK_E_ID);
 
 	//	MsgSendPulse(3, -1, 5, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 	//	usleep(2000000); // seep 2000 ms

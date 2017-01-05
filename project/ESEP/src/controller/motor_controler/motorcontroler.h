@@ -156,6 +156,8 @@ private:
 		d->addListener(this, MOTOR_STOP_E_ID);
 		d->addListener(this, MOTOR_IDLE_E_ID);
 		d->addListener(this, TIMER_MEASURE_OUT_E_ID);
+		d->addListener(this, MOTOR_STOP_ERR_E_ID);
+		d->addListener(this, MOTOR_START_ERR_E_ID);
 	}
 
 	void execute(void*) {
@@ -204,12 +206,12 @@ public:
 		statePtr->entry(this);
 	}
 
-	virtual void START_ERROR() {
+	virtual void MOTOR_START_ERR() {
 		statePtr->start_error(this);
 		statePtr->entry(this);
 	}
 
-	virtual void STOP_ERROR() {
+	virtual void MOTOR_STOP_ERR() {
 		statePtr->stop_error(this);
 		statePtr->entry(this);
 	}

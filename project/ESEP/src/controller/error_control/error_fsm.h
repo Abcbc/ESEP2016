@@ -22,7 +22,14 @@
 class Error_fsm: public State {
 private:
 
+	struct MyData {
+		MyData(Error_fsm *err) : err_fsm(err) {
+		}
+		Error_fsm* err_fsm;
+	};
+
 	struct MyState {
+		virtual void start(){}
 		virtual void entry(Error_fsm* err) {}
 		virtual void slide_full(Error_fsm* err) {}
 		virtual void lost_puk(Error_fsm* err) {}
@@ -33,32 +40,38 @@ private:
 		virtual void error_acknowledged(Error_fsm* err) {}
 		virtual void estop_active(Error_fsm* err) {}
 		virtual void error_ok(Error_fsm* err) {}
-		MyData* data;
+		MyData *data;
 	}*statePtr;
 
-	struct Error_fsm: public MyState {
-		virtual void estop_active(Error_fsm* err) {
-			new (this) Estop_Active;
-		}
-	};
+	//struct err_fsm: public MyState {
+		//virtual void estop_active(Error_fsm* err) {
+		//	new (this) Estop_Active;
+		//}
+	//};
 
 	struct Estop_Active: public MyState {
 			virtual void entry(Error_fsm* err) {
 				cout << "ERROR_FSM: ESTOP Active" << endl;
 			}
 			virtual void error_ok(Error_fsm* err) {
-				void* history = m->getStateFromHistory_();
+				void* history = err->getStateFromHistory_();
 				memcpy(this, &history, 4);
 			}
 		};
 
-	struct OK: public Error_fsm {
-		virtual void entry(Error_fsm* err) {
+	struct StartState : public MyState {
+		virtual void start(){
+			new (this) OK;
+		}
+	};
+
+	struct OK: public MyState {
+		OK(){
 			if (SHOW_DEBUG_MESSAGES) {
 			cerr << "ERROR: OK start normal Traffic Light\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NORMAL_E_ID);
-			err->setHistory(this);
+			data->err_fsm->setHistory(this);
 		}
 		virtual void lost_puk(Error_fsm* err) {
 			new (this) Lost_Puk;
@@ -80,7 +93,7 @@ private:
 		}
 	};
 
-	struct Lost_Puk: public Error_fsm {
+	struct Lost_Puk: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -92,9 +105,12 @@ private:
 		virtual void error_acknowledged(Error_fsm* err) {
 			new (this) Error_Acknowledged;
 		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
 	};
 
-	struct Slide_Full: public Error_fsm {
+	struct Slide_Full: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -106,9 +122,29 @@ private:
 		virtual void error_acknowledged(Error_fsm* err) {
 			new (this) Error_Acknowledged;
 		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
 	};
 
-	struct Unknown_Puk: public Error_fsm {
+	struct Puk_To_Many: public MyState {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Puk To Many\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+			err->setHistory(this);
+		}
+		virtual void error_acknowledged(Error_fsm* err) {
+			new (this) Error_Acknowledged;
+		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
+	};
+
+	struct Unknown_Puk: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -120,9 +156,12 @@ private:
 		virtual void error_acknowledged(Error_fsm* err) {
 			new (this) Error_Acknowledged;
 		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
 	};
 
-	struct Error_Acknowledged: public Error_fsm {
+	struct Error_Acknowledged: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -131,11 +170,15 @@ private:
 			err->setHistory(this);
 		}
 		virtual void start(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_OK_E_ID);
 			new (this) Start;
+		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
 		}
 	};
 
-	struct Rdy_Taking: public Error_fsm {
+	struct Rdy_Taking: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -144,9 +187,19 @@ private:
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_RDY_E_ID);
 			err->setHistory(this);
 		}
+		virtual void start(Error_fsm* err) {
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "RDY Taking Ok\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, RDY_TAKING_OK_E_ID);
+			new (this) Start;
+		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
 	};
 
-	struct Start: public Error_fsm {
+	struct Start: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
@@ -155,11 +208,17 @@ private:
 			err->setHistory(this);
 			new (this) OK;
 		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
 	};
 
-	OK startState;
+	StartState startState;
+	MyData contextdata;
 
-	Error_fsm(): statePtr(&startState),history_()  {
+	Error_fsm(): statePtr(&startState),history_(),contextdata(this)  {
+		statePtr->data = &contextdata;
+		statePtr->start();
 		Dispatcher *d = Dispatcher::getInstance();
 		d->addListener(this, ERR_LOST_PUK_E_ID);
 		d->addListener(this, ERR_TO_MANY_PUK_E_ID);
@@ -195,10 +254,9 @@ private:
 		return &instance_;
 	}
 
-	virtual void start() {
+	void start(){
 		statePtr->start();
 	}
-
 	void ERR_LOST_PUK() {
 		statePtr->lost_puk(this);
 		statePtr->entry(this);

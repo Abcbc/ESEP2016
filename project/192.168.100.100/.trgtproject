@@ -3,7 +3,7 @@
     <data>
         <item id="com.qnx.tools.ide.target">
             <qconnport value="8000"/>
-            <qconnguid value="87eebb0c-cd52-424b-aa94-c7b53a02dd1d"/>
+            <qconnguid value="ee094405-b740-45ea-8f75-0726a68b47fe"/>
             <qconnostype value="nto"/>
             <project>
                 <name value="192.168.100.100"/>
