@@ -51,6 +51,7 @@ private:
 
 	struct Estop_Active: public MyState {
 			virtual void entry(Error_fsm* err) {
+				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 				cout << "ERROR_FSM: ESTOP Active" << endl;
 			}
 			virtual void error_ok(Error_fsm* err) {
@@ -90,6 +91,9 @@ private:
 		}
 		virtual void start(Error_fsm* err) {
 			new (this) Start;
+		}
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
 		}
 	};
 
