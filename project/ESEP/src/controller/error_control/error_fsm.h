@@ -17,12 +17,12 @@
 #define CON_ID 3
 #define PRIO -1
 #define CODE 5
+#define SHOW_DEBUG_MESSAGES 1
 
 class Error_fsm: public State {
 private:
 
 	struct MyState {
-		virtual void ok(Error_fsm* err) {}
 		virtual void entry(Error_fsm* err) {}
 		virtual void slide_full(Error_fsm* err) {}
 		virtual void lost_puk(Error_fsm* err) {}
@@ -32,35 +32,132 @@ private:
 		virtual void start(Error_fsm* err) {}
 		virtual void error_acknowledged(Error_fsm* err) {}
 		virtual void estop_active(Error_fsm* err) {}
+		virtual void error_ok(Error_fsm* err) {}
 		MyData* data;
 	}*statePtr;
 
-	struct Idle: public Error_fsm {
+	struct Error_fsm: public MyState {
+		virtual void estop_active(Error_fsm* err) {
+			new (this) Estop_Active;
+		}
+	};
+
+	struct Estop_Active: public MyState {
+			virtual void entry(Error_fsm* err) {
+				cout << "ERROR_FSM: ESTOP Active" << endl;
+			}
+			virtual void error_ok(Error_fsm* err) {
+				void* history = m->getStateFromHistory_();
+				memcpy(this, &history, 4);
+			}
+		};
+
+	struct OK: public Error_fsm {
 		virtual void entry(Error_fsm* err) {
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: OK start normal Traffic Light\n";
+			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NORMAL_E_ID);
 			err->setHistory(this);
 		}
 		virtual void lost_puk(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Lost_Puk;
 		}
 		virtual void slide_full(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Slide_Full;
 		}
 		virtual void puk_to_many(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Puk_To_Many;
 		}
 		virtual void unknown_puk(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Unknown_Puk;
 		}
 		virtual void rdy_taking(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Rdy_Taking;
 		}
 		virtual void start(Error_fsm* err) {
-			new (this) slide_full;
+			new (this) Start;
 		}
 	};
 
-	Idle startState;
+	struct Lost_Puk: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Lost Puk\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+			err->setHistory(this);
+		}
+		virtual void error_acknowledged(Error_fsm* err) {
+			new (this) Error_Acknowledged;
+		}
+	};
+
+	struct Slide_Full: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Slide Full\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+			err->setHistory(this);
+		}
+		virtual void error_acknowledged(Error_fsm* err) {
+			new (this) Error_Acknowledged;
+		}
+	};
+
+	struct Unknown_Puk: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Unknown Puk\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+			err->setHistory(this);
+		}
+		virtual void error_acknowledged(Error_fsm* err) {
+			new (this) Error_Acknowledged;
+		}
+	};
+
+	struct Error_Acknowledged: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Acknowledged\n";
+			}
+			err->setHistory(this);
+		}
+		virtual void start(Error_fsm* err) {
+			new (this) Start;
+		}
+	};
+
+	struct Rdy_Taking: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "RDY Taking\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_RDY_E_ID);
+			err->setHistory(this);
+		}
+	};
+
+	struct Start: public Error_fsm {
+		virtual void entry(Error_fsm* err) {
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_ERR_E_ID);
+			if (SHOW_DEBUG_MESSAGES) {
+			cerr << "ERROR: Start again\n";
+			}
+			err->setHistory(this);
+			new (this) OK;
+		}
+	};
+
+	OK startState;
 
 	Error_fsm(): statePtr(&startState),history_()  {
 		Dispatcher *d = Dispatcher::getInstance();
@@ -102,60 +199,60 @@ private:
 		statePtr->start();
 	}
 
-		void ERR_LOST_PUK() {
-			statePtr->lost_puk(this);
-			statePtr->entry(this);
-		}
+	void ERR_LOST_PUK() {
+		statePtr->lost_puk(this);
+		statePtr->entry(this);
+	}
 
-		void ERR_TO_MANY_PUK() {
-			statePtr->puk_to_many(this);
-			statePtr->entry(this);
-		}
+	void ERR_TO_MANY_PUK() {
+		statePtr->puk_to_many(this);
+		statePtr->entry(this);
+	}
 
-		void ERR_SLIDE_FULL() {
-			statePtr->slide_full(this);
-			statePtr->entry(this);
-		}
+	void ERR_SLIDE_FULL() {
+		statePtr->slide_full(this);
+		statePtr->entry(this);
+	}
 
-		void ERR_UNDEFINED_PUK() {
-			statePtr->unknown_puk(this);
-			statePtr->entry(this);
-		}
+	void ERR_UNDEFINED_PUK() {
+		statePtr->unknown_puk(this);
+		statePtr->entry(this);
+	}
 
-		void RDY_TAKING() {
-			statePtr->rdy_taking(this);
-			statePtr->entry(this);
-		}
+	void RDY_TAKING() {
+		statePtr->rdy_taking(this);
+		statePtr->entry(this);
+	}
 
-		void ESTOP_OK() {
-			statePtr->estop_active(this);
-			statePtr->entry(this);
-		}
+	void ESTOP_OK() {
+		statePtr->error_ok(this);
+		statePtr->entry(this);
+	}
 
-		void BUTTON_RESET() {
-			statePtr->error_acknowledged(this);
-			statePtr->entry(this);
-		}
+	void BUTTON_RESET() {
+		statePtr->error_acknowledged(this);
+		statePtr->entry(this);
+	}
 
-		void BUTTON_START() {
-			statePtr->start(this);
-			statePtr->entry(this);
-		}
+	void BUTTON_START() {
+		statePtr->start(this);
+		statePtr->entry(this);
+	}
 
-		void ESTOP_THIS() {
-			statePtr->estop_active(this);
-			statePtr->entry(this);
-		}
+	void ESTOP_THIS() {
+		statePtr->estop_active(this);
+		statePtr->entry(this);
+	}
 
-		void ESTOP_SYSTEM2() {
-			statePtr->estop_active(this);
-			statePtr->entry(this);
-		}
+	void ESTOP_SYSTEM2() {
+		statePtr->estop_active(this);
+		statePtr->entry(this);
+	}
 
-		void ESTOP_SYSTEM3() {
-			statePtr->estop_active(this);
-			statePtr->entry(this);
-		}
+	void ESTOP_SYSTEM3() {
+		statePtr->estop_active(this);
+		statePtr->entry(this);
+	}
 
 	};
 

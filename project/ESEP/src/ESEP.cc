@@ -88,6 +88,8 @@ int main(int argc, char *argv[]) {
 	Puk_control* pc = Puk_control::get_instance();
 	pc->start(NULL);
 
+	MsgSendPulse(3, -1, 10, ERR_LOST_PUK_E_ID);
+
 	//	MsgSendPulse(3, -1, 5, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
 	//	usleep(2000000); // seep 2000 ms
 	//	MsgSendPulse(3, -1, 5, MOTOR_STOP_E_ID);
