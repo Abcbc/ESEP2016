@@ -17,6 +17,7 @@
 #include "src/lib/dispatcher/State.cpp"
 #include "src/lib/dispatcher/Dispatcher.cpp"
 #include "timer/tick_timer.h"
+#include "config.h"
 
 class Switch_control;
 struct MyData {
@@ -89,16 +90,25 @@ private:
 			data->puk_switch->open();
 			data->switch_ctrl->setHistory_(this);
 //			MsgSendPulse(CON, -1, 5, TIMER_SWITCH_E_ID);
+
 			data->dispatcher->addListener(data->switch_ctrl,
 					TIMER_SWITCH_OUT_E_ID);
 			Tick_timer* t = Tick_timer::get_instance();
-			data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
+			if (SYSTEM_NUMBER != 3){
+			    data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
+			} else {
+			    data->timer_id = t->start_timer(SWITCH_OPEN_LONG_DURATION);
+			}
 		}
 		virtual void switch_open() {
 			cout << "Open Switch again" << endl;
 			Tick_timer* t = Tick_timer::get_instance();
 			t->stop_timer(data->timer_id);
-			data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
+			if (SYSTEM_NUMBER != 3){
+                data->timer_id = t->start_timer(SWITCH_OPEN_DURATION);
+            } else {
+                data->timer_id = t->start_timer(SWITCH_OPEN_LONG_DURATION);
+            }
 		}
 		virtual void timer_switch_out() {
 			data->dispatcher->remListeners(data->switch_ctrl,

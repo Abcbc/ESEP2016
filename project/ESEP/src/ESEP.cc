@@ -84,8 +84,10 @@ int main(int argc, char *argv[]) {
 	Tick_timer* t = Tick_timer::get_instance();
 	t->start(NULL);
 
-	Height_Measurement* hm = Height_Measurement::get_instance();
-	hm->start(NULL);
+	if (SYSTEM_NUMBER != 3) {
+        Height_Measurement* hm = Height_Measurement::get_instance();
+        hm->start(NULL);
+	}
 
 	// Error FSM
     Error_fsm* err_fsm = Error_fsm::get_instance();

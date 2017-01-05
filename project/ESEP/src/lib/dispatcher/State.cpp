@@ -37,6 +37,9 @@ public:
 		  virtual void LIGHT_BARRIER_EXIT_OPEN(void){} ;
 		  virtual void LIGHT_BARRIER_EXIT_CLOSE(void){} ;
 
+		  virtual void LIGHT_BARRIER_RAMP_OPEN(void){} ;
+		  virtual void LIGHT_BARRIER_RAMP_CLOSE(void){} ;
+
 		  // SPEED
 		  virtual void SPEED_SLOW(void){} ;
 		  virtual void SPEED_NORMAL(void){} ;

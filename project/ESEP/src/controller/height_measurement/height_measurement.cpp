@@ -1,16 +1,17 @@
 #include "src/controller/height_measurement/height_measurement.h"
 #include "Src/controller/event_table.h"
+#include "config.h"
 
 #define UNDEFINED 1576
 #define MAX_HEIGHT 2200
 #define GROUND_HEIGHT 4000
 #define INIT_HEIGHT 4076 // band 8
-#define MAX_LENGTH 850
+#define MAX_LENGTH 750
 #define MIN_LENGTH 5
 #define SUM_IC_WM 3
 #define SMALLEST_ABS_ERROR 20000
 #define PROTOTYPE_LENGTH 450
-#define CUT_OFF_FRONT 16
+#define CUT_OFF_FRONT 12
 #define SUM_PUKS 10
 #define STOPPED 1
 #define INIT_MEASUREMENTS 4
@@ -24,9 +25,9 @@
 #define LO_NORMAL_UPPER_TOL 2900
 #define LO_NORMAL_LOWER_TOL 2700
 
-#define SUM_IC_PROFILES 18
+#define SUM_IC_PROFILES 21
 #define SUM_HOLE_PROFILES 4
-#define PROFILES_LENGHT 22
+#define PROFILES_LENGHT 23
 #define PROFILE_LENGTH 15
 #define HOLE_UPPER 3800
 #define HOLE_LOWER 3400
@@ -53,7 +54,7 @@ static uint32_t const INVALID_PUK_TYPE_ID_E = ERR_UNDEFINED_PUK_E_ID;
 static uint32_t const HM_START_EVENT_ID_E = HEIGHT_SENSOR_MEASURE_START_E_ID;
 static uint32_t const HM_DONE_EVENT_ID_E = IDENTIFIED_PUK_E_ID;
 
-double Height_Measurement::profiles[22][15] = {
+double Height_Measurement::profiles[25][15] = {
 		/* 0 iron_core */        {2, 1, 2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 1 iron_core */        {2, 1, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 2 iron_core */        {2, 1, 2, 1, 2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1},
@@ -72,10 +73,13 @@ double Height_Measurement::profiles[22][15] = {
 		/* 15 iron_core */       {2, 2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 16 iron_core */       {2, 2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 17 iron_core */       {2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		/* 18 hole */            {2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		/* 19 hole */            {1, 2, 0, 2, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		/* 20 hole */            {1, 2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		/* 21 hole */            {2, 0, 2, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 18 iron_core */       {2, 1, 2, 1, 0, 1, 2, 1, 2, -1, -1, -1, -1, -1, -1},
+		/* 19 iron_core */       {2, 1, 2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 20 iron_core */       {2, 2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 21 hole */            {2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 22 hole */            {1, 2, 0, 2, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 23 hole */            {1, 2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 24 hole */            {2, 0, 2, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 };
 
 Height_Measurement::Height_Measurement(){
@@ -102,7 +106,9 @@ void Height_Measurement::execute(void*){
 		level = height_sensor -> get_height();
 		if(level < (GROUND_HEIGHT + height_diff)){
 			ha_unfiltered = get_height_array();
+			MsgSendPulse(3, -1, 5, TIMER_MEASURE_OUT_E_ID);
 			
+			cout << "Array Length: " << ha_unfiltered.length << endl;
 			for(msg = 0; msg < ha_unfiltered.length; msg++){
 				cout << ha_unfiltered.array[msg] << ", ";
 			}
@@ -133,6 +139,7 @@ uint32_t Height_Measurement::get_type(void){
 }
 
 height_array Height_Measurement::get_height_array(void){
+	MsgSendPulse(3, -1, 5, MOTOR_SLOW_E_ID);
 	Height_sensor* height_sensor = Height_sensor::get_instance();
 	struct _pulse pulse;
 	std::vector<double> height_vector;
@@ -156,7 +163,7 @@ height_array Height_Measurement::get_height_array(void){
 			MsgSendPulse(3, -1, 5, INVALID_PUK_TYPE_ID_E);
 			return ha;
 		}else if(level >= GROUND_HEIGHT){
-			if(ground_debouncer >= 4){
+			if(ground_debouncer >= 10){
 				in_measurement = false;
 			}
 			++ground_debouncer;
@@ -220,14 +227,20 @@ uint32_t Height_Measurement::is_bit_code(height_array ha_unfiltered){
 		double last_height = ha.array[0];
 		// check for bit code
 		for(i = 0; i < ha.length; i++){
-			if(ha.array[i] == last_height){
+			if(ha.array[i] == last_height && i != (ha.length - 1)){
 				++counter;
-			}else if(ha.array[i] != last_height){
+			}else if(ha.array[i] != last_height || i == (ha.length - 1)){
 					cout << counter << endl;
-					if(counter > 32){
+					if(indexer == 0){
+						counter = (counter + 1) * 2;
+					}
+//					if(indexer == 1){
+//						counter += 6;
+//					}
+					if(counter > 40){
 						type |= 1 << indexer;
 						++indexer;
-					}else if(counter > 7){
+					}else if(counter > 4){
 						++indexer;
 					}
 					last_height = ha.array[i];
@@ -236,6 +249,7 @@ uint32_t Height_Measurement::is_bit_code(height_array ha_unfiltered){
 		}
 		cout << type << endl;
 		if(type < MAX_PUK_VALUE){
+			type >>= 4;
 			type &= 0x1F;
 			//check other side?
 		}else{
@@ -319,11 +333,11 @@ uint32_t Height_Measurement::is_ic_or_hole(height_array ha_unfiltered){
 		}
 	}
 	if(type < SUM_IC_PROFILES){
-		type = 0xA000001;
+		type = puk_iron_core;
 		cout << "iron_core" << endl;
 	}else if(type < SUM_IC_PROFILES + SUM_HOLE_PROFILES){
-		type = 0xC000001;
-		cout << "hole" << endl;
+		type = puk_hole;
+		cout << "puk_hole" << endl;
 	}
 	return type;
 }
@@ -344,12 +358,12 @@ uint32_t Height_Measurement::is_little_or_normal(height_array ha_unfiltered){
 		}
 	}
 	if((new_length + CUT_OFF_FRONT) >= (ha_unfiltered.length * LO_NORMAL_CUT_OFF_TOL)){
-		cout << mittle_value << endl;
-		if(mittle_value < LO_NORMAL_UPPER_TOL && mittle_value > LO_NORMAL_LOWER_TOL){
-			type = 0xF000001;
+		cout << mean << endl;
+		if(mean < LO_NORMAL_UPPER_TOL && mittle_value > LO_NORMAL_LOWER_TOL){
+			type = puk_litte_one;
 			cout << "littleone" << endl;
-		}else if(mittle_value < 2700){
-			type = 0xE000001;
+		}else if(mean < 2600){
+			type = puk_normal;
 			cout << "normal" << endl;
 		}
 	}
@@ -388,6 +402,12 @@ height_array Height_Measurement::filter_array(height_array ha){
 		return ha;
 	}
 
+	cout << "Array Length: " << new_length << endl;
+	for(i = 0; i < new_length; i++){
+		cout << temp_array[i] << ", ";
+	}
+	cout << endl;
+
 	double binary_array[new_length];
 
 	for(i = 0; i < new_length; i++){
@@ -397,7 +417,12 @@ height_array Height_Measurement::filter_array(height_array ha){
 			binary_array[i] = 0;
 		}
 	}
-	cout << temp_array[new_length / 2] << "   " << min << "  " << max << endl;
+
+	cout << "Array Length: " << new_length << endl;
+	for(i = 0; i < new_length; i++){
+		cout << binary_array[i] << ", ";
+	}
+	cout << endl;
 
 	ha.length = new_length;
 	ha.array = binary_array;

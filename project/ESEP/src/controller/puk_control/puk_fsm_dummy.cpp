@@ -7,8 +7,9 @@
 
 #include "puk_fsm_dummy.h"
 Puk_fsm_dummy::Puk_fsm_dummy(int Type) :
-			statePtr(&stateMember), contextdata(0, Puk_control::get_instance(), this, Dispatcher::getInstance()) {
-		statePtr->data = &contextdata;
+		statePtr(&stateMember), contextdata(0, Puk_control::get_instance(),
+				this, Dispatcher::getInstance(), Tick_timer::get_instance()) {
+	statePtr->data = &contextdata;
 }
 Puk_fsm_dummy::~Puk_fsm_dummy() {
 	// TODO Auto-generated destructor stub

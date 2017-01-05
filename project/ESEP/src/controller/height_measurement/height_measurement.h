@@ -38,7 +38,7 @@ class Height_Measurement: public HAWThread {
 		height_array filter_array(height_array ha);
 		double mean(height_array ha);
 		
-		static double profiles[22][15];
+		static double profiles[25][15];
 
 	public:
 		Height_Measurement();

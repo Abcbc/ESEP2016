@@ -64,6 +64,8 @@ private:
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_SWITCH_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_SWITCH_CLOSE));
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_OPEN));
 		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_EXIT_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_EXIT_CLOSE));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_RAMP_OPEN_E_ID, &Event_methods::LIGHT_BARRIER_RAMP_OPEN));
+		_methods.insert(std::pair<int, method_t>(LIGHT_BARRIER_RAMP_CLOSE_E_ID, &Event_methods::LIGHT_BARRIER_RAMP_CLOSE));
 
 		// Speed
 		_methods.insert(std::pair<int, method_t>(SPEED_SLOW_E_ID, &Event_methods::SPEED_SLOW));
@@ -226,7 +228,7 @@ public:
 
 	virtual void callListeners(int event) {
 		pthread_mutex_lock(&_init_mtx);
-
+		cout << "####################### Disptacher: new Event: " << event << " #########################" << endl;
 		// Call for every registered Listener
 		// the Method that corresponds with event.
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {

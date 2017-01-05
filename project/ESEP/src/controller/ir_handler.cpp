@@ -18,7 +18,7 @@ using namespace std;
 
 struct sigevent isrEvent;
 
-#define FILTER_MASK 0b1111000010011011
+#define FILTER_MASK 0b1111000011011011
 #define ON_BIT 0h10000
 
 #define ENRTY 1
@@ -29,6 +29,7 @@ struct sigevent isrEvent;
 #define STOP 8192
 #define RESET 16384
 #define E_STOP 32768
+#define RAMP 64
 
 uint32_t source_init;
 uint32_t old_changes = 0;
@@ -98,6 +99,14 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 					e_id = LIGHT_BARRIER_EXIT_OPEN_E_ID;
 				} else {
 					e_id = LIGHT_BARRIER_EXIT_CLOSE_E_ID;
+				}
+
+				break;
+			case RAMP:
+				if ((source & RAMP) > 0) {
+					e_id = LIGHT_BARRIER_RAMP_OPEN_E_ID;
+				} else {
+					e_id = LIGHT_BARRIER_RAMP_CLOSE_E_ID;
 				}
 
 				break;

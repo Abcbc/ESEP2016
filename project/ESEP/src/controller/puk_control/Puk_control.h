@@ -14,6 +14,7 @@
 #include "lib/HAWThread.h"
 #include "lib/dispatcher/Dispatcher.cpp"
 #include "lib/dispatcher/State.cpp"
+#include "config.h"
 
 using namespace thread;
 using namespace std;
@@ -39,7 +40,8 @@ private:
 	struct Idle: public myState {
 		virtual bool check(int pukType) {
 			// TODO: korrekte Werte für puks eintragen 40 = oben ohne metall
-			if (pukType == 40) {
+			cout << "Sequence Idle: " << pukType << endl;
+			if (pukType == puk_hole) {
 				new (this) Ohne_metall_1;
 				return true;
 			} else {
@@ -50,8 +52,9 @@ private:
 
 	struct Ohne_metall_1: public myState {
 		virtual bool check(int pukType) {
+			cout << "Sequence Ohne_metall_1: " << pukType << endl;
 			// TODO: korrekte Werte für puks eintragen 40 = oben ohne metall
-			if (pukType == 40) {
+			if (pukType == puk_hole) {
 				new (this) Ohne_metall_2;
 				return true;
 			} else {
@@ -62,8 +65,9 @@ private:
 
 	struct Ohne_metall_2: public myState {
 		virtual bool check(int pukType) {
+			cout << "Sequence Ohne_metall_2: " << pukType << endl;
 			// TODO: korrekte Werte für puks eintragen 41 = oben mit metall
-			if (pukType == 41) {
+			if (pukType == puk_iron_core) {
 				new (this) Idle;
 				return true;
 			} else {
@@ -87,6 +91,7 @@ private:
 
 public:
 	const int systemType;
+	bool accept_new_puk;
 
 	~Puk_control();
 
@@ -107,11 +112,15 @@ public:
 	virtual void LIGHT_BARRIER_ENTRY_OPEN();
 	virtual void LIGHT_BARRIER_SWITCH_CLOSE();
 	virtual void LIGHT_BARRIER_EXIT_CLOSE();
+	virtual void LIGHT_BARRIER_RAMP_CLOSE();
 	virtual void HEIGHT_SENSOR_MEASURE_START();
 	virtual void HEIGHT_SENSOR_MEASURE_FINISHED();
 	virtual void SEND_OK();
 	virtual void IDENTIFIED_PUK();
 	virtual void TIMER_EXIT_OUT();
+	virtual void ERR_UNDEFINED_PUK();
+	virtual void TIMER_GROUP_OUT();
+	virtual void BUTTON_START();
 };
 
 #endif /* PUK_CONTROL_H_ */
