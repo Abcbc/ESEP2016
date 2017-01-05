@@ -134,9 +134,18 @@ void Tick_timer::execute(void*){
 						case SWITCH_OPEN_DURATION :
 							MsgSendPulse(3, -1, 5, TIMER_SWITCH_OUT_E_ID);
 							break;
+						case SWITCH_OPEN_LONG_DURATION :
+						    MsgSendPulse(3, -1, 5, TIMER_SWITCH_OUT_E_ID);
+                            break;
 						case EXIT_DURATION :
 							MsgSendPulse(3, -1, 5, TIMER_EXIT_OUT_E_ID);
 							break;
+						case SHORT_DURATION :
+						    MsgSendPulse(3, -1, 5, TIMER_GROUP_OUT_E_ID);
+						    break;
+						case LONG_DURATION :
+                            MsgSendPulse(3, -1, 5, TIMER_GROUP_OUT_E_ID);
+                            break;
 						default :
 							MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);
 					}

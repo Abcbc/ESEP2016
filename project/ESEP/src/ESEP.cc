@@ -82,8 +82,10 @@ int main(int argc, char *argv[]) {
 	Tick_timer* t = Tick_timer::get_instance();
 	t->start(NULL);
 
-	Height_Measurement* hm = Height_Measurement::get_instance();
-	hm->start(NULL);
+	if (SYSTEM_NUMBER != 3) {
+        Height_Measurement* hm = Height_Measurement::get_instance();
+        hm->start(NULL);
+	}
 
 	Puk_control* pc = Puk_control::get_instance();
 	pc->start(NULL);

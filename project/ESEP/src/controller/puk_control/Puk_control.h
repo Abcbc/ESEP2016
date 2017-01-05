@@ -91,6 +91,7 @@ private:
 
 public:
 	const int systemType;
+	bool accept_new_puk;
 
 	~Puk_control();
 
@@ -118,6 +119,8 @@ public:
 	virtual void IDENTIFIED_PUK();
 	virtual void TIMER_EXIT_OUT();
 	virtual void ERR_UNDEFINED_PUK();
+	virtual void TIMER_GROUP_OUT();
+	virtual void BUTTON_START();
 };
 
 #endif /* PUK_CONTROL_H_ */

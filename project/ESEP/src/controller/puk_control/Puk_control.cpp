@@ -16,7 +16,7 @@ Puk_control* Puk_control::instance_ = NULL;
 pthread_mutex_t Puk_control::init_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 Puk_control::Puk_control() :
-		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), statePtr(
+		dispatcher_(Dispatcher::getInstance()), belt_is_free(true), accept_new_puk(true), statePtr(
 				&startState), systemType(SYSTEM_NUMBER) {
 	dispatcher_ = Dispatcher::getInstance();
 	dispatcher_->addListener(this, LIGHT_BARRIER_ENTRY_CLOSE_E_ID);
@@ -34,6 +34,8 @@ Puk_control::Puk_control() :
 	dispatcher_->addListener(this, IDENTIFIED_PUK_E_ID);
 	dispatcher_->addListener(this, ERR_UNDEFINED_PUK_E_ID);
 	dispatcher_->addListener(this, TIMER_EXIT_OUT_E_ID);
+	dispatcher_->addListener(this, TIMER_GROUP_OUT_E_ID);
+	dispatcher_->addListener(this, BUTTON_START_E_ID);
 
 	std::cout << "Puk_control contructed" << std::endl;
 }
@@ -66,7 +68,12 @@ void Puk_control::send_puk(Puk_fsm_dummy* p) {
 void Puk_control::create_puk(int pukType) {
 	std::cout << "Create new Puk object" << std::endl;
 	puk_list_.push_back(new Puk_fsm_dummy(pukType));
-	puk_list_.back()->start();
+	if (SYSTEM_NUMBER != 3){
+	    puk_list_.back()->start();
+	} else {
+	    puk_list_.back()->start_group();
+	}
+
 }
 
 bool Puk_control::sequenz_group(int pukType) {
@@ -87,24 +94,43 @@ void Puk_control::try_event(bool (*ptToSignal)(void)) {
 }
 
 void Puk_control::LIGHT_BARRIER_ENTRY_CLOSE() {
-	if (systemType == 1) {
-		create_puk(42);
+	if (SYSTEM_NUMBER == 1) {
+		create_puk(-1);
 	}
 }
 
 void Puk_control::SEND_REQUEST() {
-	if (systemType != 1) {
+	if (SYSTEM_NUMBER == 2) {
 		cout << "number of puks: " << puk_list_.size() << endl;
 		if (puk_list_.empty()) { // puk_list_.empty()
+			cout << "System 2: isEmty for SEND_REQUEST_OK_E_ID: " << puk_list_.empty() << endl;
 			MsgSendPulse(CON_ID, PRIO, CODE, SEND_REQUEST_OK_E_ID);
 		}
+	} else if (SYSTEM_NUMBER == 3){
+	    if (accept_new_puk){
+	        MsgSendPulse(CON_ID, PRIO, CODE, SEND_REQUEST_OK_E_ID);
+	    }
 	}
 }
 
 void Puk_control::NEW_PUK() {
 	Serial_Manager* sm = Serial_Manager::get_instance();
 	cout << sm->get_puk_id() << endl;
-	create_puk(sm->get_puk_id());
+	if (SYSTEM_NUMBER == 2){
+	    create_puk(sm->get_puk_id());
+	} else if (SYSTEM_NUMBER == 3){
+	    cout << "Puk bool: " << puk_list_.empty() << endl;
+	    if (puk_list_.empty() || puk_list_.back()->is_state_3()){
+	        create_puk(sm->get_puk_id());
+	    } else if (accept_new_puk){
+	        for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
+                    it != puk_list_.end(); ++it) {
+                if ((*it)->getState()->new_puk()) {
+                    break;
+                }
+            }
+	    }
+	}
 }
 
 void Puk_control::LIGHT_BARRIER_ENTRY_OPEN() {
@@ -195,5 +221,23 @@ void Puk_control::TIMER_EXIT_OUT() {
 			break;
 		}
 	}
+}
+
+void Puk_control::TIMER_GROUP_OUT() {
+    for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
+            it != puk_list_.end(); ++it) {
+        if ((*it)->getState()->timer_group_out()) {
+            break;
+        }
+    }
+}
+
+void Puk_control::BUTTON_START() {
+    for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
+            it != puk_list_.end(); ++it) {
+        if ((*it)->getState()->button_start()) {
+            break;
+        }
+    }
 }
 
