@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
     Signal_light* signal_light = Signal_light::get_instance();
 
     // Estop FSM
-    Estop_controller* estop_cont = Estop_controller::get_instance();
+     Estop_controller* estop_cont = Estop_controller::get_instance();
 
 	// Test Error FSM
 	//Error_Test err_test;

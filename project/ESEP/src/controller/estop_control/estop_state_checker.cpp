@@ -17,21 +17,21 @@
 		return estop_this && estop_system2 && estop_system3;
 	}
 
-	void Estop_state_checker::set_state_status(int estop_system, bool ok) {
-       switch(estop_system) {
-       case 1:
-       estop_this = ok;
-       break;
-       case 2:
-       estop_system2 = ok;
-       break;
-       case 3:
-       estop_system3 = ok;
-       break;
-       default:
-    	   if ( SHOW_DEBUG_MESSAGES ) {
-    		   cerr << "False Estop System Nr. \n";
-    	   }
-    	   break;
-       }
+void Estop_state_checker::set_state_status(int estop_system, bool ok) {
+	switch (estop_system) {
+	case 1:
+		estop_this = ok;
+		break;
+	case 2:
+		estop_system2 = ok;
+		break;
+	case 3:
+		estop_system3 = ok;
+		break;
+	default:
+		if (SHOW_DEBUG_MESSAGES) {
+			cerr << "False Estop System Nr. \n";
+		}
+		break;
 	}
+}

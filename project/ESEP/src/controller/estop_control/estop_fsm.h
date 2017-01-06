@@ -36,59 +36,158 @@ using namespace std;
 class Estop_fsm: public State {
 private:
 	struct MyState {
+		virtual void start(){
+		}
 		virtual void idle() {
 		}
-		virtual void full_stop() {
+		virtual void full_stop(int system_nr) {
 		}
-		virtual void estop_released() {
+		virtual void estop_released(int system_nr) {
 		}
-		virtual void reset() {
+		virtual void reset(int system_nr) {
 		}
 		EstopData* data;
 	}*statePtr;
 
+	struct StartState : public MyState {
+		virtual void start(){
+			new (this) Idle;
+		}
+	};
+
 	struct Idle: public MyState {
 		Idle() { // Entry
+			if (SHOW_DEBUG_MESSAGES) {
+				cerr << "ESTOP_FSM STATE IDLE \n";
+			}
+			cerr << "IDLE ESTOP Nr: ";
+			cerr << data->estop_nr;
+			data->estate_state_check->set_state_status(data->estop_nr, true);
 		}
-		virtual void idle() {
-		}
-		virtual void full_stop() {
-				new (this) Full_stop;
+		virtual void full_stop(int system_nr) {
+			switch (system_nr) {
+			case 1:
+				if (data->estop_nr == 1) {
+					if (SHOW_DEBUG_MESSAGES) {
+						cerr << "ESTOP_FSM STATE FULL STOP ESTOP: 1 \n";
+					}
+					new (this) Full_stop;
+				}
+				break;
+			case 2:
+				if (data->estop_nr == 2) {
+					if (SHOW_DEBUG_MESSAGES) {
+						cerr << "ESTOP_FSM STATE FULL STOP: ESTOP 2 \n";
+					}
+					new (this) Full_stop;
+				}
+				break;
+			case 3:
+				if (data->estop_nr == 3) {
+					if (SHOW_DEBUG_MESSAGES) {
+						cerr << "ESTOP_FSM STATE FULL STOP: ESTOP 3 \n";
+					}
+					new (this) Full_stop;
+				}
+				break;
+			}
 		}
 	};
 
 	struct Full_stop: public MyState {
 		Full_stop() { // Entry
+			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			data->estate_state_check->set_state_status(data->estop_nr,false);
 		}
-		virtual void estop_released() {
-				new (this) Estop_released;
+		virtual void estop_released(int system_nr) {
+		    switch(system_nr) {
+		    case 1:
+			    if(data->estop_nr == 1) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE ESTOP RELEASED: ESTOP 1 \n";
+			    	}
+					new (this) Estop_released;
+			    }
+		    	break;
+		    case 2:
+			    if(data->estop_nr == 2) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE ESTOP RELEASED: ESTOP 2 \n";
+			    	}
+					new (this) Estop_released;
+			    }
+		    	break;
+		    case 3:
+			    if(data->estop_nr == 3) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE ESTOP RELEASED: ESTOP 3 \n";
+			    	}
+					new (this) Estop_released;
+			    }
+		    	break;
+		    }
 		}
 	};
 
 	struct Estop_released: public MyState {
 		Estop_released() { // Entry
+	    data->estate_state_check->set_state_status(data->estop_nr,false);
 		}
-		virtual void reset() {
-				new (this) Reset;
+		virtual void reset(int system_nr) {
+		    switch(system_nr) {
+		    case 1:
+			    if(data->estop_nr == 1) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE RESET: ESTOP 1 \n";
+			    	}
+					new (this) Reset;
+			    }
+		    	break;
+		    case 2:
+			    if(data->estop_nr == 2) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE RESET: ESTOP 2 \n";
+			    	}
+					new (this) Reset;
+			    }
+		    	break;
+		    case 3:
+			    if(data->estop_nr == 3) {
+			    	if (SHOW_DEBUG_MESSAGES) {
+			    		cerr << "ESTOP_FSM STATE RESET: ESTOP 3 \n";
+			    	}
+					new (this) Reset;
+			    }
+		    	break;
+		    }
 		}
 	};
 
 	struct Reset: public MyState {
 		Reset() { // Entry
+		data->estate_state_check->set_state_status(data->estop_nr,true);
 		}
 		virtual void idle() {
+			if (data->estate_state_check->transition_ok()) {
+		    	if (SHOW_DEBUG_MESSAGES) {
+		    		cerr << "ESTOP_FSM STATE GO TO IDLE \n";
+		    	}
 				new (this) Idle;
+			}
 		}
 	};
 
-	Idle stateMember;
+	StartState stateMember;
 	EstopData contextdata;
+
+	Estop_state_checker* estop_state_checker;
+
 
 public:
 	Estop_fsm(int estop_system_nr, Estop_state_checker* estate_state): statePtr(&stateMember),
-	contextdata(estop_system_nr, estate_state ,this){
+	contextdata(estop_system_nr, estate_state ,this), estop_state_checker(estate_state) {
 		statePtr->data = &contextdata;
-		statePtr->idle();
+		statePtr->start();
 		Dispatcher *d = Dispatcher::getInstance();
 		d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
 		d->addListener(this, ESTOP_RELEASED_SYSTEM2_E_ID);
@@ -103,34 +202,47 @@ public:
 		d->addListener(this, ESTOP_SYSTEM2_E_ID);
 		d->addListener(this, ESTOP_SYSTEM3_E_ID);
 	}
-   ~Estop_fsm();
 
    struct MyState* getState() {
        return statePtr;
    }
 
+	void start(){
+		statePtr->start();
+	}
+
     void ESTOP_THIS() {
-	    // TODO Transition
+    	statePtr->full_stop(1);
 	}
     void ESTOP_SYSTEM2() {
+    	statePtr->full_stop(2);
 	}
     void ESTOP_SYSTEM3() {
+    	statePtr->full_stop(3);
 	}
     void ESTOP_RELEASED_THIS() {
+    	statePtr->estop_released(1);
 	}
     void ESTOP_RELEASED_SYSTEM2() {
+    	statePtr->estop_released(2);
 	}
     void ESTOP_RELEASED_SYSTEM3() {
+    	statePtr->estop_released(3);
 	}
     void BUTTON_RESET() {
+    	statePtr->reset(1);
 	}
     void BUTTON_RESET_SYSTEM2() {
+    	statePtr->reset(2);
 	}
     void BUTTON_RESET_SYSTEM3() {
+    	statePtr->reset(3);
 	}
     void BUTTON_START() {
+    	statePtr->idle();
 	}
     void BUTTON_INCOMMING() {
+    	statePtr->idle();
 	}
 };
 
