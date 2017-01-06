@@ -228,7 +228,6 @@ public:
 
 	virtual void callListeners(int event) {
 		pthread_mutex_lock(&_init_mtx);
-		cout << "####################### Disptacher: new Event: " << event << " #########################" << endl;
 		// Call for every registered Listener
 		// the Method that corresponds with event.
 		for (unsigned i = 0; i < _listeners[event].size(); ++i) {
