@@ -60,8 +60,6 @@ private:
 			if (SHOW_DEBUG_MESSAGES) {
 				cerr << "ESTOP_FSM STATE IDLE \n";
 			}
-			cerr << "IDLE ESTOP Nr: ";
-			cerr << data->estop_nr;
 			data->estate_state_check->set_state_status(data->estop_nr, true);
 		}
 		virtual void full_stop(int system_nr) {
@@ -172,6 +170,7 @@ private:
 		    	if (SHOW_DEBUG_MESSAGES) {
 		    		cerr << "ESTOP_FSM STATE GO TO IDLE \n";
 		    	}
+				MsgSendPulse(CON_ID, PRIO, CODE, ESTOP_OK_E_ID);
 				new (this) Idle;
 			}
 		}
@@ -192,7 +191,6 @@ public:
 		d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
 		d->addListener(this, ESTOP_RELEASED_SYSTEM2_E_ID);
 		d->addListener(this, ESTOP_RELEASED_SYSTEM3_E_ID);
-		d->addListener(this, BUTTON_RESET_E_ID);
 		d->addListener(this, BUTTON_RESET_E_ID);
 		d->addListener(this, BUTTON_RESET_SYSTEM2_E_ID);
 		d->addListener(this, BUTTON_RESET_SYSTEM3_E_ID);

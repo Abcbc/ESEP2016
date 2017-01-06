@@ -99,7 +99,6 @@ int main(int argc, char *argv[]) {
      Estop_controller* estop_cont = Estop_controller::get_instance();
 
 	// Test Error FSM
-	//Error_Test err_test;
 	//err_test.test_error_controller();
 
 	Puk_control* pc = Puk_control::get_instance();
