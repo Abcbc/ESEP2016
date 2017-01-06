@@ -32,6 +32,16 @@ public:
 
 		int get_puk_id();
 
+		/*
+		 * Sende SEND_WANT auf ein Nachbarsystem
+		 */
+		void send_want();
+
+		/*
+		 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
+		 */
+		void send_request_ok();
+
 private:
 		Serial& operator=(const Serial& other);
 		Serial(const Serial& other);

@@ -10,12 +10,10 @@ pthread_mutex_t Serial_Transmit::mtx_ = PTHREAD_MUTEX_INITIALIZER;
 Serial_Transmit::Serial_Transmit(int fdesc_number) {
 	fdesc_ = fdesc_number;
 	Dispatcher *d = Dispatcher::getInstance();
-	d->addListener(this, SEND_WANT_E_ID);
 	d->addListener(this, ESTOP_THIS_E_ID);
 	d->addListener(this, ESTOP_RESET_THIS_E_ID);
 	d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
 	d->addListener(this, BUTTON_START_E_ID);
-	d->addListener(this, SEND_REQUEST_OK_E_ID);
 }
 
 Serial_Transmit::~Serial_Transmit() {
@@ -117,7 +115,7 @@ void Serial_Transmit::BUTTON_START() {
 }
 
 
-void Serial_Transmit::SEND_WANT() {
+void Serial_Transmit::send_want() {
 	Header header;
 	header.paket_typ = REQUEST;
 	header.paket_size = 1;
@@ -128,7 +126,7 @@ void Serial_Transmit::SEND_WANT() {
 	}
 }
 
-void Serial_Transmit::SEND_REQUEST_OK() {
+void Serial_Transmit::send_request_ok() {
 	Header header;
 	header.paket_typ = REQUEST_OK;
 	header.paket_size = 1;

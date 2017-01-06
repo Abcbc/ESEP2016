@@ -14,6 +14,9 @@
 #include <iostream>
 #include "serial.h"
 #include "config.h"
+#include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/dispatcher.cpp"
 
 using namespace std;
 
@@ -21,7 +24,7 @@ typedef struct {
 	bool set;
 } Estop;
 
-class Serial_Manager{
+class Serial_Manager: public State {
 	public:
 	/**
 	 * Precondition: Data darf nicht NULL sein.
@@ -65,6 +68,16 @@ class Serial_Manager{
 	virtual ~Serial_Manager();
 	Serial_Manager(const Serial_Manager& other);
 	Serial_Manager& operator=(const Serial_Manager& other);
+
+	/*
+	 * Sende SEND_WANT auf ein Nachbarsystem
+	 */
+	void SEND_WANT();
+
+	/*
+	 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
+	 */
+	void SEND_REQUEST_OK();
 
 	static Serial_Manager* instance_;
 	static pthread_mutex_t init_mtx;

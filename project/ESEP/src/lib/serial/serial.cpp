@@ -47,6 +47,15 @@ Serial::~Serial() {
 	}
 }
 
+void Serial::send_want() {
+	transmit->send_want();
+}
+
+
+void Serial::send_request_ok() {
+	transmit->send_request_ok();
+}
+
 int Serial::send(const int puk_id) {
 	return transmit->transmit_puk(puk_id);
 }

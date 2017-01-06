@@ -13,6 +13,9 @@ Serial_Manager::Serial_Manager(){
 	geme_2 = (2 == SYSTEM_NUMBER);
 	serial1 = new Serial(1);
 	serial2 = new Serial(2);
+	Dispatcher *d = Dispatcher::getInstance();
+	d->addListener(this, SEND_WANT_E_ID);
+	d->addListener(this, SEND_REQUEST_OK_E_ID);
 }
 
 Serial_Manager::~Serial_Manager() {
@@ -49,6 +52,20 @@ int Serial_Manager::get_puk_id() {
 		return serial2->get_puk_id();
 	}
 	return serial1->get_puk_id();
+}
+
+
+void Serial_Manager::SEND_WANT() {
+	if (is_GEME_2()) {
+		 serial2->send_want();
+	} else {
+	 serial1->send_want();
+	}
+}
+
+
+void Serial_Manager::SEND_REQUEST_OK(){
+	 serial1->send_request_ok();
 }
 
 bool Serial_Manager::is_GEME_2() {

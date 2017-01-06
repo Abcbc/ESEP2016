@@ -52,12 +52,12 @@ class Serial_Transmit: public State {
 	/*
 	 * Sende SEND_WANT auf ein Nachbarsystem
 	 */
-	void SEND_WANT();
+	void send_want();
 
 	/*
 	 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
 	 */
-	void SEND_REQUEST_OK();
+	void send_request_ok();
 
 	private:
 	Serial_Transmit(const Serial_Transmit& other);
