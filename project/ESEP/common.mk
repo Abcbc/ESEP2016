@@ -22,6 +22,8 @@ EXTRA_SRCVPATH+= \
 	$(PROJECT_ROOT)/src  \
 	$(PROJECT_ROOT)/src/controller  \
 	$(PROJECT_ROOT)/src/controller/height_measurement  \
+	$(PROJECT_ROOT)/src/controller/error_control  \
+	$(PROJECT_ROOT)/src/controller/estop_control  \
 	$(PROJECT_ROOT)/src/controller/puk_control  \
 	$(PROJECT_ROOT)/src/controller/switch_control  \
 	$(PROJECT_ROOT)/src/lib  \
