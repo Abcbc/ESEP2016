@@ -20,6 +20,7 @@
 #include "controller/switch_control/Switch_control.h"
 #include "controller/height_measurement/height_measurement.h"
 #include "lib/serial/serial_manager.h"
+#include "lib/hal/signal_light.h"
 #include "config.h"
 
 int SYSTEM_NUMBER;
@@ -91,6 +92,7 @@ int main(int argc, char *argv[]) {
 
 	// Error FSM
     Error_fsm* err_fsm = Error_fsm::get_instance();
+    Signal_light* signal_light = Signal_light::get_instance();
 
 	// Test Error FSM
 	//Error_Test err_test;

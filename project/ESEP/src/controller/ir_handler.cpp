@@ -136,9 +136,9 @@ const struct sigevent* ISR_DIO(void* arg, int id) {
 				break;
 			case E_STOP:
 				if ((source & E_STOP) > 0) {
-					e_id = ESTOP_THIS_E_ID;
-				} else {
 					e_id = ESTOP_RELEASED_THIS_E_ID;
+				} else {
+					e_id = ESTOP_THIS_E_ID;
 				}
 
 				break;

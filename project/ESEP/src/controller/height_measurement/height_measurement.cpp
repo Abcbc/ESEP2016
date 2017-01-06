@@ -54,7 +54,7 @@ static uint32_t const INVALID_PUK_TYPE_ID_E = ERR_UNDEFINED_PUK_E_ID;
 static uint32_t const HM_START_EVENT_ID_E = HEIGHT_SENSOR_MEASURE_START_E_ID;
 static uint32_t const HM_DONE_EVENT_ID_E = IDENTIFIED_PUK_E_ID;
 
-double Height_Measurement::profiles[25][15] = {
+double Height_Measurement::profiles[26][15] = {
 		/* 0 iron_core */        {2, 1, 2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 1 iron_core */        {2, 1, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 2 iron_core */        {2, 1, 2, 1, 2, 0, 2, 1, 2, -1, -1, -1, -1, -1, -1},
@@ -76,6 +76,8 @@ double Height_Measurement::profiles[25][15] = {
 		/* 18 iron_core */       {2, 1, 2, 1, 0, 1, 2, 1, 2, -1, -1, -1, -1, -1, -1},
 		/* 19 iron_core */       {2, 1, 2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 20 iron_core */       {2, 2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		/* 21 iron_core */		 {2, 0, 2, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+	//	/* 22 iron_core */		 {2, 2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 21 hole */            {2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 22 hole */            {1, 2, 0, 2, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 		/* 23 hole */            {1, 2, 0, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
