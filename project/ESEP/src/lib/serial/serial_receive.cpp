@@ -6,7 +6,6 @@
  */
 #include "serial_receive.h"
 #include "paket_protocol.h"
-#include <stdio.h>
 
 Serial_Receive::Serial_Receive(int fdesc_number, int com_number) {
 	fdesc_ = fdesc_number;

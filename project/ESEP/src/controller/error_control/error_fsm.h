@@ -51,10 +51,10 @@ private:
 
 	struct Estop_Active: public MyState {
 			virtual void entry(Error_fsm* err) {
-				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 				cout << "ERROR_FSM: ESTOP Active" << endl;
 			}
 			virtual void error_ok(Error_fsm* err) {
+				cout << "ERROR_FSM: ERROR_OK" << endl;
 				void* history = err->getStateFromHistory_();
 				memcpy(this, &history, 4);
 			}
@@ -66,12 +66,16 @@ private:
 		}
 	};
 
+
 	struct OK: public MyState {
-		OK(){
+		virtual void entry(Error_fsm* err) {
 			if (SHOW_DEBUG_MESSAGES) {
 			cerr << "ERROR: OK start normal Traffic Light\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NORMAL_E_ID);
+			if(data->err_fsm->getState() == this) {
+				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_ERR_E_ID);
+			}
 			data->err_fsm->setHistory(this);
 		}
 		virtual void lost_puk(Error_fsm* err) {
@@ -175,7 +179,7 @@ private:
 		}
 		virtual void start(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, ERR_OK_E_ID);
-			new (this) Start;
+			new (this) OK;
 		}
 		virtual void estop_active(Error_fsm* err) {
 			new (this) Estop_Active;
@@ -223,6 +227,7 @@ private:
 	Error_fsm(): statePtr(&startState),history_(),contextdata(this)  {
 		statePtr->data = &contextdata;
 		statePtr->start();
+		statePtr->entry(this);
 		Dispatcher *d = Dispatcher::getInstance();
 		d->addListener(this, ERR_LOST_PUK_E_ID);
 		d->addListener(this, ERR_TO_MANY_PUK_E_ID);
@@ -260,6 +265,7 @@ private:
 
 	void start(){
 		statePtr->start();
+		statePtr->entry(this);
 	}
 	void ERR_LOST_PUK() {
 		statePtr->lost_puk(this);

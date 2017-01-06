@@ -31,38 +31,38 @@ void Error_Test::test_error_controller(void) {
 	sleep(4);
     // Test Lost Puk
 	cerr << "Test Lost Puk \n";
-	MsgSendPulse(3, -1, 5, ERR_LOST_PUK_E_ID);
-	sleep(4);
+	//MsgSendPulse(3, -1, 5, ERR_LOST_PUK_E_ID);
+	//sleep(4);
 	// Test Acked
-	cerr << "Test Acked Lost Puk \n";
-	MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
-	sleep(2);
-	MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
-	sleep(2);
+	//cerr << "Test Acked Lost Puk \n";
+	//MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
+	//sleep(2);
+	//MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
+	//sleep(2);
 	// Test ERR_TO_MANY_PUK
-	cerr << "Test ERR_TO_MANY_PUK \n";
-	MsgSendPulse(3, -1, 5, ERR_TO_MANY_PUK_E_ID);
-	sleep(4);
-	MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
-	sleep(2);
-	MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
-	sleep(2);
+	//cerr << "Test ERR_TO_MANY_PUK \n";
+	//MsgSendPulse(3, -1, 5, ERR_TO_MANY_PUK_E_ID);
+	//sleep(4);
+	//MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
+	//sleep(2);
+	//MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
+	//sleep(2);
 	// Test ERR_SLIDE_FULL
-	cerr << "Test ERR_SLIDE_FULL \n";
-	MsgSendPulse(3, -1, 5, ERR_SLIDE_FULL_E_ID);
-	sleep(4);
-	MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
-	sleep(2);
-	MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
-	sleep(2);
+	//cerr << "Test ERR_SLIDE_FULL \n";
+	//MsgSendPulse(3, -1, 5, ERR_SLIDE_FULL_E_ID);
+	//sleep(4);
+	//MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
+	//sleep(2);
+	//MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
+	//sleep(2);
 	// Test UNDEFINED_PUK
-    cerr << "Test UNDEFINED_PUK \n";
-	MsgSendPulse(3, -1, 5, ERR_UNDEFINED_PUK_E_ID);
-	sleep(4);
-	MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
-	sleep(2);
-	MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
-	sleep(2);
+   // cerr << "Test UNDEFINED_PUK \n";
+	//MsgSendPulse(3, -1, 5, ERR_UNDEFINED_PUK_E_ID);
+	//sleep(4);
+	//MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
+	//sleep(2);
+	//MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
+	//sleep(2);
 	// Test RDY_TAKING_E_ID
     cerr << "Test RDY_TAKING_E_ID \n";
 	MsgSendPulse(3, -1, 5, RDY_TAKING_E_ID);
@@ -75,11 +75,14 @@ void Error_Test::test_error_controller(void) {
 	cerr << "Test ESTOP_THIS_E_ID \n";
 	MsgSendPulse(3, -1, 5, ESTOP_THIS_E_ID);
 	sleep(4);
-	MsgSendPulse(3, -1, 5, ESTOP_OK_E_ID);
+	MsgSendPulse(3, -1, 5, ESTOP_RELEASED_THIS_E_ID);
 	sleep(2);
 	MsgSendPulse(3, -1, 5, BUTTON_RESET_E_ID);
 	sleep(2);
 	MsgSendPulse(3, -1, 5, BUTTON_START_E_ID);
+	sleep(2);
+    cerr << "Test UNDEFINED_PUK after ESTOP\n";
+	MsgSendPulse(3, -1, 5, ERR_UNDEFINED_PUK_E_ID);
 	// Test UNDEFINED_PUK
     cerr << "Test UNDEFINED_PUK \n";
 	MsgSendPulse(3, -1, 5, ERR_UNDEFINED_PUK_E_ID);
