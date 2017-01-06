@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <stdint.h>
 #include "controller/puk_control/puk_fsm_dummy.h"
 #include "controller/event_table.h"
 #include "lib/serial/serial_manager.h"
@@ -65,9 +66,9 @@ void Puk_control::send_puk(Puk_fsm_dummy* p) {
 	std::cout << "Sending Puk to Serial Manager" << std::endl;
 }
 
-void Puk_control::create_puk(int pukType) {
+void Puk_control::create_puk(uint16_t pukType, uint16_t pukId) {
 	std::cout << "Create new Puk object" << std::endl;
-	puk_list_.push_back(new Puk_fsm_dummy(pukType));
+	puk_list_.push_back(new Puk_fsm_dummy(pukType, pukId));
 	if (SYSTEM_NUMBER != 3){
 	    puk_list_.back()->start();
 	} else {
@@ -84,6 +85,19 @@ int Puk_control::puk_count() {
 	return puk_list_.size();
 }
 
+uint16_t Puk_control::create_puk_id(){
+	static uint16_t count = 0;
+	return count++;
+}
+
+uint16_t Puk_control::get_puk_id(int serial_data){
+	return (uint16_t) serial_data >> 16;
+}
+
+uint16_t Puk_control::get_puk_type(int serial_data){
+	return (uint16_t) serial_data;
+}
+
 void Puk_control::try_event(bool (*ptToSignal)(void)) {
 	for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
 			it != puk_list_.end(); ++it) {
@@ -95,7 +109,7 @@ void Puk_control::try_event(bool (*ptToSignal)(void)) {
 
 void Puk_control::LIGHT_BARRIER_ENTRY_CLOSE() {
 	if (SYSTEM_NUMBER == 1) {
-		create_puk(-1);
+		create_puk(-1, create_puk_id());
 	}
 }
 
@@ -116,12 +130,15 @@ void Puk_control::SEND_REQUEST() {
 void Puk_control::NEW_PUK() {
 	Serial_Manager* sm = Serial_Manager::get_instance();
 	cout << sm->get_puk_id() << endl;
+	int s_data = sm->get_puk_id();
+	uint16_t id = get_puk_id(s_data);
+	uint16_t type = get_puk_type(s_data);
 	if (SYSTEM_NUMBER == 2){
-	    create_puk(sm->get_puk_id());
+	    create_puk(type, id);
 	} else if (SYSTEM_NUMBER == 3){
 	    cout << "Puk bool: " << puk_list_.empty() << endl;
 	    if (puk_list_.empty() || puk_list_.back()->is_state_3()){
-	        create_puk(sm->get_puk_id());
+	        create_puk(type, id);
 	    } else if (accept_new_puk){
 	        for (std::vector<Puk_fsm_dummy*>::iterator it = puk_list_.begin();
                     it != puk_list_.end(); ++it) {

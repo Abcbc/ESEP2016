@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <unistd.h>
+#include <stdint.h>
 #include <pthread.h>
 #include "lib/HAWThread.h"
 #include "lib/dispatcher/Dispatcher.cpp"
@@ -88,6 +89,9 @@ private:
 	}
 
 	void try_event(bool (*ptToSignal)());
+	uint16_t create_puk_id();
+	uint16_t get_puk_id(int);
+	uint16_t get_puk_type(int);
 
 public:
 	const int systemType;
@@ -99,9 +103,10 @@ public:
 
 	void delete_puk(Puk_fsm_dummy *p);
 	void send_puk(Puk_fsm_dummy *p);
-	void create_puk(int pukType);
+	void create_puk(uint16_t pukType, uint16_t pukId);
 	bool sequenz_group(int pukType);
 	int puk_count();
+
 
 // Events for puk control
 	virtual void LIGHT_BARRIER_ENTRY_CLOSE();

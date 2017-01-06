@@ -1,5 +1,6 @@
 #include "src/controller/height_measurement/height_measurement.h"
 #include "Src/controller/event_table.h"
+#include "lib/dispatcher/Dispatcher.cpp"
 #include "config.h"
 
 #define UNDEFINED 1576
@@ -85,11 +86,15 @@ double Height_Measurement::profiles[26][15] = {
 };
 
 Height_Measurement::Height_Measurement(){
-			last_type = 0;
-			is_stopped = false;
-			height_diff = 0;
-			timer_cid = 0;
-			timer_con = 0;
+	Dispatcher* d = Dispatcher::getInstance();
+	d->addListener(this, SPEED_NORMAL_E_ID);
+	d->addListener(this, SPEED_SLOW_E_ID);
+	d->addListener(this, SPEED_STOP_E_ID);
+	last_type = 0;
+	is_stopped = false;
+	height_diff = 0;
+	timer_cid = 0;
+	timer_con = 0;
 };
 
 void Height_Measurement::execute(void*){
@@ -135,13 +140,27 @@ void Height_Measurement::shutdown(){
 void  Height_Measurement::set_motor_speed(uint32_t speed){
 	is_stopped = (speed == STOPPED);
 }
+void Height_Measurement::SPEED_STOP(){
+    cout << "################### is stopped #####################" << endl;
+//	is_stopped = true;
+}
+
+void Height_Measurement::SPEED_NORMAL(){
+    cout << "################### is normal #####################" << endl;
+	is_stopped = false;
+}
+
+void Height_Measurement::SPEED_SLOW(){
+    cout << "################### is slow #####################" << endl;
+	is_stopped = false;
+}
+
 
 uint32_t Height_Measurement::get_type(void){
 	return last_type;
 }
 
 height_array Height_Measurement::get_height_array(void){
-	MsgSendPulse(3, -1, 5, MOTOR_SLOW_E_ID);
 	Height_sensor* height_sensor = Height_sensor::get_instance();
 	struct _pulse pulse;
 	std::vector<double> height_vector;

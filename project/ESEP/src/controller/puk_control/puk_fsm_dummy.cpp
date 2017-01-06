@@ -6,8 +6,8 @@
  */
 
 #include "puk_fsm_dummy.h"
-Puk_fsm_dummy::Puk_fsm_dummy(int Type) :
-		statePtr(&stateMember), contextdata(0, Puk_control::get_instance(),
+Puk_fsm_dummy::Puk_fsm_dummy(uint16_t Type, uint16_t id) :
+		statePtr(&stateMember), contextdata(Type, id, Puk_control::get_instance(),
 				this, Dispatcher::getInstance(), Tick_timer::get_instance()) {
 	statePtr->data = &contextdata;
 }

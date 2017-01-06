@@ -9,6 +9,7 @@
 #include <sys/neutrino.h>
 #include <sys/siginfo.h>
 #include "src/lib/hal/height_sensor.h"
+#include "lib/dispatcher/State.cpp"
 
 using namespace thread;
 
@@ -19,7 +20,7 @@ struct height_array {
 	double min;
 };
 
-class Height_Measurement: public HAWThread {
+class Height_Measurement: public HAWThread, public State {
 
 	private:
         Height_Measurement& operator=(Height_Measurement& b);
@@ -50,5 +51,9 @@ class Height_Measurement: public HAWThread {
         ~Height_Measurement(){};
         static uint32_t get_type(void);
 		static void set_motor_speed(uint32_t speed);
+
+		virtual void SPEED_STOP();
+		virtual void SPEED_NORMAL();
+		virtual void SPEED_SLOW();
 };
 #endif
