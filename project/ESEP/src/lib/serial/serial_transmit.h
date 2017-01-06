@@ -37,7 +37,7 @@ class Serial_Transmit: public State {
 	/*
 	 * Sende Reset
 	 */
-	void ESTOP_RESET_THIS();
+	void BUTTON_RESET();
 
 	/*
 	 * Sende ESTOP_RELEASED auf ein Nachbarsystem

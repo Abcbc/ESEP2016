@@ -11,7 +11,7 @@ Serial_Transmit::Serial_Transmit(int fdesc_number) {
 	fdesc_ = fdesc_number;
 	Dispatcher *d = Dispatcher::getInstance();
 	d->addListener(this, ESTOP_THIS_E_ID);
-	d->addListener(this, ESTOP_RESET_THIS_E_ID);
+	d->addListener(this, BUTTON_RESET_E_ID);
 	d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
 	d->addListener(this, BUTTON_START_E_ID);
 }
@@ -52,7 +52,7 @@ int Serial_Transmit::transmit_puk(const int puk_id) {
 	return result_write;
 }
 
-void Serial_Transmit::ESTOP_RESET_THIS() {
+void Serial_Transmit::BUTTON_RESET() {
 	pthread_mutex_lock(&mtx_);
 	if (SHOW_DEBUG_MESSAGE) {
 		cerr << "Send Reset\n";

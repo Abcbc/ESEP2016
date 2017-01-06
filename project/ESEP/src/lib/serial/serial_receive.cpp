@@ -90,7 +90,7 @@ void Serial_Receive::create_event_released() {
 		cerr << "create event RELEASED\n";
 	}
 	if (com == 1) {
-		if (MsgSendPulse(3, -1, 101, ESTOP_RELEASED_SYSTEM3_E_ID) < 0) {
+		if (MsgSendPulse(3, -1, 101, ESTOP_RELEASED_SYSTEM2_E_ID) < 0) {
 			perror("Error Receive RELEASED from Serial com: " + com);
 		}
 	} else {
@@ -102,9 +102,9 @@ void Serial_Receive::create_event_released() {
 
 void Serial_Receive::create_event_button_start() {
 	if (SHOW_DEBUG_MESSAGE) {
-		cerr << "create event BUTTON_START_INCOMMING\n";
+		cerr << "create event BUTTON_START_INCOMING\n";
 	}
-	if (MsgSendPulse(3, -1, 103, BUTTON_START_INCOMMING_E_ID) < 0) {
+	if (MsgSendPulse(3, -1, 103, BUTTON_START_INCOMING_E_ID) < 0) {
 		perror("Error Receive BUTTON_START from Serial com: " + com);
 	}
 }
@@ -132,11 +132,11 @@ void Serial_Receive::create_event_reset() {
 		cerr << "Create Event RESET\n";
 	}
 	if (com == 1) {
-		if (MsgSendPulse(3, -1, 101, ESTOP_RESET_SYSTEM2_E_ID) < 0) {
+		if (MsgSendPulse(3, -1, 101, BUTTON_RESET_SYSTEM2_E_ID) < 0) {
 			perror("Error Receive RESET from Serial com: " + com);
 		}
 	} else {
-		if (MsgSendPulse(3, -1, 102, ESTOP_RESET_SYSTEM3_E_ID) < 0) {
+		if (MsgSendPulse(3, -1, 102, BUTTON_RESET_SYSTEM3_E_ID) < 0) {
 			perror("Error Receive RESET from Serial com: " + com);
 		}
 	}

@@ -107,7 +107,7 @@ public:
 
 	//BUTTON
 	virtual void BUTTON_START(void) = 0;
-	virtual void BUTTON_START_INCOMMING(void) = 0;
+	virtual void BUTTON_START_INCOMING(void) = 0;
 	virtual void BUTTON_STOP(void) = 0;
 	virtual void BUTTON_RESET(void) = 0;
 	virtual void BUTTON_RESET_SYSTEM2(void) = 0;

@@ -119,7 +119,7 @@ public:
 
 	      //BUTTON
 	      virtual void BUTTON_START(void){};
-	      virtual void BUTTON_START_INCOMMING(void){};
+	      virtual void BUTTON_START_INCOMING(void){};
 	      virtual void BUTTON_STOP(void){};
 	      virtual void BUTTON_RESET(void){};
 	      virtual void BUTTON_RESET_SYSTEM2(void){};
