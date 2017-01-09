@@ -23,57 +23,73 @@ class Error_fsm: public State {
 private:
 
 	struct MyData {
-		MyData(Error_fsm *err) : err_fsm(err) {
+		MyData(Error_fsm *err) :
+				err_fsm(err) {
 		}
 		Error_fsm* err_fsm;
 	};
 
 	struct MyState {
-		virtual void start(){}
-		virtual void entry(Error_fsm* err) {}
-		virtual void slide_full(Error_fsm* err) {}
-		virtual void lost_puk(Error_fsm* err) {}
-		virtual void puk_to_many(Error_fsm* err) {}
-		virtual void unknown_puk(Error_fsm* err) {}
-		virtual void rdy_taking(Error_fsm* err) {}
-		virtual void start(Error_fsm* err) {}
-		virtual void error_acknowledged(Error_fsm* err) {}
-		virtual void estop_active(Error_fsm* err) {}
-		virtual void error_ok(Error_fsm* err) {}
+		virtual void start() {
+		}
+		virtual void entry(Error_fsm* err) {
+		}
+		virtual void slide_full(Error_fsm* err) {
+		}
+		virtual void lost_puk(Error_fsm* err) {
+		}
+		virtual void puk_too_many(Error_fsm* err) {
+		}
+		virtual void unknown_puk(Error_fsm* err) {
+		}
+		virtual void rdy_taking(Error_fsm* err) {
+		}
+		virtual void start(Error_fsm* err) {
+		}
+		virtual void error_acknowledged(Error_fsm* err) {
+		}
+		virtual void estop_active(Error_fsm* err) {
+		}
+		virtual void error_ok(Error_fsm* err) {
+		}
+		virtual void err_puk_too_early(Error_fsm* err) {
+		}
+		virtual void err_puk_too_early_ok(Error_fsm* err) {
+		}
 		MyData *data;
 	}*statePtr;
 
 	//struct err_fsm: public MyState {
-		//virtual void estop_active(Error_fsm* err) {
-		//	new (this) Estop_Active;
-		//}
+	//virtual void estop_active(Error_fsm* err) {
+	//	new (this) Estop_Active;
+	//}
 	//};
 
 	struct Estop_Active: public MyState {
-			virtual void entry(Error_fsm* err) {
-				cout << "ERROR_FSM: ESTOP Active" << endl;
-			}
-			virtual void error_ok(Error_fsm* err) {
-				cout << "ERROR_FSM: ERROR_OK" << endl;
-				void* history = err->getStateFromHistory_();
-				memcpy(this, &history, 4);
-			}
-		};
+		virtual void entry(Error_fsm* err) {
+			cout << "ERROR_FSM: ESTOP Active" << endl;
+		}
+		virtual void error_ok(Error_fsm* err) {
+			cout << "ERROR_FSM: ERROR_OK" << endl;
+			void* history = err->getStateFromHistory_();
+			memcpy(this, &history, 4);
+		}
+	};
 
-	struct StartState : public MyState {
-		virtual void start(){
+	struct StartState: public MyState {
+		virtual void start() {
 			new (this) OK;
 		}
 	};
 
-
 	struct OK: public MyState {
 		virtual void entry(Error_fsm* err) {
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: OK start normal Traffic Light\n";
+				cerr << "ERROR: OK start normal Traffic Light\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NORMAL_E_ID);
-			if(data->err_fsm->getState() == this) {
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_OK_E_ID);
+			if (data->err_fsm->getState() == this) {
 				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_ERR_E_ID);
 			}
 			data->err_fsm->setHistory(this);
@@ -84,8 +100,8 @@ private:
 		virtual void slide_full(Error_fsm* err) {
 			new (this) Slide_Full;
 		}
-		virtual void puk_to_many(Error_fsm* err) {
-			new (this) Puk_To_Many;
+		virtual void puk_too_many(Error_fsm* err) {
+			new (this) Puk_Too_Many;
 		}
 		virtual void unknown_puk(Error_fsm* err) {
 			new (this) Unknown_Puk;
@@ -99,13 +115,31 @@ private:
 		virtual void estop_active(Error_fsm* err) {
 			new (this) Estop_Active;
 		}
+		virtual void err_puk_too_early(Error_fsm* err) {
+			new (this) Early_Entry;
+		}
+	};
+
+	struct Early_Entry: public OK {
+		virtual void entry(Error_fsm* err) {
+			if (SHOW_DEBUG_MESSAGES) {
+				cerr << "ERROR: Early_Entryt\n";
+			}
+			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NEW_PUK_E_ID);
+			if (data->err_fsm->getState() == this) {
+				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
+			}
+		}
+		virtual void err_puk_too_early_ok(Error_fsm* err) {
+			new (this) OK;
+		}
 	};
 
 	struct Lost_Puk: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Lost Puk\n";
+				cerr << "ERROR: Lost Puk\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
 			err->setHistory(this);
@@ -122,7 +156,7 @@ private:
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Slide Full\n";
+				cerr << "ERROR: Slide Full\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
 			err->setHistory(this);
@@ -135,11 +169,11 @@ private:
 		}
 	};
 
-	struct Puk_To_Many: public MyState {
+	struct Puk_Too_Many: public MyState {
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Puk To Many\n";
+				cerr << "ERROR: Puk To0 Many\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
 			err->setHistory(this);
@@ -156,7 +190,7 @@ private:
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Unknown Puk\n";
+				cerr << "ERROR: Unknown Puk\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
 			err->setHistory(this);
@@ -173,7 +207,7 @@ private:
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Acknowledged\n";
+				cerr << "ERROR: Acknowledged\n";
 			}
 			err->setHistory(this);
 		}
@@ -190,14 +224,14 @@ private:
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "RDY Taking\n";
+				cerr << "RDY Taking\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_RDY_E_ID);
 			err->setHistory(this);
 		}
 		virtual void start(Error_fsm* err) {
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "RDY Taking Ok\n";
+				cerr << "RDY Taking Ok\n";
 			}
 			MsgSendPulse(CON_ID, PRIO, CODE, RDY_TAKING_OK_E_ID);
 			new (this) Start;
@@ -211,7 +245,7 @@ private:
 		virtual void entry(Error_fsm* err) {
 			MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_ERR_E_ID);
 			if (SHOW_DEBUG_MESSAGES) {
-			cerr << "ERROR: Start again\n";
+				cerr << "ERROR: Start again\n";
 			}
 			err->setHistory(this);
 			new (this) OK;
@@ -224,7 +258,8 @@ private:
 	StartState startState;
 	MyData contextdata;
 
-	Error_fsm(): statePtr(&startState),history_(),contextdata(this)  {
+	Error_fsm() :
+			statePtr(&startState), history_(), contextdata(this) {
 		statePtr->data = &contextdata;
 		statePtr->start();
 		statePtr->entry(this);
@@ -240,6 +275,8 @@ private:
 		d->addListener(this, ESTOP_THIS_E_ID);
 		d->addListener(this, ESTOP_SYSTEM2_E_ID);
 		d->addListener(this, ESTOP_SYSTEM3_E_ID);
+		d->addListener(this, ERR_PUK_TOO_EARLY_E_ID);
+		d->addListener(this, ERR_PUK_TOO_EARLY_OK_E_ID);
 	}
 
 	void* history_;
@@ -252,9 +289,9 @@ private:
 		return history_;
 	}
 
-	public:
+public:
 
-	struct MyState* getState(){
+	struct MyState* getState() {
 		return statePtr;
 	}
 
@@ -263,7 +300,7 @@ private:
 		return &instance_;
 	}
 
-	void start(){
+	void start() {
 		statePtr->start();
 		statePtr->entry(this);
 	}
@@ -273,7 +310,7 @@ private:
 	}
 
 	void ERR_TO_MANY_PUK() {
-		statePtr->puk_to_many(this);
+		statePtr->puk_too_many(this);
 		statePtr->entry(this);
 	}
 
@@ -322,6 +359,15 @@ private:
 		statePtr->entry(this);
 	}
 
-	};
+	void ERR_PUK_TOO_EARLY() {
+		statePtr->err_puk_too_early(this);
+		statePtr->entry(this);
+	}
+	void ERR_PUK_TOO_EARLY_OK() {
+		statePtr->err_puk_too_early_ok(this);
+		statePtr->entry(this);
+	}
+
+};
 
 #endif /* ERROR_FSM_H_ */

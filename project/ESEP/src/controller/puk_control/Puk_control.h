@@ -15,6 +15,7 @@
 #include "lib/HAWThread.h"
 #include "lib/dispatcher/Dispatcher.cpp"
 #include "lib/dispatcher/State.cpp"
+#include "timer/Tick_timer.h"
 #include "config.h"
 
 using namespace thread;
@@ -29,6 +30,9 @@ private:
 	vector<Puk_fsm_dummy *> puk_list_;
 	Dispatcher* dispatcher_;
 	bool belt_is_free;
+	uint32_t entry_timer_id;
+	uint32_t transmit_timer_id;
+	Tick_timer* timer;
 
 	Puk_control();
 
@@ -112,6 +116,7 @@ public:
 	virtual void LIGHT_BARRIER_ENTRY_CLOSE();
 	virtual void SEND_REQUEST();
 	virtual void NEW_PUK();
+	virtual void TIMER_NEW_PUK_OUT();
 
 // Events for puk fsm
 	virtual void LIGHT_BARRIER_ENTRY_OPEN();
@@ -124,8 +129,14 @@ public:
 	virtual void IDENTIFIED_PUK();
 	virtual void TIMER_EXIT_OUT();
 	virtual void ERR_UNDEFINED_PUK();
+	virtual void ERR_OK();
 	virtual void TIMER_GROUP_OUT();
 	virtual void BUTTON_START();
+	virtual void TIMER_SWITCH_TO_EXIT_OUT();
+	virtual void TIMER_HEIGHT_MEASURE_TO_SWITCH_OUT();
+	virtual void TIMER_HEIGHT_MEASURE_TO_RAMP_OUT();
+	virtual void TIMER_HEIGHT_MEASURE_DURATION_OUT();
+	virtual void TIMER_TRANSMIT_OUT();
 };
 
 #endif /* PUK_CONTROL_H_ */

@@ -93,6 +93,10 @@ class Signal_light:Hal_component, State{
 		     */
 		    void TRAFFIC_LIGHT_RDY();
 
+		    void TRAFFIC_NEW_PUK();
+
+		    void TRAFFIC_NEW_PUK_OUT();
+
 			/*
 			 * Returns the pointer of the instance
 			 * @return 

@@ -37,6 +37,8 @@ Signal_light::Signal_light(){
 	d->addListener(this, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
 	d->addListener(this, TRAFFIC_LIGHT_PASSED_ERROR_E_ID);
 	d->addListener(this, TRAFFIC_LIGHT_RDY_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_NEW_PUK_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_NEW_PUK_OUT_E_ID);
 }
 Signal_light::~Signal_light(){
 	pthread_mutex_destroy(&init_mtx);
@@ -165,6 +167,14 @@ void Signal_light::TRAFFIC_LIGHT_RDY() {
 	stop_all_blinks();
 	set_light(green);
 	blink(green, 1000000);
+}
+
+void Signal_light::TRAFFIC_NEW_PUK_OUT() {
+	stop_blink(yellow);
+}
+
+void Signal_light::TRAFFIC_NEW_PUK() {
+	blink(yellow, 1000000);
 }
 
 uint8_t Signal_light::color_bit(Color c){

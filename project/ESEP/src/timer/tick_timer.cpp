@@ -128,25 +128,54 @@ void Tick_timer::execute(void*){
 			for(uint32_t i = 0; i < timer_vector.size(); i++){
 				timer_vector[i].duration -= step;
 				if(timer_vector[i].duration <= 0){
-					cout << "timer run out" << endl;
 					// if the timer has run out the id is send in pulse-msg
 					switch(timer_vector[i].start_duration){
 						case SWITCH_OPEN_DURATION :
+							cout << "SWITCH_OPEN_DURATION run out" << endl;
 							MsgSendPulse(3, -1, 5, TIMER_SWITCH_OUT_E_ID);
 							break;
 						case SWITCH_OPEN_LONG_DURATION :
+							cout << "SWITCH_OPEN_LONG_DURATION run out" << endl;
 						    MsgSendPulse(3, -1, 5, TIMER_SWITCH_OUT_E_ID);
                             break;
 						case EXIT_DURATION :
+							cout << "EXIT_DURATION run out" << endl;
 							MsgSendPulse(3, -1, 5, TIMER_EXIT_OUT_E_ID);
 							break;
 						case SHORT_DURATION :
+							cout << "SHORT_DURATION run out" << endl;
 						    MsgSendPulse(3, -1, 5, TIMER_GROUP_OUT_E_ID);
 						    break;
 						case LONG_DURATION :
+							cout << "LONG_DURATION run out" << endl;
                             MsgSendPulse(3, -1, 5, TIMER_GROUP_OUT_E_ID);
                             break;
+						case NEW_PUK_DURATION :
+							cout << "NEW_PUK_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_NEW_PUK_OUT_E_ID);
+							break;
+						case SWITCH_TO_EXIT_DURATION :
+							cout << "SWITCH_TO_EXIT_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_SWITCH_TO_EXIT_OUT_E_ID);
+							break;
+						case HEIGHT_MEASURE_TO_SWITCH_DURATION :
+							cout << "HEIGHT_MEASURE_TO_SWITCH_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_HEIGHT_MEASURE_TO_SWITCH_OUT_E_ID);
+							break;
+						case HEIGHT_MEASURE_DURATION :
+							cout << "HEIGHT_MEASURE_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_HEIGHT_MEASURE_DURATION_OUT_E_ID);
+							break;
+						case HEIGHT_MEASURE_TO_RAMP_DURATION :
+							cout << "HEIGHT_MEASURE_TO_RAMP_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_HEIGHT_MEASURE_TO_RAMP_OUT_E_ID);
+							break;
+						case TANSMIT_DURATION :
+							cout << "TANSMIT_DURATION run out" << endl;
+							MsgSendPulse(3, -1, 5, TIMER_TRANSMIT_OUT_E_ID);
+							break;
 						default :
+							cout << "TIMER_RUNOUT run out" << endl;
 							MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);
 					}
 					id_queue.push(timer_vector[i].id);

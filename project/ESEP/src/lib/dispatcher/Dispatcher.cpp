@@ -104,6 +104,8 @@ private:
 		_methods.insert(std::pair<int, method_t>( TRAFFIC_LIGHT_ACKED_ERROR_E_ID, &Event_methods::TRAFFIC_LIGHT_ACKED_ERROR));
 		_methods.insert(std::pair<int, method_t>( TRAFFIC_LIGHT_PASSED_ERROR_E_ID, &Event_methods::TRAFFIC_LIGHT_PASSED_ERROR));
 		_methods.insert(std::pair<int, method_t>( TRAFFIC_LIGHT_RDY_E_ID, &Event_methods::TRAFFIC_LIGHT_RDY));
+		_methods.insert(std::pair<int, method_t>( TRAFFIC_LIGHT_NEW_PUK_E_ID, &Event_methods::TRAFFIC_NEW_PUK));
+		_methods.insert(std::pair<int, method_t>( TRAFFIC_LIGHT_NEW_PUK_OUT_E_ID, &Event_methods::TRAFFIC_NEW_PUK_OUT));
 
 		//TIMER
 		_methods.insert(std::pair<int, method_t>( TIMER_RUNOUT_E_ID, &Event_methods::TIMER_RUNOUT));
@@ -111,18 +113,26 @@ private:
 		_methods.insert(std::pair<int, method_t>( TIMER_ENTRY_OUT_E_ID, &Event_methods::TIMER_ENTRY_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_MEASURE_E_ID, &Event_methods::TIMER_MEASURE));
 		_methods.insert(std::pair<int, method_t>( TIMER_MEASURE_OUT_E_ID, &Event_methods::TIMER_MEASURE_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_HEIGHT_MEASURE_TO_SWITCH_OUT_E_ID, &Event_methods::TIMER_HEIGHT_MEASURE_TO_SWITCH_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_HEIGHT_MEASURE_TO_RAMP_OUT_E_ID, &Event_methods::TIMER_HEIGHT_MEASURE_TO_RAMP_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_E_ID, &Event_methods::TIMER_SWITCH));
 		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_OUT_E_ID, &Event_methods::TIMER_SWITCH_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_LONG_E_ID, &Event_methods::TIMER_SWITCH_LONG));
 		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_LONG_OUT_E_ID, &Event_methods::TIMER_SWITCH_LONG_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_SWITCH_TO_EXIT_OUT_E_ID, &Event_methods::TIMER_SWITCH_TO_EXIT_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_EXIT_E_ID, &Event_methods::TIMER_EXIT));
 		_methods.insert(std::pair<int, method_t>( TIMER_EXIT_OUT_E_ID, &Event_methods::TIMER_EXIT_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_GROUP_E_ID, &Event_methods::TIMER_GROUP));
 		_methods.insert(std::pair<int, method_t>( TIMER_GROUP_OUT_E_ID, &Event_methods::TIMER_GROUP_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_NEW_PUK_OUT_E_ID, &Event_methods::TIMER_NEW_PUK_OUT));
+		_methods.insert(std::pair<int, method_t>( TIMER_HEIGHT_MEASURE_DURATION_OUT_E_ID, &Event_methods::TIMER_HEIGHT_MEASURE_DURATION_OUT));
+		_methods.insert(std::pair<int, method_t>(TIMER_TRANSMIT_OUT_E_ID, &Event_methods::TIMER_TRANSMIT_OUT));
 
 		// Errors
 		_methods.insert(std::pair<int, method_t>(ERR_LOST_PUK_E_ID, &Event_methods::ERR_LOST_PUK));
 		_methods.insert(std::pair<int, method_t>(ERR_TO_MANY_PUK_E_ID, &Event_methods::ERR_TO_MANY_PUK));
+		_methods.insert(std::pair<int, method_t>(ERR_PUK_TOO_EARLY_E_ID, &Event_methods::ERR_PUK_TOO_EARLY));
+		_methods.insert(std::pair<int, method_t>(ERR_PUK_TOO_EARLY_OK_E_ID, &Event_methods::ERR_PUK_TOO_EARLY_OK));
 		_methods.insert(std::pair<int, method_t>(ERR_SLIDE_FULL_E_ID, &Event_methods::ERR_SLIDE_FULL));
 		_methods.insert(std::pair<int, method_t>(ERR_UNDEFINED_PUK_E_ID, &Event_methods::ERR_UNDEFINED_PUK));
 		_methods.insert(std::pair<int, method_t>(ERR_OK_E_ID, &Event_methods::ERR_OK));

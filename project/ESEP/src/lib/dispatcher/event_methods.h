@@ -64,6 +64,8 @@ public:
 	virtual void TRAFFIC_LIGHT_ACKED_ERROR(void) = 0;
 	virtual void TRAFFIC_LIGHT_PASSED_ERROR(void) = 0;
 	virtual void TRAFFIC_LIGHT_RDY(void) = 0;
+	virtual void TRAFFIC_NEW_PUK(void) = 0;
+	virtual void TRAFFIC_NEW_PUK_OUT(void) = 0;
 
 	//TIMER
 	virtual void TIMER_RUNOUT(void) = 0;
@@ -73,16 +75,24 @@ public:
 	virtual void TIMER_GROUP_OUT(void) = 0;
 	virtual void TIMER_MEASURE(void) = 0;
 	virtual void TIMER_MEASURE_OUT(void) = 0;
+	virtual void TIMER_HEIGHT_MEASURE_TO_SWITCH_OUT(void) = 0;
+	virtual void TIMER_HEIGHT_MEASURE_TO_RAMP_OUT(void) = 0;
 	virtual void TIMER_EXIT(void) = 0;
 	virtual void TIMER_EXIT_OUT(void) = 0;
 	virtual void TIMER_SWITCH(void) = 0;
 	virtual void TIMER_SWITCH_OUT(void) = 0;
 	virtual void TIMER_SWITCH_LONG(void) = 0;
 	virtual void TIMER_SWITCH_LONG_OUT(void) = 0;
+	virtual void TIMER_SWITCH_TO_EXIT_OUT(void) = 0;
+	virtual void TIMER_NEW_PUK_OUT(void) = 0;
+	virtual void TIMER_HEIGHT_MEASURE_DURATION_OUT(void) = 0;
+	virtual void TIMER_TRANSMIT_OUT(void) = 0;
 
 	// Errors
 	virtual void ERR_LOST_PUK(void) = 0;
 	virtual void ERR_TO_MANY_PUK(void) = 0;
+	virtual void ERR_PUK_TOO_EARLY(void) = 0;
+	virtual void ERR_PUK_TOO_EARLY_OK(void) = 0;
 	virtual void ERR_SLIDE_FULL(void) = 0;
 	virtual void ERR_UNDEFINED_PUK(void) = 0;
 	virtual void ERR_OK(void) = 0;

@@ -26,8 +26,8 @@
 #define PRIO -1
 #define CODE 5
 
-#define HEIHT_MEASUREMENT_TOLERANCE 2000
-#define SWITCH_TO_TOLERANCE 600
+#define HEIHT_MEASUREMENT_TOLERANCE 2500
+#define SWITCH_TO_TOLERANCE 1500
 
 struct MyData {
 	MyData(uint16_t type, uint16_t id, Puk_control* pc, Puk_fsm_dummy* pf,
@@ -96,6 +96,25 @@ private:
 		virtual bool button_start() {
 			return false;
 		}
+		virtual bool timer_switch_to_exit_out() {
+			return false;
+		}
+		virtual bool timer_height_measure_to_switch_out() {
+			return false;
+		}
+		virtual bool timer_height_measure_to_ramp_out() {
+			return false;
+		}
+		virtual bool timer_height_measurement_duration_out() {
+			return false;
+		}
+		virtual bool timer_transmit_out() {
+			return false;
+		}
+		virtual bool err_ok() {
+			return false;
+		}
+
 		MyData* data;
 	}*statePtr;
 
@@ -120,6 +139,10 @@ private:
 			new (this) Active;
 			return true;
 		}
+		virtual bool timer_transmit_out() {
+			new (this) Error;
+			return true;
+		}
 	};
 
 	struct Active: public MyState {
@@ -135,6 +158,10 @@ private:
 			} else {
 				new (this) Error;
 			}
+			return true;
+		}
+		virtual bool timer_height_measurement_duration_out() {
+			new (this) Error;
 			return true;
 		}
 	};
@@ -153,7 +180,8 @@ private:
 			cout << "PukType: " << data->pukType << endl;
 
 			if (SYSTEM_NUMBER == 1) {
-				if (data->pukType < 16 || data->pukType == puk_normal || data->pukType == puk_litte_one) {
+				if (data->pukType < 16 || data->pukType == puk_normal
+						|| data->pukType == puk_litte_one) {
 					data->timer_id = data->tick_timer->start_timer(
 							HEIGHT_MEASURE_TO_RAMP_DURATION);
 					new (this) Sortout;
@@ -169,7 +197,6 @@ private:
 			}
 			data->timer_id = data->tick_timer->start_timer(
 					HEIGHT_MEASURE_TO_SWITCH_DURATION);
-			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
 			new (this) To_Switch;
 			return true;
 		}
@@ -190,6 +217,13 @@ private:
 			new (this) Kill_Puk;
 			return true;
 		}
+		virtual bool light_barrier_switch_close() {
+			return true;
+		}
+		virtual bool timer_height_measure_to_ramp_out() {
+			new (this) Error;
+			return true;
+		}
 	};
 
 	struct To_Switch: public MyState {
@@ -200,7 +234,12 @@ private:
 			data->tick_timer->stop_timer(data->timer_id);
 			data->timer_id = data->tick_timer->start_timer(
 					SWITCH_TO_EXIT_DURATION);
+			MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
 			new (this) To_Exit;
+			return true;
+		}
+		virtual bool timer_height_measure_to_switch_out() {
+			new (this) Error;
 			return true;
 		}
 	};
@@ -219,6 +258,10 @@ private:
 				MsgSendPulse(CON_ID, PRIO, CODE, SEND_WANT_E_ID);
 				new (this) Transmit;
 			}
+			return true;
+		}
+		virtual bool timer_switch_to_exit_out() {
+			new (this) Error;
 			return true;
 		}
 	};
@@ -259,7 +302,11 @@ private:
 	struct Error: public MyState {
 		Error() {
 			cerr << "State: Error" << endl;
+			MsgSendPulse(CON_ID, PRIO, CODE, ERR_LOST_PUK_E_ID);
+		}
+		virtual bool err_ok() {
 			new (this) Kill_Puk;
+			return true;
 		}
 	};
 
