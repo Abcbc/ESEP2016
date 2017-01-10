@@ -194,6 +194,7 @@ void Puk_control::NEW_PUK() {
 	int s_data = sm->get_puk_id();
 	uint16_t id = get_puk_id(s_data);
 	uint16_t type = get_puk_type(s_data);
+	cout << "Puk id: " << id << "  Puk type: " << type << endl;
 	if (SYSTEM_NUMBER != 1) {
 		transmit_timer_id = timer->start_timer(TANSMIT_DURATION);
 	}

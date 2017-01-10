@@ -130,6 +130,8 @@ private:
 				MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_ERR_E_ID);
 			}
 		}
+		virtual void start(Error_fsm* err){
+		}
 		virtual void err_puk_too_early_ok(Error_fsm* err) {
 			new (this) OK;
 		}

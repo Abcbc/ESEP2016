@@ -173,7 +173,17 @@ private:
 
 		virtual bool identified_puk() {
 
-			data->pukType = Height_Measurement::get_type();
+
+		    uint32_t type = Height_Measurement::get_type();
+
+		    if (SYSTEM_NUMBER == 2){
+		        if(type != data->pukType){
+		            new (this) Error;
+		            return true;
+		        }
+		    }
+
+		    data->pukType = type;
 
 			bool sequence = data->puk_control->sequenz_group(data->pukType);
 
