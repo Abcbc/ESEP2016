@@ -87,6 +87,7 @@ public:
 	virtual void TIMER_NEW_PUK_OUT(void) = 0;
 	virtual void TIMER_HEIGHT_MEASURE_DURATION_OUT(void) = 0;
 	virtual void TIMER_TRANSMIT_OUT(void) = 0;
+	virtual void TIMER_CREATE_PUK_OUT(void) = 0;
 
 	// Errors
 	virtual void ERR_LOST_PUK(void) = 0;

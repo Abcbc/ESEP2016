@@ -29,9 +29,9 @@
 #define LO_NORMAL_UPPER_TOL 2900
 #define LO_NORMAL_LOWER_TOL 2700
 
-#define SUM_IC_PROFILES 22
+#define SUM_IC_PROFILES 23
 #define SUM_HOLE_PROFILES 4
-#define PROFILES_LENGTH 23
+#define PROFILES_LENGTH 27
 #define PROFILE_LENGTH 15
 #define HOLE_UPPER 3800
 #define HOLE_LOWER 3400
@@ -58,7 +58,7 @@ static uint32_t const INVALID_PUK_TYPE_ID_E = ERR_UNDEFINED_PUK_E_ID;
 static uint32_t const HM_START_EVENT_ID_E = HEIGHT_SENSOR_MEASURE_START_E_ID;
 static uint32_t const HM_DONE_EVENT_ID_E = IDENTIFIED_PUK_E_ID;
 
-double Height_Measurement::profiles[26][15] = {
+double Height_Measurement::profiles[27][15] = {
 		/* 0 iron_core */        {2, 1, 2, 0, 2, 1, 2, END, END, END, END, END, END, END, END},
 		/* 1 iron_core */        {2, 1, 0, 2, 1, 2, END, END, END, END, END, END, END, END, END},
 		/* 2 iron_core */        {2, 1, 2, 1, 2, 0, 2, 1, 2, END, END, END, END, END, END},
@@ -81,11 +81,11 @@ double Height_Measurement::profiles[26][15] = {
 		/* 19 iron_core */       {2, 1, 2, 0, 2, 2, END, END, END, END, END, END, END, END, END},
 		/* 20 iron_core */       {2, 2, 0, 2, 2, END, END, END, END, END, END, END, END, END, END},
 		/* 21 iron_core */		 {2, 0, 2, 2, END, END, END, END, END, END, END, END, END, END, END},
-	//	/* 22 iron_core */		 {2, 2, 0, 2, END, END, END, END, END, END, END, END, END, END, END},
-		/* 21 hole */            {2, 0, 2, END, END, END, END, END, END, END, END, END, END, END, END},
-		/* 22 hole */            {1, 2, 0, 2, 1, END, END, END, END, END, END, END, END, END, END},
-		/* 23 hole */            {1, 2, 0, 2, END, END, END, END, END, END, END, END, END, END, END},
-		/* 24 hole */            {2, 0, 2, 1, END, END, END, END, END, END, END, END, END, END, END},
+		/* 22 iron_core */		 {2, 2, 0, 2, END, END, END, END, END, END, END, END, END, END, END},
+		/* 23 hole */            {2, 0, 2, END, END, END, END, END, END, END, END, END, END, END, END},
+		/* 24 hole */            {1, 2, 0, 2, 1, END, END, END, END, END, END, END, END, END, END},
+		/* 25 hole */            {1, 2, 0, 2, END, END, END, END, END, END, END, END, END, END, END},
+		/* 26 hole */            {2, 0, 2, 1, END, END, END, END, END, END, END, END, END, END, END},
 };
 
 Height_Measurement::Height_Measurement(){
@@ -148,6 +148,8 @@ void Height_Measurement::execute(void*){
 
 				//Informiere Dispatcher
 				MsgSendPulse(3, -1, 5, msg); //TODO MAGICH_NUMBER
+			} else if (ha_unfiltered.length > 10){
+				MsgSendPulse(3, -1, 5, INVALID_PUK_TYPE_ID_E);
 			}
 		} 
 	}

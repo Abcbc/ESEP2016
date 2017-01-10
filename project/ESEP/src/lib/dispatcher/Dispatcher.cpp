@@ -127,6 +127,7 @@ private:
 		_methods.insert(std::pair<int, method_t>( TIMER_NEW_PUK_OUT_E_ID, &Event_methods::TIMER_NEW_PUK_OUT));
 		_methods.insert(std::pair<int, method_t>( TIMER_HEIGHT_MEASURE_DURATION_OUT_E_ID, &Event_methods::TIMER_HEIGHT_MEASURE_DURATION_OUT));
 		_methods.insert(std::pair<int, method_t>(TIMER_TRANSMIT_OUT_E_ID, &Event_methods::TIMER_TRANSMIT_OUT));
+		_methods.insert(std::pair<int, method_t>(TIMER_CREATE_PUK_OUT_E_ID, &Event_methods::TIMER_CREATE_PUK_OUT));
 
 		// Errors
 		_methods.insert(std::pair<int, method_t>(ERR_LOST_PUK_E_ID, &Event_methods::ERR_LOST_PUK));

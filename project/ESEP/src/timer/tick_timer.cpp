@@ -174,6 +174,10 @@ void Tick_timer::execute(void*){
 							cout << "TANSMIT_DURATION run out" << endl;
 							MsgSendPulse(3, -1, 5, TIMER_TRANSMIT_OUT_E_ID);
 							break;
+						case PUK_CREATE_DURATION :
+                            cout << "PUK_CREATE_DURATION run out" << endl;
+                            MsgSendPulse(3, -1, 5, TIMER_CREATE_PUK_OUT_E_ID);
+                            break;
 						default :
 							cout << "TIMER_RUNOUT run out" << endl;
 							MsgSendPulse(3, -1, 5, TIMER_RUNOUT_E_ID);

@@ -152,7 +152,7 @@ void Signal_light::TRAFFIC_LIGHT_UNACK_ERROR() {
 void Signal_light::TRAFFIC_LIGHT_ACKED_ERROR() {
 	clear_all_lights();
 	stop_all_blinks();
-	set_light(red);
+	blink(red, 500000);
 }
 
 void Signal_light::TRAFFIC_LIGHT_PASSED_ERROR() {

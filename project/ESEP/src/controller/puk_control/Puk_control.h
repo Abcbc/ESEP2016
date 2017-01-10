@@ -122,7 +122,7 @@ public:
 	virtual void LIGHT_BARRIER_ENTRY_OPEN();
 	virtual void LIGHT_BARRIER_SWITCH_CLOSE();
 	virtual void LIGHT_BARRIER_EXIT_CLOSE();
-	virtual void LIGHT_BARRIER_RAMP_CLOSE();
+	virtual void LIGHT_BARRIER_RAMP_OPEN();
 	virtual void HEIGHT_SENSOR_MEASURE_START();
 	virtual void HEIGHT_SENSOR_MEASURE_FINISHED();
 	virtual void SEND_OK();
@@ -137,6 +137,7 @@ public:
 	virtual void TIMER_HEIGHT_MEASURE_TO_RAMP_OUT();
 	virtual void TIMER_HEIGHT_MEASURE_DURATION_OUT();
 	virtual void TIMER_TRANSMIT_OUT();
+	virtual void TIMER_CREATE_PUK_OUT();
 };
 
 #endif /* PUK_CONTROL_H_ */
