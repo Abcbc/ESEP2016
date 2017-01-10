@@ -1,75 +1,61 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial_manager.h
-* Der Serial Manager kapselt den Zugang zur seriellen Schnittstelle.
-* Die Klasse stellt zwei serielle Verbindungen her zu den Nachbarsystemen.
-* Siehe auch Dokumentation im RDD zu Serieller Schnittstelle. 
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
+/*
+ * Serial_Manager.h
+ *	Der Serial Manager kapselt den Zugang zur seriellen Schnittstelle.
+ *	Die Klasse bietet die Moeglichkeit an zwei Serielle Verbindungen herzustellen.
+ *
+ *  Created on: 28.10.2016
+ *      Author: Julian Magierski
+ *      Version: 0.1
+ */
 
 #ifndef SERIAL_MANAGER_H_
 #define SERIAL_MANAGER_H_
 
 #include <iostream>
 #include "serial.h"
+#include "config.h"
+#include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/dispatcher.cpp"
 
 using namespace std;
 
-class Serial_Manager{
+typedef struct {
+	bool set;
+} Estop;
+
+class Serial_Manager: public State {
 	public:
-	
 	/**
 	 * Precondition: Data darf nicht NULL sein.
 	 * Postcondition: Rueckgabewert 0, Paket wurde gesendet. -1 Fehler.
-	 * Paket wird an GEME1 gesendet wenn Quelle GEME2 ist ansonsten an default
-	 * Nachbarsystem. Default heisst Versendung ueber com1.
-	 * @param data Puk Data zu senden
-	 * @return int 0 Wenn ok sonst Wert kleiner 0 
+	 * Paket wird an GEME2 gesendet wenn Quelle GEME1
 	 */
-	int send(const Data* data);
-	
+	int send_to_system2(const int puk_id);
 	/**
 	 * Precondition: GEME muss gleich GEME 2 sein.
 	 * Data darf nicht NULL sein.
 	 * Postcondition: Rueckgabewert 0, Paket wurde and GEME3 gesendet. -1 Fehler.
-	 * @param data Puk Data zu senden
-	 * @return int 0 Wenn ok sonst Wert kleiner 0 
 	 */
-	int send2(const Data* data);
+	int send_to_system3(const int puk_id);
 
 	/**
-	 * Postcondition: Estop wurde an alle GEME versendet.
-	 * Postcondition: Rueckgabewert 0, Estop Paket wurde gesendet. -1 Fehler.
-	 * @return int 0 Wenn ok sonst Wert kleiner 0 
-	 */
-	int send_estop();
-
-	/**
-	 * Postcondition: Fortsetzung nach Estopp wurde an alle GEME versendet.
-	 * Postcondition: Rueckgabewert 0, Estop Pakete wurden gesendet. -1 Fehler.
-	 * @return int 0 Wenn ok sonst Wert kleiner 0 
-	 */
-	int send_reset();
-
-	/**
-	 * Precondition: -
-	 * Postcondition: True wenn GEME2 anonsten false fuer GEME1 oder GEME3.
-	 * @return bool true wenn GEME2
+	 * Precondition:
+	 * Postcondition: True wenn GEME2 anonsten false f�r GEME1 oder GEME3.
 	 */
 	bool is_GEME_2();
 
 	/**
-	 * Returns the pointer of the instance
-	 * Precondition: -
-	 * Postcondition: Wenn sys_middle geme_2 == true. Sonst geme_2 == false.
-	 * Rueckgabe des statisches Pointer auf diese Instanz
-	 * @param bool sys_middle geme_2 == true. Wenn sys_middle == false dann default Serial
-	 * @return statischer Pointer auf diese Instanz
+	 * Aus einem FIFO wird eine Puk Id geholt.
+	 * Wenn keine Puk Id vorhanden ist wird -1 zurueck gegeben.
 	 */
-	static Serial_Manager* get_instance(const bool sys_middle);
+	int get_puk_id();
+
+	/*
+	 * Returns the pointer of the instance
+	 * @return
+	 */
+	static Serial_Manager* get_instance();
 
 	private:
 	/**
@@ -77,12 +63,21 @@ class Serial_Manager{
 	 * Postcondition: Wenn sys_middle true ist dann werden
 	 * zwei Serial fuer den mittleren GEME2 konfiguriert. Dann ist
 	 * geme_2 == true. Wenn sys_middle == false dann default Serial und geme_2 == false;
-	 * @param bool sys_middle geme_2 == true. Wenn sys_middle == false dann default Serial
 	 */
-	Serial_Manager(const bool sys_middle);
+	Serial_Manager();
 	virtual ~Serial_Manager();
 	Serial_Manager(const Serial_Manager& other);
 	Serial_Manager& operator=(const Serial_Manager& other);
+
+	/*
+	 * Sende SEND_WANT auf ein Nachbarsystem
+	 */
+	void SEND_WANT();
+
+	/*
+	 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
+	 */
+	void SEND_REQUEST_OK();
 
 	static Serial_Manager* instance_;
 	static pthread_mutex_t init_mtx;

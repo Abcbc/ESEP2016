@@ -12,7 +12,6 @@ class HAL_Test {
     public:
         HAL_Test(void);
         virtual ~HAL_Test();
-        void test_sensors(void);
         void test_actuators(void);
 
     private:

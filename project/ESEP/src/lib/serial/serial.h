@@ -1,13 +1,9 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial.h
-* Stellt eine Verbundung zu einem Nachbarsystem da ueber
-* Serielle Schnittstelle.
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
+/*
+ * Serial.h
+ *
+ *  Created on: 28.10.2016
+ *      Author: abw181
+ */
 
 #ifndef SERIAL_H_
 #define SERIAL_H_
@@ -22,42 +18,34 @@ using namespace std;
 
 class Serial {
 public:
-		/**
-		* Precondition: serial_nr muss '1' oder '2 sein'
-		* Postcondition: -
-		* @param int serial_nr Nummer der Verbindung
-		* @return Ctor
-		*/
+		/*
+		 * Precondition: serial_nr muss '1' oder '2 sein'
+		 */
 		Serial(const int serial_nr);
 		 ~Serial();
 
-		/**
-		* Precondition: -
-		* Postcondition: -
-		* @param data Puk Data struct welches versendet wird
-		* @return 0 bei Erfolg sonst Wert < 1
-		*/
-		int send(const Data *data);
-		
-		/**
-		* Precondition: -
-		* Postcondition: ESTOP wurde an Nachbarsystem versendet.
-		* @return 0 bei Erfolg sonst Wert < 1
-		*/
-		int send_estop();
-		
-		/**
-		* Precondition: -
-		* Postcondition: RESET wurde an Nachbarsystem versendet.
-		* @return 0 bei Erfolg sonst Wert < 1
-		*/
-		int send_reset();
+		/*
+		 * Sendet struc
+		 */
+		int send(const int puk_id);
+
+
+		int get_puk_id();
+
+		/*
+		 * Sende SEND_WANT auf ein Nachbarsystem
+		 */
+		void send_want();
+
+		/*
+		 * Sende SEND_REQUEST_OK auf ein Nachbarsystem
+		 */
+		void send_request_ok();
 
 private:
 		Serial& operator=(const Serial& other);
 		Serial(const Serial& other);
 		Serial();
-		
 		/**
 		 * Precondition: -
 		 * Postcondition: Serial device wurde konfiguriert
@@ -71,9 +59,7 @@ private:
 		Serial_Transmit* transmit;
 		Serial_Receive* receive;
 		// Sequenznummer fuer Serial Verbindung
-		uint8_t sequenznummer;
 		// Gibt an ob der ESTOP aktic ist. Sich die Sortieranlage also im Error Zustand befindet
-		bool estop_on;
 };
 
 #endif /* SERIAL_H_ */

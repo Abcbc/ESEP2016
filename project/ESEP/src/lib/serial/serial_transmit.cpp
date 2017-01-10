@@ -1,97 +1,142 @@
-/**
-* HAW SR2 Embedded System Engineering WS 2016
-* serial_transmit.cpp
-* @author Julian Magierski
-* Copyright (C) 2016 Julian Magierski
-* This software is licensed with GNU license
-* see LICENSE.txt for details
-*/
-
+ /*
+ *  Created on: 11.11.2016
+ *      Author: Julian Magierski
+ *      Version: 0.1
+ */
 #include "serial_transmit.h"
 
-Serial_Transmit::Serial_Transmit(int fdesc_number, uint8_t* sequenznr,
-		bool* estop) {
-	estop_on = estop;
-	sqz_transmit = 0;
+pthread_mutex_t Serial_Transmit::mtx_ = PTHREAD_MUTEX_INITIALIZER;
+
+Serial_Transmit::Serial_Transmit(int fdesc_number) {
 	fdesc_ = fdesc_number;
-	sequenznummer = sequenznr;
-	if (fdesc_number == 2) {
-		*sequenznummer = 42;
-	}
-	mtx_ = PTHREAD_MUTEX_INITIALIZER;
+	Dispatcher *d = Dispatcher::getInstance();
+	d->addListener(this, ESTOP_THIS_E_ID);
+	d->addListener(this, BUTTON_RESET_E_ID);
+	d->addListener(this, ESTOP_RELEASED_THIS_E_ID);
+	d->addListener(this, BUTTON_START_E_ID);
 }
 
 Serial_Transmit::~Serial_Transmit() {
 }
 
-int Serial_Transmit::transmit(const Data *data) {
+int Serial_Transmit::transmit_puk(const int puk_id) {
 	pthread_mutex_lock(&mtx_);
 	Header header;
-	header.paket_typ = DATA;
-	header.paket_size = sizeof(*data);
-	cout << "transmit: DATA: " << data->data << endl;
-	cout << "transmit: Header Paket Size:" << sizeof(header) << endl;
-	cout << "transmit: Payload Paket Size:" << header.paket_size << endl;
-	sqz_transmit = (sqz_transmit + 1) % MAX_SQZ;
-	header.sequenznummer = sqz_transmit;
-	cout << "HEADER SQZ: " << header.sequenznummer << endl;
-	cout << "Sequenznummer Transmit: " << sqz_transmit << endl;
-	cout << "Sequenznummer Receive: " << *sequenznummer << endl;
-	int result;
+	header.paket_typ = PUK_ID;
+	Data data;
+	data.puk_id = puk_id;
+	header.paket_size = sizeof(data);
+	if (SHOW_DEBUG_MESSAGE) {
+		cerr << "transmit: DATA: " << data.puk_id << "\n";
+		cerr << "transmit: Header Paket Size:" << sizeof(header) << "\n";
+		cerr << "transmit: Payload Paket Size:" << header.paket_size << "\n";
+	}
 	// Zuerst wird der Header gesendet
-	do {
-		result = write(this->fdesc_, &header, sizeof(header));
-		cout << "While Receive" << *sequenznummer << endl;
-	// Warte um den Empfaenger Zeit zum Empfangen zu geben und um ein ACK zu senden
-		usleep(QSEC);
-	// Sollange ACK noch nicht bestaetigt wurde wiederhole Senden
-	} while (*sequenznummer != sqz_transmit);
-	sqz_transmit = (sqz_transmit + 1) % MAX_SQZ;
-	// Send Data
-	do {
-		result = write(this->fdesc_, data, header.paket_size);
-		usleep(QSEC);
-		cout << "test_data" << result << endl;
-	} while (*sequenznummer != sqz_transmit);
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Header Puk Data");
+		pthread_mutex_unlock(&mtx_);
+		return -1;
+	} else {
+		result_write = 0;
+	}
+	// Dann die Daten
+	result_write = write(this->fdesc_, &data, header.paket_size);
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Puk Data");
+		result_write = -1;
+	} else {
+		result_write = 0;
+	}
 	pthread_mutex_unlock(&mtx_);
-	return 0;
+	return result_write;
 }
 
-int Serial_Transmit::transmit_estop() {
+void Serial_Transmit::BUTTON_RESET() {
 	pthread_mutex_lock(&mtx_);
-	*estop_on = true;
-	cout << "ESTOP STATE: " << *estop_on << endl;
-	Header header;
-	header.paket_typ = ESTOP;
-	header.paket_size = 1;
-	sqz_transmit = (sqz_transmit + 1) % MAX_SQZ;
-	header.sequenznummer = sqz_transmit;
-	cout << "HEADER SQZ ESTOP: " << header.sequenznummer << endl;
-	do {
-		write(this->fdesc_, &header, sizeof(header));
-		usleep(QSEC);
-	} while (*sequenznummer != sqz_transmit);
-	pthread_mutex_unlock(&mtx_);
-	return 0;
-}
-
-int Serial_Transmit::transmit_reset() {
-	pthread_mutex_lock(&mtx_);
-	*estop_on = false;
-	cout << "ESTOP STATE: " << *estop_on << endl;
+	if (SHOW_DEBUG_MESSAGE) {
+		cerr << "Send Reset\n";
+	}
+	// Verkapsulung des RESET
 	Header header;
 	header.paket_typ = RESET;
 	header.paket_size = 1;
-	sqz_transmit = (sqz_transmit + 1) % MAX_SQZ;
-	header.sequenznummer = sqz_transmit;
-	cout << "HEADER SQZ RESET: " << header.sequenznummer << endl;
-	do {
-		write(this->fdesc_, &header, sizeof(header));
-		usleep(QSEC);
-	} while (*sequenznummer != sqz_transmit);
+	// Transmit RESET
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit RESET");
+	}
 	pthread_mutex_unlock(&mtx_);
-	return 0;
 }
+
+void Serial_Transmit::ESTOP_THIS() {
+	pthread_mutex_lock(&mtx_);
+		if (SHOW_DEBUG_MESSAGE) {
+			cerr << "Send ESTOP\n";
+		}
+		// Verkapsulung des ESTOP
+		Header header;
+		header.paket_typ = ESTOP;
+		header.paket_size = 1;
+		// Transmit ESTOP
+		int result_write = write(this->fdesc_, &header, sizeof(header));
+		if (result_write <= 0) {
+			perror("Error Serial, Transmit ESTOP");
+		}
+		pthread_mutex_unlock(&mtx_);
+}
+
+void Serial_Transmit::ESTOP_RELEASED_THIS() {
+	pthread_mutex_lock(&mtx_);
+		if (SHOW_DEBUG_MESSAGE) {
+			cerr << "Send ESTOP_RELEASED_THIS\n";
+		}
+		// Verkapsulung des ESTOP
+		Header header;
+		header.paket_typ = RELEASED;
+		header.paket_size = 1;
+		// Transmit ESTOP
+		int result_write = write(this->fdesc_, &header, sizeof(header));
+		if (result_write <= 0) {
+			perror("Error Serial, Transmit RELEASED");
+		}
+		pthread_mutex_unlock(&mtx_);
+}
+
+void Serial_Transmit::BUTTON_START() {
+	Header header;
+	header.paket_typ = START;
+	header.paket_size = 1;
+	// Transmit Send Button Start
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit START");
+	}
+}
+
+
+void Serial_Transmit::send_want() {
+	Header header;
+	header.paket_typ = REQUEST;
+	header.paket_size = 1;
+	// Transmit Send Want
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Send Want");
+	}
+}
+
+void Serial_Transmit::send_request_ok() {
+	Header header;
+	header.paket_typ = REQUEST_OK;
+	header.paket_size = 1;
+	// Transmit Send REQUEST_OK_PACKED
+	int result_write = write(this->fdesc_, &header, sizeof(header));
+	if (result_write <= 0) {
+		perror("Error Serial, Transmit Send REQUEST_OK");
+	}
+}
+
 
 
 

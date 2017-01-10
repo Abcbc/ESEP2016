@@ -30,6 +30,15 @@ Signal_light::Signal_light(){
 	GREEN 	= 5;
 	YELLOW 	= 6;
 	RED 	= 7;
+	Dispatcher *d = Dispatcher::getInstance();
+	d->addListener(this, TRAFFIC_LIGHT_NORMAL_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_WARNING_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_UNACK_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_ACKED_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_PASSED_ERROR_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_RDY_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_NEW_PUK_E_ID);
+	d->addListener(this, TRAFFIC_LIGHT_NEW_PUK_OUT_E_ID);
 }
 Signal_light::~Signal_light(){
 	pthread_mutex_destroy(&init_mtx);
@@ -55,20 +64,29 @@ void Signal_light::clear_all_lights(void){
 void Signal_light::blink(Color c, uint32_t hz){
 	switch(c){
 		case green:
-			if(bl_threads.green_thread == NULL || hz != bl_threads.green_hz){
+			if(bl_threads.green_thread != NULL){
+				stop_blink(green);
+			}
+			if(bl_threads.green_thread == NULL){
 				bl_threads.green_thread = new Blink_green(hz);
 				bl_threads.green_thread -> start(NULL);
 				bl_threads.green_hz = hz;
 			}
 			break;
 		case yellow:
-			if(bl_threads.yellow_thread == NULL || hz != bl_threads.yellow_hz){
+			if(bl_threads.green_thread != NULL){
+				stop_blink(yellow);
+			}
+			if(bl_threads.yellow_thread == NULL){
 				bl_threads.yellow_thread = new Blink_yellow(hz);
 				bl_threads.yellow_thread -> start(NULL);
 				bl_threads.yellow_hz = hz;
 			}
 			break;
 		case red:
+			if(bl_threads.green_thread != NULL){
+				stop_blink(red);
+			}
 			if(bl_threads.red_thread == NULL || hz != bl_threads.red_hz){
 				bl_threads.red_thread = new Blink_red(hz);
 				bl_threads.red_thread -> start(NULL);
@@ -77,55 +95,86 @@ void Signal_light::blink(Color c, uint32_t hz){
 			break;
 	}
 }
+
 void Signal_light::stop_blink(Color c){
 	switch(c){
 		case green:
 			if(bl_threads.green_thread != NULL){
 				bl_threads.green_thread -> stop();
+				delete bl_threads.green_thread;
 				bl_threads.green_thread = NULL;
 			}
 			break;
 		case yellow:
 			if(bl_threads.yellow_thread != NULL){
 				bl_threads.yellow_thread -> stop();
+				delete bl_threads.yellow_thread;
 				bl_threads.yellow_thread = NULL;
 			}
 			break;
 		case red:
 			if(bl_threads.red_thread != NULL){
 				bl_threads.red_thread -> stop();
+				delete bl_threads.red_thread;
 				bl_threads.red_thread = NULL;
 			}
 			break;
 	}
 }
 
-void Signal_light::warning_on(){
-
-}
-void Signal_light::warning_off(){
-
-}
-
-void Signal_light::active_on(){
-
-}
-void Signal_light::active_off(){
-
+void Signal_light::stop_all_blinks() {
+	stop_blink(red);
+	stop_blink(yellow);
+	stop_blink(green);
 }
 
-void Signal_light::ack_error_on(){
-
+void Signal_light::TRAFFIC_LIGHT_NORMAL() {
+	clear_all_lights();
+	stop_all_blinks();
+	std::cout << "shall be green" << std::endl;
+	set_light(green);
 }
-void Signal_light::ack_error_off(){
 
+void Signal_light::TRAFFIC_LIGHT_WARNING() {
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(yellow);
+	blink(yellow, 1000000);
 }
 
-void Signal_light::unack_error_on(){
-
+void Signal_light::TRAFFIC_LIGHT_UNACK_ERROR() {
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(red);
+	blink(red, 1000000);
 }
-void Signal_light::unack_error_off(){
 
+void Signal_light::TRAFFIC_LIGHT_ACKED_ERROR() {
+	clear_all_lights();
+	stop_all_blinks();
+	blink(red, 500000);
+}
+
+void Signal_light::TRAFFIC_LIGHT_PASSED_ERROR() {
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(red);
+	blink(red, 500000);
+}
+
+void Signal_light::TRAFFIC_LIGHT_RDY() {
+	clear_all_lights();
+	stop_all_blinks();
+	set_light(green);
+	blink(green, 1000000);
+}
+
+void Signal_light::TRAFFIC_NEW_PUK_OUT() {
+	stop_blink(yellow);
+}
+
+void Signal_light::TRAFFIC_NEW_PUK() {
+	blink(yellow, 1000000);
 }
 
 uint8_t Signal_light::color_bit(Color c){

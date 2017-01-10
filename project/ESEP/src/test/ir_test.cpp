@@ -24,14 +24,14 @@ int isrId = 0;
 int isrChannel = 0;
 int isrConnection = 0;
 
-ir_test::ir_test() {
+IR_Test::IR_Test() {
 }
 
 
-ir_test::~ir_test() {
+IR_Test::~IR_Test() {
 }
 
-void ir_test::test_ir(){
+void IR_Test::test_ir(){
 	Ir_handler *ir = Ir_handler::get_instance();
 
 	if (ThreadCtl(_NTO_TCTL_IO_PRIV, 0) == -1){
@@ -54,7 +54,7 @@ void ir_test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_ENTRY_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_ENTRY_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
@@ -64,7 +64,7 @@ void ir_test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_SWITCH_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_SWITCH_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
@@ -74,7 +74,7 @@ void ir_test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, LIGHT_BARRIER_EXIT_CLOSED_E_ID)
+	is_equal(pulse.value.sival_int, LIGHT_BARRIER_EXIT_CLOSE_E_ID)
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
@@ -84,41 +84,30 @@ void ir_test::test_ir(){
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_RESET_PRESS_E_ID)
-	do{
-		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
-	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_RESET_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_RESET_E_ID);
+
 
 	cout << "test: button START" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_START_PRESS_E_ID)
-	do{
-		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
-	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_START_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_START_E_ID);
 
 	cout << "test: button STOP" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_STOP_PRESS_E_ID)
-	do{
-		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
-	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_STOP_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, BUTTON_STOP_E_ID)
 
 	cout << "test: button E-STOP" << endl;
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_E_STOP_PRESS_E_ID)
+	is_equal(pulse.value.sival_int, ESTOP_THIS_E_ID);
 	do{
 		MsgReceivePulse(isrChannel,&pulse,sizeof(pulse),NULL);
 	}while(pulse.value.sival_int == -1);
-	is_equal(pulse.value.sival_int, BUTTON_E_STOP_RELEASE_E_ID)
+	is_equal(pulse.value.sival_int, ESTOP_RELEASED_THIS_E_ID);
 
 
 	cout << "may try some interrupt combinations" << endl;

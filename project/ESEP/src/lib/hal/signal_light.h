@@ -2,6 +2,9 @@
 #define SIGNAL_LIGHT_H_
 #include "hal_component.h"
 #include <pthread.h>
+#include "src/controller/event_table.h"
+#include "src/lib/dispatcher/State.cpp"
+#include "src/lib/dispatcher/dispatcher.cpp"
 /**
  * Color represents all the existing colors at the Signal light Panel.
  */
@@ -11,11 +14,10 @@ enum Color{
 	red
 };
 
-
 /**
  *Signal_lights provides function for seting, clearing and toggeling Lights. 
  */
-class Signal_light:Hal_component{
+class Signal_light:Hal_component, State{
 	public:
 			/*
 			 * This Function sets a light.
@@ -53,40 +55,48 @@ class Signal_light:Hal_component{
 			void stop_blink(Color c);
 			
 			/*
-			 * Set the Warning-Signal
+			 *The stop blink function is stoping for all lights
 			 */
-			void warning_on();
-			/*
-			 * Clears the Warning-Signal
-			 */
-			void warning_off();
-			
-			/*
-			 * Clears the Aktive-Signal
-			 */
-			void active_on();
-			/*
-			 * Clears the Aktive-Signal
-			 */
-			void active_off();
-			
-			/*
-			 * Set the Acknowleged-Error-Signal
-			 */
-			void ack_error_on();
-			/*
-			 * Clears the Acknowleged-Error-Signal
-			 */
-			void ack_error_off();
+			void stop_all_blinks();
 
 			/*
-			 * Set the Unacknowleged-Error-Signal
+			 * light Normal Event Handling
+			 * Green light
 			 */
-			void unack_error_on();
-			/*
-			 *Clears the Unacknowleged-Error-Signal
-			 */
-			void unack_error_off();
+		    void TRAFFIC_LIGHT_NORMAL();
+
+		    /*
+		     * light Warning
+		     */
+		    void TRAFFIC_LIGHT_WARNING();
+
+		    /*
+		     * Light unack Error
+		     * Red light and blink fast
+		     */
+		    void TRAFFIC_LIGHT_UNACK_ERROR();
+
+		    /*
+		     * Light Acked Error
+		     * Red Light
+		     */
+		    void TRAFFIC_LIGHT_ACKED_ERROR();
+
+		    /*
+		     * Light passed Error blink slow
+		     */
+		    void TRAFFIC_LIGHT_PASSED_ERROR();
+
+		    /*
+		     * Light ready for puk taking
+		     * Green light and blink
+		     */
+		    void TRAFFIC_LIGHT_RDY();
+
+		    void TRAFFIC_NEW_PUK();
+
+		    void TRAFFIC_NEW_PUK_OUT();
+
 			/*
 			 * Returns the pointer of the instance
 			 * @return 
