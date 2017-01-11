@@ -414,8 +414,8 @@ private:
         virtual bool light_barrier_switch_close() {
             static int counter = 0;
             counter++;
-//                MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
-            if (counter == 3)
+            MsgSendPulse(CON_ID, PRIO, CODE, SWITCH_OPEN_E_ID);
+            if (counter == 2)
             {
                 counter = 0;
                 new (this) Switch_Open;
@@ -433,6 +433,7 @@ private:
         }
         virtual bool light_barrier_exit_close() {
             MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_STOP_E_ID);
+            MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NEW_PUK_E_ID);
             new (this) Exit_Belt_3;
             return true;
         }
@@ -443,7 +444,8 @@ private:
             cout << "State: Exit_Belt_3" << endl;
         }
         virtual bool button_start() {
-
+            MsgSendPulse(CON_ID, PRIO, CODE, TRAFFIC_LIGHT_NORMAL_E_ID);
+            MsgSendPulse(CON_ID, PRIO, CODE, TIMER_SWITCH_OUT_E_ID);
             MsgSendPulse(CON_ID, PRIO, CODE, MOTOR_START_E_ID);
 //            data->puk_control->accept_new_puk = true;
             if (data->puk_control->puk_count() == 0)
